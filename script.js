@@ -5,10 +5,12 @@ import { UiObjects } from "./arrayuiobjects.js";
 
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
-const canvasBackground = document.getElementById('canvas1');
-const fogContext = canvas.getContext('2d');
+const canvasBackground = document.getElementById('canvas-background');
+const backgroundCTX = canvasBackground.getContext('2d');
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
+canvasBackground.width = window.innerWidth;
+canvasBackground.height = window.innerHeight;
 
 canvas.addEventListener('mousemove', function (event) {
     mouse.x = event.x;
@@ -19,7 +21,10 @@ canvas.addEventListener('mousemove', function (event) {
 window.addEventListener('resize', function () {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
-})
+    canvasBackground.width = window.innerWidth;
+    canvasBackground.height = window.innerHeight;
+});
+
 
 
 function drawFogOfWar() {
@@ -40,14 +45,10 @@ function drawFogOfWar() {
     fogContext.globalCompositeOperation = 'source-over';
 }
 
-
-
-
-
 let myWall3 = new Obstacle(ctx, 100, 400, 50, 50, '#793B31')
 let myWall2 = new Obstacle(ctx, 300, 100, 30, 100, '#793B31')
 let myWall = new Obstacle(ctx, 100, 200, 100, 30, '#793B31');
-let mySolider = new Solider(ctx, 50, 50, 51, 50, 0, 0.7, 0, 'solider.png');
+let mySolider = new Solider(ctx, backgroundCTX, 50, 50, 51, 50, 0, 0.7, 0, 'solider.png');
 UiObjects.push(mySolider);
 UiObjects.push(myWall);
 UiObjects.push(myWall2);
@@ -89,7 +90,15 @@ function handleUiObjects() {
     })
 }
 
+let counter = 0;
 function animate() {
+
+    if (counter > 10) {
+    backgroundCTX.fillStyle = 'rgba(200,255,90,0.05)'
+    backgroundCTX.fillRect(0,0, canvasBackground.width, canvasBackground.height)
+    counter = 0
+    }
+    counter++
     ctx.clearRect(0, 0, canvas.width, canvas.height)
     handleUiObjects();
     requestAnimationFrame(animate)

@@ -6,7 +6,7 @@ import { UiObjects } from "./arrayuiobjects.js";
 
 
 class Solider extends UiObject {
-    constructor(ctx, x, y, width, height, direction, speed, gunDirection) {
+    constructor(ctx, bgCtx, x, y, width, height, direction, speed, gunDirection) {
         super(ctx, x, y, width, height)
         this.direction = direction;
         this.speed = speed;
@@ -19,6 +19,9 @@ class Solider extends UiObject {
         this.rotatingRight = false;
         this.movingBack = false;
         this.rotatingLeft = false;
+        this.bgCtx = bgCtx;
+        this.tracksImg = new Image();
+        this.tracksImg.src = 'tracks.png'
     }
 
     collisionBox() {
@@ -40,11 +43,6 @@ class Solider extends UiObject {
     draw() {
 
         const center = this.center()
-
-
-
-
-
         this.ctx.save()
         this.ctx.translate(center.x, center.y)
         this.ctx.rotate(this.direction)
@@ -60,7 +58,8 @@ class Solider extends UiObject {
             -this.width / 2,
             -this.height / 2,
             this.width,
-            this.height
+            this.height,
+
         )
         this.ctx.restore()
 
@@ -111,6 +110,20 @@ class Solider extends UiObject {
             this.y = oldY
             console.log('collide')
         }
+
+        // Draw tracks of tank
+        const center = this.center()
+        this.bgCtx.save()
+        this.bgCtx.translate(center.x, center.y)
+        this.bgCtx.rotate(this.direction)
+        this.bgCtx.drawImage(this.tracksImg,
+            -this.width / 2,
+            -this.height / 2,
+            this.width - 15,
+            this.height)
+        this.bgCtx.restore()
+
+
     }
 
     moveBack() {
