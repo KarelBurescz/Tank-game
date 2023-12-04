@@ -6,8 +6,8 @@ import { UiObjects } from "./arrayuiobjects.js";
 
 
 class Solider extends UiObject {
-    constructor(ctx, bgCtx, x, y, width, height, direction, speed, gunDirection) {
-        super(ctx, x, y, width, height)
+    constructor(ctx, bgCtx, x, y, width, height, direction, speed, gunDirection, hp) {
+        super(ctx, x, y, width, height, hp)
         this.direction = direction;
         this.speed = speed;
         this.gunDirection = gunDirection;
@@ -131,7 +131,17 @@ class Solider extends UiObject {
     }
 
     fire() {
-        let myBullet = new Bullet(this.ctx, this.x, this.y, 8, 8, 10, this.gunDirection, 25, this);
+        let myBullet = new Bullet(
+            this.ctx,
+            this.x,
+            this.y,
+            8,
+            8,
+            10,
+            this.gunDirection,
+            25, 
+            this
+        );
         UiObjects.push(myBullet)
     }
 

@@ -1,15 +1,26 @@
 import { Config } from "./config.js";
+import { UiObjects } from "./arrayuiobjects.js";
 
 class UiObject {
-    constructor(ctx, x, y, width, height) {
+    constructor(ctx, x, y, width, height, hp) {
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
         this.ctx = ctx;
+        this.hp = hp;
     }
     update() {
+        if(this.hp <= 0){
+            this.explode()
+        }
+    }
 
+    explode(){
+        const i = UiObjects.indexOf(this);
+        if (i !== -1 ) {
+            UiObjects.splice(i, 1);
+        }
     }
 
     collisionBox() {
@@ -24,8 +35,6 @@ class UiObject {
 
     draw() {
 
-        // this.ctx.fillStyle = 'rgba(0, 255, 0)'
-        // ctx.fillRect(0, 0, canvas.width, canvas.height)
 
         if (Config.debug === true) {
             this.ctx.lineWidth = 1;

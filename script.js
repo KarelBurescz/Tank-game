@@ -45,10 +45,10 @@ function drawFogOfWar() {
     fogContext.globalCompositeOperation = 'source-over';
 }
 
-let myWall3 = new Obstacle(ctx, 100, 400, 50, 50, '#793B31')
-let myWall2 = new Obstacle(ctx, 300, 100, 30, 100, '#793B31')
-let myWall = new Obstacle(ctx, 100, 200, 100, 30, '#793B31');
-let mySolider = new Solider(ctx, backgroundCTX, 50, 50, 51, 50, 0, 0.7, 0, 'solider.png');
+let myWall3 = new Obstacle(ctx, 100, 400, 150, 30, 100,  '')
+let myWall2 = new Obstacle(ctx, 300, 100, 30, 100, 100, '')
+let myWall = new Obstacle(ctx, 100, 200, 100, 30, 100,  '');
+let mySolider = new Solider(ctx, backgroundCTX, 50, 50, 51, 50, 0, 0.7, 0, 'solider.png' ,100);
 UiObjects.push(mySolider);
 UiObjects.push(myWall);
 UiObjects.push(myWall2);

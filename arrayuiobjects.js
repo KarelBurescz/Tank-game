@@ -1,4 +1,4 @@
 
-const UiObjects = [];
+let UiObjects = [];
 
 export { UiObjects }

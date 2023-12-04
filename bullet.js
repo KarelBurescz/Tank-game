@@ -3,7 +3,7 @@ import { UiObjects } from "./arrayuiobjects.js";
 
 class Bullet extends UiObject {
     constructor(ctx, x, y, width, height, speed, direction, damage, owner) {
-        super(ctx, x, y, width, height)
+        super(ctx, x, y, width, height, 1000)
         this.damage = damage;
         this.direction = direction;
         this.speed = speed;
@@ -46,7 +46,7 @@ class Bullet extends UiObject {
                 }
                 if (this.collides(uiobject) && (this.owner !== uiobject)) {
                     collide = true;
-
+                    uiobject.hp -= this.damage;
                 }
             }
         )
