@@ -45,14 +45,16 @@ function drawFogOfWar() {
     fogContext.globalCompositeOperation = 'source-over';
 }
 
-let myWall3 = new Obstacle(ctx, 100, 400, 150, 30, 100,  '')
+let myWall3 = new Obstacle(ctx, 100, 400, 150, 30, 100, '')
 let myWall2 = new Obstacle(ctx, 300, 100, 30, 100, 100, '')
-let myWall = new Obstacle(ctx, 100, 200, 100, 30, 100,  '');
-let mySolider = new Solider(ctx, backgroundCTX, 50, 50, 51, 50, 0, 0.7, 0, 'solider.png' ,100);
+let myWall = new Obstacle(ctx, 100, 200, 100, 30, 100, '');
+let mySolider = new Solider(ctx, backgroundCTX, 50, 250, 51, 50, 180, 1, 180, 100);
+let mySolider1 = new Solider(ctx, backgroundCTX, 300, 250, 51, 50, 360, 1, 360, 100);
 UiObjects.push(mySolider);
 UiObjects.push(myWall);
 UiObjects.push(myWall2);
 UiObjects.push(myWall3);
+UiObjects.push(mySolider1);
 
 
 window.addEventListener('keydown', function (e) {
@@ -64,6 +66,10 @@ window.addEventListener('keydown', function (e) {
         mySolider.rotatingLeft = true;
     } else if (e.key === 's') {
         mySolider.movingBack = true;
+    } else if (e.key === 'q') {
+        mySolider.turretMovingLeft = true;
+    } else if (e.key === 'e') {
+        mySolider.turretMovingRight = true;
     }
 });
 
@@ -76,12 +82,61 @@ window.addEventListener('keyup', function (e) {
         mySolider.rotatingLeft = false;
     } else if (e.key === 's') {
         mySolider.movingBack = false;
+    } else if (e.key === 'q') {
+        mySolider.turretMovingLeft = false;
+    } else if (e.key === 'e') {
+        mySolider.turretMovingRight = false;
     }
 });
 
-window.addEventListener('click', function (e) {
-    mySolider.fire()
+
+window.addEventListener('keydown', function (e) {
+    console.log(e)
+    if (e.key === 'ArrowUp') {
+        mySolider1.movingFoward = true;
+    } else if (e.key === 'ArrowRight') {
+        mySolider1.rotatingRight = true;
+    } else if (e.key === 'ArrowLeft') {
+        mySolider1.rotatingLeft = true;
+    } else if (e.key === 'ArrowDown') {
+        mySolider1.movingBack = true;
+    } else if (e.key === 'i') {
+        mySolider1.turretMovingLeft = true;
+    } else if (e.key === 'p') {
+        mySolider1.turretMovingRight = true;
+    }
+});
+
+window.addEventListener('keyup', function (e) {
+    if (e.key === 'ArrowUp') {
+        mySolider1.movingFoward = false;
+    } else if (e.key === 'ArrowRight') {
+        mySolider1.rotatingRight = false;
+    } else if (e.key === 'ArrowLeft') {
+        mySolider1.rotatingLeft = false;
+    } else if (e.key === 'ArrowDown') {
+        mySolider1.movingBack = false;
+    } else if (e.key === 'i') {
+        mySolider1.turretMovingLeft = false;
+    } else if (e.key === 'p') {
+        mySolider1.turretMovingRight = false;
+    }
+});
+
+
+window.addEventListener('keydown', function (e) {
+    if (e.key === 'f') {
+        mySolider.fire()
+    }
 })
+
+
+window.addEventListener('keydown', function (e) {
+    if (e.key === 'o') {
+        mySolider1.fire()
+    }
+})
+
 
 function handleUiObjects() {
     UiObjects.forEach(function (o) {
@@ -94,9 +149,9 @@ let counter = 0;
 function animate() {
 
     if (counter > 10) {
-    backgroundCTX.fillStyle = 'rgba(200,255,90,0.05)'
-    backgroundCTX.fillRect(0,0, canvasBackground.width, canvasBackground.height)
-    counter = 0
+        backgroundCTX.fillStyle = 'rgba(200,255,90,0.05)'
+        backgroundCTX.fillRect(0, 0, canvasBackground.width, canvasBackground.height)
+        counter = 0
     }
     counter++
     ctx.clearRect(0, 0, canvas.width, canvas.height)

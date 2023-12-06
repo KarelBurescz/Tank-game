@@ -10,7 +10,7 @@ class Solider extends UiObject {
         super(ctx, x, y, width, height, hp)
         this.direction = direction;
         this.speed = speed;
-        this.gunDirection = gunDirection;
+        // this.gunDirection = gunDirection;
         this.image = new Image()
         this.image.src = 'tank1.png';
         this.gunImage = new Image();
@@ -22,6 +22,15 @@ class Solider extends UiObject {
         this.bgCtx = bgCtx;
         this.tracksImg = new Image();
         this.tracksImg.src = 'tracks.png'
+        this.gunDirection = 0;
+        this.turretMovingRight = false;
+        this.turretMovingLeft = false;
+        this.audioMoving = new Audio('tank-moving1.mp3');
+        this.audioTurretRotating = new Audio('tank-turret-rotate.mp3');
+        this.audioReloading = new Audio('tank-reload.mp3');
+        this.audioEmptyGunShot = new Audio('empty-gun-shot.mp3');
+        // this.firingAudio = false;
+        this.bulletsLoaded = 5;
     }
 
     collisionBox() {
@@ -52,7 +61,7 @@ class Solider extends UiObject {
 
         this.ctx.save()
         this.ctx.translate(center.x, center.y)
-        this.ctx.rotate(this.gunDirection)
+        this.ctx.rotate(this.direction + this.gunDirection)
         this.ctx.drawImage(
             this.gunImage,
             -this.width / 2,
@@ -78,8 +87,8 @@ class Solider extends UiObject {
             this.ctx.lineTo(center.x + px, center.y + py)
             this.ctx.stroke()
 
-            let gx = Math.cos(this.gunDirection) * 70;
-            let gy = Math.sin(this.gunDirection) * 70;
+            let gx = Math.cos(this.direction + this.gunDirection) * 70;
+            let gy = Math.sin(this.direction + this.gunDirection) * 70;
 
             this.ctx.beginPath()
             this.ctx.strokeStyle = 'red'
@@ -88,6 +97,8 @@ class Solider extends UiObject {
             this.ctx.stroke()
         }
     }
+
+
 
     moveFront(dir = 1) {
         const oldX = this.x
@@ -131,37 +142,81 @@ class Solider extends UiObject {
     }
 
     fire() {
+
+        if (this.bulletsLoaded < 1) {
+            this.audioEmptyGunShot.play();
+            return;
+        }
+
         let myBullet = new Bullet(
             this.ctx,
             this.x,
             this.y,
             8,
             8,
-            10,
-            this.gunDirection,
-            25, 
+            5,
+            this.direction + this.gunDirection,
+            25,
             this
         );
+
+        this.bulletsLoaded--;
+
+        if (this.bulletsLoaded < 1){
+            setTimeout(
+                () => {
+                    this.audioReloading.play();
+                    this.bulletsLoaded = 5;
+                },3000
+            ) 
+        }
+
         UiObjects.push(myBullet)
     }
 
     update() {
-        let dx = this.x - mouse.x;
-        let dy = this.y - mouse.y;
-        this.gunDirection = Math.atan2(-dy, -dx);
+        // let dx = this.x - mouse.x;
+        // let dy = this.y - mouse.y;
+        // this.gunDirection = Math.atan2(-dy, -dx);
+
+        // if (this.firingAudio === true) {
+        //     this.audioShooting.play();
+        // } else {
+        //     this.audioShooting.pause();
+        // }
 
         if (this.movingFoward === true) {
             this.moveFront();
+            this.audioMoving.play()
+        } else {
+            this.audioMoving.pause()
         }
         if (this.movingBack === true) {
             this.moveBack();
         }
         if (this.rotatingRight === true) {
-            this.direction += this.speed * Math.PI / 180;
+            this.direction += this.speed * Math.PI / 120;
         }
         if (this.rotatingLeft === true) {
-            this.direction -= this.speed * Math.PI / 180;
+            this.direction -= this.speed * Math.PI / 120;
+            this.audioTurretRotating.play();
+        } else {
+            this.audioTurretRotating.pause();
         }
+        if (this.turretMovingLeft) {
+            this.gunDirection -= 0.03;
+        }
+        if (this.turretMovingRight) {
+            this.gunDirection += 0.03;
+        }
+
+        if ((this.turretMovingLeft) || (this.turretMovingRight)){
+            this.audioTurretRotating.play();
+        } else {
+            this.audioTurretRotating.pause();
+        }
+
+        super.update()
     }
 }
 

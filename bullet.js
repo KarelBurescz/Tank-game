@@ -8,6 +8,8 @@ class Bullet extends UiObject {
         this.direction = direction;
         this.speed = speed;
         this.owner = owner;
+        this.audioShooting = new Audio('tank-firing.mp3');
+        this.audioShooting.play();
     }
 
     collisionBox() {

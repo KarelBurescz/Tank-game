@@ -8,6 +8,7 @@ class Obstacle extends UiObject {
         this.wallImg.src = 'walls1.png'
         this.explodingSequence = 0;
         this.exploding = false;
+        this.audioExplode = new Audio('explosion.mp3')
     }
     draw() {
         let pt = this.ctx.createPattern(this.wallImg, 'repeat');
@@ -48,6 +49,9 @@ class Obstacle extends UiObject {
     }
 
     explode(){
+
+        this.audioExplode.play();
+
         if (this.exploding) return;
 
         this.exploding = true;
@@ -58,7 +62,7 @@ class Obstacle extends UiObject {
                 this.exploding = false;
                 super.explode();
             }
-        },100);
+        },80);
     }
 }
 
