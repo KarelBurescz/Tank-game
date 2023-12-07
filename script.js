@@ -48,8 +48,8 @@ function drawFogOfWar() {
 let myWall3 = new Obstacle(ctx, 100, 400, 150, 30, 100, '')
 let myWall2 = new Obstacle(ctx, 300, 100, 30, 100, 100, '')
 let myWall = new Obstacle(ctx, 100, 200, 100, 30, 100, '');
-let mySolider = new Solider(ctx, backgroundCTX, 50, 250, 51, 50, 180, 1, 180, 100);
-let mySolider1 = new Solider(ctx, backgroundCTX, 300, 250, 51, 50, 360, 1, 360, 100);
+let mySolider = new Solider(ctx, backgroundCTX, 50, 250, 51, 50, 180, 0.7, 180, 100);
+let mySolider1 = new Solider(ctx, backgroundCTX, 300, 250, 51, 50, 360, 0.7, 360, 100);
 UiObjects.push(mySolider);
 UiObjects.push(myWall);
 UiObjects.push(myWall2);
@@ -137,6 +137,18 @@ window.addEventListener('keydown', function (e) {
     }
 })
 
+window.addEventListener('keydown', (e) => {
+    if(e.key === 'r'){
+        mySolider.speedBoost = true;
+    }
+})
+
+
+window.addEventListener('keyup', (e) => {
+    if(e.key === 'r'){
+        mySolider.speedBoost = false;
+    }
+})
 
 function handleUiObjects() {
     UiObjects.forEach(function (o) {

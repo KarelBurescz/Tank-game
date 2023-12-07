@@ -31,6 +31,7 @@ class Solider extends UiObject {
         this.audioEmptyGunShot = new Audio('empty-gun-shot.mp3');
         // this.firingAudio = false;
         this.bulletsLoaded = 5;
+        this.speedBoost = false;
     }
 
     collisionBox() {
@@ -104,8 +105,14 @@ class Solider extends UiObject {
         const oldX = this.x
         const oldY = this.y
 
-        this.x += dir * Math.cos(this.direction) * this.speed;
-        this.y += dir * Math.sin(this.direction) * this.speed;
+        let speed = this.speed;
+
+        if (this.speedBoost) {
+            speed += 1;
+        }
+
+        this.x += dir * Math.cos(this.direction) * speed;
+        this.y += dir * Math.sin(this.direction) * speed;
 
         let collide = false;
         UiObjects.forEach(
@@ -162,13 +169,13 @@ class Solider extends UiObject {
 
         this.bulletsLoaded--;
 
-        if (this.bulletsLoaded < 1){
+        if (this.bulletsLoaded < 1) {
             setTimeout(
                 () => {
                     this.audioReloading.play();
                     this.bulletsLoaded = 5;
-                },3000
-            ) 
+                }, 3000
+            )
         }
 
         UiObjects.push(myBullet)
@@ -179,17 +186,8 @@ class Solider extends UiObject {
         // let dy = this.y - mouse.y;
         // this.gunDirection = Math.atan2(-dy, -dx);
 
-        // if (this.firingAudio === true) {
-        //     this.audioShooting.play();
-        // } else {
-        //     this.audioShooting.pause();
-        // }
-
         if (this.movingFoward === true) {
             this.moveFront();
-            this.audioMoving.play()
-        } else {
-            this.audioMoving.pause()
         }
         if (this.movingBack === true) {
             this.moveBack();
@@ -199,9 +197,6 @@ class Solider extends UiObject {
         }
         if (this.rotatingLeft === true) {
             this.direction -= this.speed * Math.PI / 120;
-            this.audioTurretRotating.play();
-        } else {
-            this.audioTurretRotating.pause();
         }
         if (this.turretMovingLeft) {
             this.gunDirection -= 0.03;
@@ -210,10 +205,19 @@ class Solider extends UiObject {
             this.gunDirection += 0.03;
         }
 
-        if ((this.turretMovingLeft) || (this.turretMovingRight)){
+        if ((this.turretMovingLeft) || (this.turretMovingRight)) {
             this.audioTurretRotating.play();
         } else {
             this.audioTurretRotating.pause();
+        }
+
+        if ((this.movingFoward) ||
+            (this.movingBack) ||
+            (this.rotatingLeft) ||
+            (this.rotatingRight)) {
+                this.audioMoving.play();
+        }else {
+            this.audioMoving.pause();
         }
 
         super.update()
