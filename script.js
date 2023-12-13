@@ -65,6 +65,22 @@ let myCamera1 = new Camera(0, 0, canvas1, null);
 
 let myGame = new Game(canvasBackground, backgroundCTX, UiObjects);
 
+
+for (let i = 0; i <= 100; i++) {
+    const myX = (Math.random() * 5000) + 40;
+    const myY = (Math.random() * 5000) + 40;
+    
+    let myWidth = 30
+    let myHeight = (Math.random() * 230) + 70
+
+    if (Math.random() > 0.5) {
+        myWidth, myHeight = myHeight, myWidth
+    }
+
+    UiObjects.push(new Obstacle(myGame, myX, myY, myWidth, myHeight, 100, ''))    
+}
+
+
 let myTree2 = new Tree(myGame, 2250, 2280, 20, 40, 100);
 let myTree1 = new Tree(myGame, 2700, 2500, 30, 40, 100);
 let myTree = new Tree(myGame, 2400, 2900, 50, 50, 100);
@@ -224,7 +240,7 @@ function animate() {
     //Take the background canvas, cut out the area needed for the
     //camera, and draw it to the main canvas at position 0,0.
     myCamera.ctx.drawImage(
-        myGame.bgcanvas, 
+        myGame.bgcanvas,
         //source rectangle:
         myCamera.x, 
         myCamera.y, 
