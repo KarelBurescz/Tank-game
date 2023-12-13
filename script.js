@@ -7,13 +7,19 @@ import { Camera } from "./camera.js";
 import { Tree } from "./tree.js";
 
 const canvas = document.getElementById('canvas');
-const ctx = canvas.getContext('2d');
+// const ctx = canvas.getContext('2d');
+
+const canvas1 = document.getElementById('canvas1');
+// const ctx1 = canvas1.getContext('2d')
 
 const canvasBackground = document.getElementById('canvas-background');
 const backgroundCTX = canvasBackground.getContext('2d');
 
-canvas.width = window.innerWidth;
+canvas.width = window.innerWidth/2;
 canvas.height = window.innerHeight;
+
+canvas1.width = window.innerWidth/2;
+canvas1.height = window.innerHeight;
 
 canvasBackground.width = 5000;
 canvasBackground.height = 5000;
@@ -24,8 +30,14 @@ canvas.addEventListener('mousemove', function (event) {
 });
 
 window.addEventListener('resize', function () {
-    canvas.width = window.innerWidth;
+    canvas.width = window.innerWidth/2;
     canvas.height = window.innerHeight;
+    canvas1.width = window.innerWidth/2;
+    canvas1.height = window.innerHeight;
+    myCamera.w = canvas.width/2;
+    myCamera.h = canvas.height;
+    myCamera1.w = canvas1.width/2;
+    myCamera1.h = canvas1.height;
     canvasBackground.width = window.innerWidth;
     canvasBackground.height = window.innerHeight;
 });
@@ -48,21 +60,26 @@ function drawFogOfWar() {
     fogContext.globalCompositeOperation = 'source-over';
 }
 
-let myCamera = new Camera(0, 0, canvas.width, canvas.height, null);
-let myGame = new Game(myCamera, canvasBackground, ctx, backgroundCTX, UiObjects);
+let myCamera = new Camera(0, 0, canvas, null);
+let myCamera1 = new Camera(0, 0, canvas1, null);
 
-let myTree2 = new Tree(myGame, 50, 80, 20, 40, 100);
-let myTree1 = new Tree(myGame, 500, 300, 30, 40, 100);
-let myTree = new Tree(myGame, 200, 700, 50, 50, 100);
-let myWall3 = new Obstacle(myGame, 400, 600, 150, 30, 100, '');
-let myWall2 = new Obstacle(myGame, 100, 400, 150, 30, 100, '');
-let myWall1 = new Obstacle(myGame, 300, 100, 30, 100, 100, '');
-let myWall = new Obstacle(myGame, 100, 200, 100, 30, 100, '');
-let mySolider = new Solider(myGame, 400, 500, 51, 50, 180, 0.7, 180, 100);
-let mySolider1 = new Solider(myGame, 300, 250, 51, 50, 360, 0.7, 360, 100);
+let myGame = new Game(canvasBackground, backgroundCTX, UiObjects);
+
+let myTree2 = new Tree(myGame, 2250, 2280, 20, 40, 100);
+let myTree1 = new Tree(myGame, 2700, 2500, 30, 40, 100);
+let myTree = new Tree(myGame, 2400, 2900, 50, 50, 100);
+let myWall3 = new Obstacle(myGame, 2600, 2800, 150, 30, 100, '');
+let myWall2 = new Obstacle(myGame, 2300, 2600, 150, 30, 100, '');
+let myWall1 = new Obstacle(myGame, 2500, 2300, 30, 100, 100, '');
+let myWall = new Obstacle(myGame, 2300, 2400, 100, 30, 100, '');
+let mySolider = new Solider(myGame, 2600, 2400, 51, 50, 180, 0.7, 180, 100);
+let mySolider1 = new Solider(myGame, 2800, 2850, 51, 50, 360, 0.7, 360, 100);
 
 myCamera.followedObject = mySolider;
+myCamera1.followedObject = mySolider1;
+
 myCamera.update();
+myCamera1.update();
 
 UiObjects.push(myTree2);
 UiObjects.push(myWall3);
@@ -172,10 +189,12 @@ function handleUiObjects() {
     UiObjects.forEach(function (o) {
         o.update();
     })
-    myGame.camera.update();
+    myCamera.update();
+    myCamera1.update();
     
     UiObjects.forEach(function (o) {
-        o.draw();
+        o.draw(myCamera);
+        o.draw(myCamera1);
     })
 }
 
@@ -186,21 +205,35 @@ myGame.bgctx.fillRect(0,0, canvasBackground.width, canvasBackground.height);
 let counter = 0;
 function animate() {
     
-    ctx.clearRect(0, 0, canvas.width, canvas.height)
+    myCamera.ctx.clearRect(0, 0, canvas.width, canvas.height)
+    myCamera1.ctx.clearRect(0, 0, canvas.width, canvas.height)
 
     //Take the background canvas, cut out the area needed for the
     //camera, and draw it to the main canvas at position 0,0.
-    let res = ctx.drawImage(
+    myCamera.ctx.drawImage(
         myGame.bgcanvas, 
         //source rectangle:
-        myGame.camera.x, 
-        myGame.camera.y, 
-        canvas.width,
-        canvas.height,
+        myCamera.x, 
+        myCamera.y, 
+        myCamera.w,
+        myCamera.h,
         //destination rectangle:
         0,0, 
-        canvas.width,
-        canvas.height
+        myCamera.w,
+        myCamera.h
+    );
+
+    myCamera1.ctx.drawImage(
+        myGame.bgcanvas, 
+        //source rectangle:
+        myCamera1.x, 
+        myCamera1.y, 
+        myCamera1.w,
+        myCamera1.h,
+        //destination rectangle:
+        0,0, 
+        myCamera1.w,
+        myCamera1.h
     );
 
     handleUiObjects();
@@ -221,4 +254,4 @@ function animate() {
     requestAnimationFrame(animate)
 }
 
-animate()
+animate();

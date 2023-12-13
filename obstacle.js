@@ -10,42 +10,42 @@ class Obstacle extends UiObject {
         this.exploding = false;
         this.audioExplode = new Audio('explosion.mp3')
     }
-    draw() {
+    draw(camera) {
         
-        let co = this.localCoords();
+        let co = this.localCoords(camera);
 
-        let pt = this.ctx.createPattern(this.wallImg, 'repeat');
-        this.ctx.fillStyle = '#B26336';
+        // let pt = this.ctx.createPattern(this.wallImg, 'repeat');
+        camera.ctx.fillStyle = '#B26336';
         
         if(this.height > this.width){
-            this.ctx.save()
-            this.ctx.translate(co.x + this.width/2, co.y + this.height/2)
-            this.ctx.rotate(90 * Math.PI / 180)
-            this.ctx.fillStyle = '#B26336';
-            this.ctx.fillRect(
+            camera.ctx.save()
+            camera.ctx.translate(co.x + this.width/2, co.y + this.height/2)
+            camera.ctx.rotate(90 * Math.PI / 180)
+            camera.ctx.fillStyle = '#B26336';
+            camera.ctx.fillRect(
               -this.height/2, 
               -this.width/2,
               this.height,
               this.width
             )
 
-            this.ctx.restore();
+            camera.ctx.restore();
         } else {
-            this.ctx.fillRect(co.x, co.y, this.width, this.height);
+            camera.ctx.fillRect(co.x, co.y, this.width, this.height);
         }
 
         if(this.exploding === true){
-            this.drawExplosion()
+            this.drawExplosion(camera)
         }
 
-        super.draw()
+        super.draw(camera)
     }
 
-    drawExplosion(){
-        let lc = this.localCoords();
+    drawExplosion(camera){
+        let lc = this.localCoords(camera);
         let explodeImg = new Image();
         explodeImg.src = `./Explode-sequence/explode-sequence${this.explodingSequence}.png`
-        this.ctx.drawImage(
+        camera.ctx.drawImage(
             explodeImg, 
             lc.x + this.width/2 - explodeImg.width/2, 
             lc.y + this.height/2 - explodeImg.height/2

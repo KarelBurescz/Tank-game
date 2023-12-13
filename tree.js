@@ -13,18 +13,18 @@ class Tree extends UiObject{
         this.hp = hp;
     }
 
-    draw() {
+    draw(camera) {
 
-        let co = this.localCoords();
+        let co = this.localCoords(camera);
 
-        this.ctx.beginPath();
-        this.ctx.arc(co.x, co.y, this.width, 0, 2 * Math.PI);
-        this.ctx.fillStyle = '#2a7e19';
-        this.ctx.fill()
+        camera.ctx.beginPath();
+        camera.ctx.arc(co.x, co.y, this.width, 0, 2 * Math.PI);
+        camera.ctx.fillStyle = '#2a7e19';
+        camera.ctx.fill()
 
         // this.ctx.arc(this.x, this.y, 50, 0, 0)
         // this.ctx.fillStyle = '#2a7e19'
-        super.draw()
+        super.draw(camera)
     }
     
     collisionBox() {

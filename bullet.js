@@ -21,19 +21,19 @@ class Bullet extends UiObject {
         }
     }
 
-    draw() {
-        let lc = this.localCoords();
+    draw(camera) {
+        let lc = this.localCoords(camera);
 
-        this.ctx.fillStyle = '#E5B80B';
-        this.ctx.beginPath();
-        this.ctx.arc(
+        camera.ctx.fillStyle = '#E5B80B';
+        camera.ctx.beginPath();
+        camera.ctx.arc(
             lc.x,
             lc.y,
             this.width / 2,
             0, Math.PI * 2
         );
-        this.ctx.fill();
-        super.draw()
+        camera.ctx.fill();
+        super.draw(camera)
     }
 d
     update() {

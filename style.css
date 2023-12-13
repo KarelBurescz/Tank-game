@@ -9,6 +9,7 @@
 
 #canvas-container canvas {
     border: 1px green;
+    border-right:1px black solid ;
     /* position: absolute;
     top: 0px;
     left: 0px; */
@@ -16,4 +17,9 @@
 
 #canvas-background {
     display: none;
+}
+
+#canvas-container {
+    display: flex;
+    flex-direction: row;
 }

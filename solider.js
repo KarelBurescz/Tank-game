@@ -51,22 +51,22 @@ class Solider extends UiObject {
             y: this.y
         }
     }
-    draw() {
+    draw(camera) {
 
-        let co = this.localCoords();
+        let co = this.localCoords(camera);
 
         const center = this.center()
-        this.ctx.save()
-        this.ctx.translate(co.x, co.y)
-        this.ctx.rotate(this.direction)
-        this.ctx.drawImage(this.image, -this.width / 2, -this.height / 2, this.width, this.height)
-        this.ctx.restore()
+        camera.ctx.save()
+        camera.ctx.translate(co.x, co.y)
+        camera.ctx.rotate(this.direction)
+        camera.ctx.drawImage(this.image, -this.width / 2, -this.height / 2, this.width, this.height)
+        camera.ctx.restore()
 
 
-        this.ctx.save()
-        this.ctx.translate(co.x, co.y)
-        this.ctx.rotate(this.direction + this.gunDirection)
-        this.ctx.drawImage(
+        camera.ctx.save()
+        camera.ctx.translate(co.x, co.y)
+        camera.ctx.rotate(this.direction + this.gunDirection)
+        camera.ctx.drawImage(
             this.gunImage,
             -this.width / 2,
             -this.height / 2,
@@ -74,36 +74,35 @@ class Solider extends UiObject {
             this.height,
 
         )
-        this.ctx.restore()
+        camera.ctx.restore()
 
         //Draw a debug geometry: collision box, direction and aim direction.
         if (Config.debug) {
             let cbx = this.collisionBox()
-            this.ctx.strokeStyle = 'green'
-            this.ctx.strokeRect(cbx.x - this.game.camera.x, cbx.y - this.game.camera.y, cbx.w, cbx.h)
+            camera.ctx.strokeStyle = 'green'
+            camera.ctx.strokeRect(cbx.x - camera.x, cbx.y - camera.y, cbx.w, cbx.h)
 
             let px = Math.cos(this.direction) * 50;
             let py = Math.sin(this.direction) * 50;
 
-            this.ctx.beginPath()
-            this.ctx.strokeStyle = 'blue'
-            this.ctx.moveTo(co.x, co.y)
-            this.ctx.lineTo(co.x + px, co.y + py)
-            this.ctx.stroke()
+            camera.ctx.beginPath()
+            camera.ctx.strokeStyle = 'blue'
+            camera.ctx.moveTo(co.x, co.y)
+            camera.ctx.lineTo(co.x + px, co.y + py)
+            camera.ctx.stroke()
 
             let gx = Math.cos(this.direction + this.gunDirection) * 70;
             let gy = Math.sin(this.direction + this.gunDirection) * 70;
 
-            this.ctx.beginPath()
-            this.ctx.strokeStyle = 'red'
-            this.ctx.moveTo(co.x, co.y)
-            this.ctx.lineTo(co.x + gx, co.y + gy)
-            this.ctx.stroke()
+            camera.ctx.beginPath()
+            camera.ctx.strokeStyle = 'red'
+            camera.ctx.moveTo(co.x, co.y)
+            camera.ctx.lineTo(co.x + gx, co.y + gy)
+            camera.ctx.stroke()
         }
     }
 
     drawTracks(x, y){
-        let co = this.localCoords();
         
         const center = this.center()
         this.bgCtx.save()

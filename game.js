@@ -1,8 +1,6 @@
 class Game {
-    constructor(camera, bgcanvas, ctx, bgctx, Uiobjects, ) {
-        this.camera = camera;
+    constructor(bgcanvas, bgctx, Uiobjects, ) {
         this.bgcanvas = bgcanvas;
-        this.ctx = ctx;
         this.bgctx = bgctx;
         this.Uiobjects = Uiobjects;
     }

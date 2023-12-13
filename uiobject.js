@@ -13,14 +13,14 @@ class UiObject {
         this.audioHit = new Audio('sword-hit.mp3')
     }
     update() {
-        if(this.hp <= 0){
+        if (this.hp <= 0) {
             this.explode()
         }
     }
 
-    explode(){
+    explode() {
         const i = UiObjects.indexOf(this);
-        if (i !== -1 ) {
+        if (i !== -1) {
             UiObjects.splice(i, 1);
         }
     }
@@ -35,18 +35,18 @@ class UiObject {
 
     }
 
-    draw() {
+    draw(camera) {
 
 
         if (Config.debug === true) {
-            this.ctx.lineWidth = 1;
-            this.ctx.strokeStyle = 'green'
+            camera.ctx.lineWidth = 1;
+            camera.ctx.strokeStyle = 'green'
 
             const cbx = this.collisionBox()
 
-            this.ctx.strokeRect(
-                cbx.x - this.game.camera.x,
-                cbx.y - this.game.camera.y,
+            camera.ctx.strokeRect(
+                cbx.x - camera.x,
+                cbx.y - camera.y,
                 cbx.w,
                 cbx.h
             )
@@ -77,16 +77,18 @@ class UiObject {
         return true;
     }
 
-    localCoords() {
+    localCoords(camera) {
         return {
-            y : this.y - this.game.camera.y,
-            x : this.x - this.game.camera.x,
+            y: this.y -
+                camera.y,
+            x: this.x -
+                camera.x,
             // x : this.x,
             // y : this.y
-    
+
         }
     }
-    
+
 }
 
 export { UiObject }
