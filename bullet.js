@@ -2,8 +2,8 @@ import { UiObject } from "./uiobject.js";
 import { UiObjects } from "./arrayuiobjects.js";
 
 class Bullet extends UiObject {
-    constructor(ctx, x, y, width, height, speed, direction, damage, owner) {
-        super(ctx, x, y, width, height, 1000)
+    constructor(game, x, y, width, height, speed, direction, damage, owner) {
+        super(game, x, y, width, height, 1000)
         this.damage = damage;
         this.direction = direction;
         this.speed = speed;
@@ -22,18 +22,20 @@ class Bullet extends UiObject {
     }
 
     draw() {
+        let lc = this.localCoords();
+
         this.ctx.fillStyle = '#E5B80B';
         this.ctx.beginPath();
         this.ctx.arc(
-            this.x,
-            this.y,
+            lc.x,
+            lc.y,
             this.width / 2,
             0, Math.PI * 2
         );
         this.ctx.fill();
         super.draw()
     }
-
+d
     update() {
         this.x += this.speed * Math.cos(this.direction)
         this.y += this.speed * Math.sin(this.direction)
@@ -55,6 +57,7 @@ class Bullet extends UiObject {
 
         if (collide === true) {
             UiObjects.splice(myIndex, 1)
+            this.audioHit.play();
         }
     }
 }

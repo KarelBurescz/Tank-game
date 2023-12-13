@@ -1,8 +1,8 @@
 import { UiObject } from "./uiobject.js";
 
 class Obstacle extends UiObject {
-    constructor(ctx, x, y, width, height, hp, color) {
-        super(ctx, x, y, width, height, hp)
+    constructor(game, x, y, width, height, hp, color) {
+        super(game, x, y, width, height, hp)
         this.color = color;
         this.wallImg = new Image();
         this.wallImg.src = 'walls1.png'
@@ -11,12 +11,15 @@ class Obstacle extends UiObject {
         this.audioExplode = new Audio('explosion.mp3')
     }
     draw() {
+
+        let co = this.localCoords();
+
         let pt = this.ctx.createPattern(this.wallImg, 'repeat');
         this.ctx.fillStyle = pt;
         
         if(this.height > this.width){
             this.ctx.save()
-            this.ctx.translate(this.x + this.width/2, this.y + this.height/2)
+            this.ctx.translate(co.x + this.width/2, co.y + this.height/2)
             this.ctx.rotate(90 * Math.PI / 180)
             this.ctx.fillStyle = pt;
             this.ctx.fillRect(
@@ -28,7 +31,7 @@ class Obstacle extends UiObject {
 
             this.ctx.restore();
         } else {
-            this.ctx.fillRect(this.x, this.y, this.width, this.height);
+            this.ctx.fillRect(co.x, co.y, this.width, this.height);
         }
 
         if(this.exploding === true){
@@ -39,12 +42,13 @@ class Obstacle extends UiObject {
     }
 
     drawExplosion(){
+        let lc = this.localCoords();
         let explodeImg = new Image();
         explodeImg.src = `./Explode-sequence/explode-sequence${this.explodingSequence}.png`
         this.ctx.drawImage(
             explodeImg, 
-            this.x + this.width/2 - explodeImg.width/2, 
-            this.y + this.height/2 - explodeImg.height/2
+            lc.x + this.width/2 - explodeImg.width/2, 
+            lc.y + this.height/2 - explodeImg.height/2
         )
     }
 

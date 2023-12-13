@@ -2,13 +2,15 @@ import { Config } from "./config.js";
 import { UiObjects } from "./arrayuiobjects.js";
 
 class UiObject {
-    constructor(ctx, x, y, width, height, hp) {
+    constructor(game, x, y, width, height, hp) {
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
-        this.ctx = ctx;
+        this.ctx = game.ctx;
+        this.game = game;
         this.hp = hp;
+        this.audioHit = new Audio('sword-hit.mp3')
     }
     update() {
         if(this.hp <= 0){
@@ -74,6 +76,17 @@ class UiObject {
 
         return true;
     }
+
+    localCoords() {
+        return {
+            y : this.y - this.game.camera.y,
+            x : this.x - this.game.camera.x,
+            // x : this.x,
+            // y : this.y
+    
+        }
+    }
+    
 }
 
 export { UiObject }

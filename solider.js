@@ -6,8 +6,8 @@ import { UiObjects } from "./arrayuiobjects.js";
 
 
 class Solider extends UiObject {
-    constructor(ctx, bgCtx, x, y, width, height, direction, speed, gunDirection, hp) {
-        super(ctx, x, y, width, height, hp)
+    constructor(game, x, y, width, height, direction, speed, gunDirection, hp) {
+        super(game, x, y, width, height, hp)
         this.direction = direction;
         this.speed = speed;
         // this.gunDirection = gunDirection;
@@ -19,7 +19,7 @@ class Solider extends UiObject {
         this.rotatingRight = false;
         this.movingBack = false;
         this.rotatingLeft = false;
-        this.bgCtx = bgCtx;
+        this.bgCtx = game.bgctx;
         this.tracksImg = new Image();
         this.tracksImg.src = 'tracks.png'
         this.gunDirection = 0;
@@ -32,6 +32,8 @@ class Solider extends UiObject {
         // this.firingAudio = false;
         this.bulletsLoaded = 5;
         this.speedBoost = false;
+        this.speedBoostCouter = 50;
+        this.collingDown = false;
     }
 
     collisionBox() {
@@ -43,7 +45,6 @@ class Solider extends UiObject {
         }
     }
 
-
     center() {
         return {
             x: this.x,
@@ -52,16 +53,18 @@ class Solider extends UiObject {
     }
     draw() {
 
+        let co = this.localCoords();
+
         const center = this.center()
         this.ctx.save()
-        this.ctx.translate(center.x, center.y)
+        this.ctx.translate(co.x, co.y)
         this.ctx.rotate(this.direction)
         this.ctx.drawImage(this.image, -this.width / 2, -this.height / 2, this.width, this.height)
         this.ctx.restore()
 
 
         this.ctx.save()
-        this.ctx.translate(center.x, center.y)
+        this.ctx.translate(co.x, co.y)
         this.ctx.rotate(this.direction + this.gunDirection)
         this.ctx.drawImage(
             this.gunImage,
@@ -84,8 +87,8 @@ class Solider extends UiObject {
 
             this.ctx.beginPath()
             this.ctx.strokeStyle = 'blue'
-            this.ctx.moveTo(center.x, center.y)
-            this.ctx.lineTo(center.x + px, center.y + py)
+            this.ctx.moveTo(co.x, co.y)
+            this.ctx.lineTo(co.x + px, co.y + py)
             this.ctx.stroke()
 
             let gx = Math.cos(this.direction + this.gunDirection) * 70;
@@ -93,13 +96,26 @@ class Solider extends UiObject {
 
             this.ctx.beginPath()
             this.ctx.strokeStyle = 'red'
-            this.ctx.moveTo(center.x, center.y)
-            this.ctx.lineTo(center.x + gx, center.y + gy)
+            this.ctx.moveTo(co.x, co.y)
+            this.ctx.lineTo(co.x + gx, co.y + gy)
             this.ctx.stroke()
         }
     }
 
-
+    drawTracks(x, y){
+        let co = this.localCoords();
+        
+        const center = this.center()
+        this.bgCtx.save()
+        this.bgCtx.translate(this.x, this.y)
+        this.bgCtx.rotate(this.direction)
+        this.bgCtx.drawImage(this.tracksImg,
+            -this.width / 2,
+            -this.height / 2,
+            this.width - 15,
+            this.height)
+        this.bgCtx.restore()
+    }
 
     moveFront(dir = 1) {
         const oldX = this.x
@@ -109,6 +125,23 @@ class Solider extends UiObject {
 
         if (this.speedBoost) {
             speed += 1;
+            this.speedBoostCouter--;
+        }
+
+        if (this.speedBoostCouter <= 0) {
+            speed = 0;
+
+            if (this.collingDown === false) {
+                setTimeout(
+                    () => {
+                        this.speedBoostCouter = 1500;
+                        this.collingDown = false;
+                        this.audioMoving.pause();
+                    }, 3000
+                )
+            }
+
+            this.collingDown = true;
         }
 
         this.x += dir * Math.cos(this.direction) * speed;
@@ -127,21 +160,11 @@ class Solider extends UiObject {
             this.x = oldX
             this.y = oldY
             console.log('collide')
+            this.audioHit.play();
         }
 
         // Draw tracks of tank
-        const center = this.center()
-        this.bgCtx.save()
-        this.bgCtx.translate(center.x, center.y)
-        this.bgCtx.rotate(this.direction)
-        this.bgCtx.drawImage(this.tracksImg,
-            -this.width / 2,
-            -this.height / 2,
-            this.width - 15,
-            this.height)
-        this.bgCtx.restore()
-
-
+        this.drawTracks(oldX, oldY);
     }
 
     moveBack() {
@@ -156,7 +179,7 @@ class Solider extends UiObject {
         }
 
         let myBullet = new Bullet(
-            this.ctx,
+            this.game,
             this.x,
             this.y,
             8,
@@ -215,8 +238,8 @@ class Solider extends UiObject {
             (this.movingBack) ||
             (this.rotatingLeft) ||
             (this.rotatingRight)) {
-                this.audioMoving.play();
-        }else {
+            this.audioMoving.play();
+        } else {
             this.audioMoving.pause();
         }
 

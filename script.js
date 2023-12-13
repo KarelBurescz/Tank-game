@@ -2,21 +2,25 @@ import { Solider } from "./solider.js";
 import { Obstacle } from "./obstacle.js";
 import { mouse } from "./mouse.js";
 import { UiObjects } from "./arrayuiobjects.js";
+import { Game } from "./game.js";
+import { Camera } from "./camera.js";
 
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
+
 const canvasBackground = document.getElementById('canvas-background');
 const backgroundCTX = canvasBackground.getContext('2d');
+
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
-canvasBackground.width = window.innerWidth;
-canvasBackground.height = window.innerHeight;
+
+canvasBackground.width = 5000;
+canvasBackground.height = 5000;
 
 canvas.addEventListener('mousemove', function (event) {
     mouse.x = event.x;
     mouse.y = event.y;
 });
-
 
 window.addEventListener('resize', function () {
     canvas.width = window.innerWidth;
@@ -25,17 +29,15 @@ window.addEventListener('resize', function () {
     canvasBackground.height = window.innerHeight;
 });
 
-
-
 function drawFogOfWar() {
     fogContext.fillStyle = 'black';
     fogContext.fillRect(0, 0, canvas1.width, canvas1.height);
-
+    
     // Create a radial gradient
     var gradient = fogContext.createRadialGradient(player.x, player.y, 0, player.x, player.y, visibilityRadius);
     gradient.addColorStop(0, 'rgba(0, 0, 0, 0)');  // Fully transparent in the center
     gradient.addColorStop(1, 'rgba(0, 0, 0, 1)');  // Fully opaque at the edges
-
+    
     // Apply the gradient
     fogContext.globalCompositeOperation = 'destination-out';
     fogContext.fillStyle = gradient;
@@ -45,11 +47,18 @@ function drawFogOfWar() {
     fogContext.globalCompositeOperation = 'source-over';
 }
 
-let myWall3 = new Obstacle(ctx, 100, 400, 150, 30, 100, '')
-let myWall2 = new Obstacle(ctx, 300, 100, 30, 100, 100, '')
-let myWall = new Obstacle(ctx, 100, 200, 100, 30, 100, '');
-let mySolider = new Solider(ctx, backgroundCTX, 50, 250, 51, 50, 180, 0.7, 180, 100);
-let mySolider1 = new Solider(ctx, backgroundCTX, 300, 250, 51, 50, 360, 0.7, 360, 100);
+let myCamera = new Camera(0, 0, canvas.width, canvas.height, null);
+let myGame = new Game(myCamera, canvasBackground, ctx, backgroundCTX, UiObjects);
+
+let myWall3 = new Obstacle(myGame, 100, 400, 150, 30, 100, '')
+let myWall2 = new Obstacle(myGame, 300, 100, 30, 100, 100, '')
+let myWall = new Obstacle(myGame, 100, 200, 100, 30, 100, '');
+let mySolider = new Solider(myGame, 400, 500, 51, 50, 180, 0.7, 180, 100);
+let mySolider1 = new Solider(myGame, 300, 250, 51, 50, 360, 0.7, 360, 100);
+
+myCamera.followedObject = mySolider;
+myCamera.update();
+
 UiObjects.push(mySolider);
 UiObjects.push(myWall);
 UiObjects.push(myWall2);
@@ -153,21 +162,54 @@ window.addEventListener('keyup', (e) => {
 function handleUiObjects() {
     UiObjects.forEach(function (o) {
         o.update();
+    })
+    myGame.camera.update();
+    
+    UiObjects.forEach(function (o) {
         o.draw();
     })
 }
 
+myGame.bgctx.fillStyle = 'rgba(200,255,90,1)';
+myGame.bgctx.fillRect(0,0, canvasBackground.width, canvasBackground.height);
+
+
 let counter = 0;
 function animate() {
+    
+    ctx.clearRect(0, 0, canvas.width, canvas.height)
+
+    //Take the background canvas, cut out the area needed for the
+    //camera, and draw it to the main canvas at position 0,0.
+    let res = ctx.drawImage(
+        myGame.bgcanvas, 
+        //source rectangle:
+        myGame.camera.x, 
+        myGame.camera.y, 
+        canvas.width,
+        canvas.height,
+        //destination rectangle:
+        0,0, 
+        canvas.width,
+        canvas.height
+    );
+
+    handleUiObjects();
 
     if (counter > 10) {
-        backgroundCTX.fillStyle = 'rgba(200,255,90,0.05)'
-        backgroundCTX.fillRect(0, 0, canvasBackground.width, canvasBackground.height)
+        myGame.bgctx.fillStyle = 'rgba(200,255,90,0.05)'
+        myGame.bgctx.fillRect(
+            0, 
+            0, 
+            myGame.bgcanvas.width, 
+            myGame.bgcanvas.height)
+
         counter = 0
     }
+
     counter++
-    ctx.clearRect(0, 0, canvas.width, canvas.height)
-    handleUiObjects();
+
     requestAnimationFrame(animate)
 }
+
 animate()

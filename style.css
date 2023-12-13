@@ -4,7 +4,7 @@
 }
 
 body{
-    cursor: crosshair;
+
 }
 
 #canvas-container {
@@ -13,7 +13,11 @@ body{
 
 #canvas-container canvas {
     border: 1px green;
-    position: absolute;
+    /* position: absolute;
     top: 0px;
-    left: 0px;
+    left: 0px; */
+}
+
+#canvas-background {
+    display: none;
 }
