@@ -11,17 +11,17 @@ class Obstacle extends UiObject {
         this.audioExplode = new Audio('explosion.mp3')
     }
     draw() {
-
+        
         let co = this.localCoords();
 
         let pt = this.ctx.createPattern(this.wallImg, 'repeat');
-        this.ctx.fillStyle = pt;
+        this.ctx.fillStyle = '#B26336';
         
         if(this.height > this.width){
             this.ctx.save()
             this.ctx.translate(co.x + this.width/2, co.y + this.height/2)
             this.ctx.rotate(90 * Math.PI / 180)
-            this.ctx.fillStyle = pt;
+            this.ctx.fillStyle = '#B26336';
             this.ctx.fillRect(
               -this.height/2, 
               -this.width/2,

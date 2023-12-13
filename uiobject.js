@@ -45,8 +45,8 @@ class UiObject {
             const cbx = this.collisionBox()
 
             this.ctx.strokeRect(
-                cbx.x,
-                cbx.y,
+                cbx.x - this.game.camera.x,
+                cbx.y - this.game.camera.y,
                 cbx.w,
                 cbx.h
             )

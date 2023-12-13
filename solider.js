@@ -80,7 +80,7 @@ class Solider extends UiObject {
         if (Config.debug) {
             let cbx = this.collisionBox()
             this.ctx.strokeStyle = 'green'
-            this.ctx.strokeRect(cbx.x, cbx.y, cbx.w, cbx.h)
+            this.ctx.strokeRect(cbx.x - this.game.camera.x, cbx.y - this.game.camera.y, cbx.w, cbx.h)
 
             let px = Math.cos(this.direction) * 50;
             let py = Math.sin(this.direction) * 50;
@@ -160,7 +160,6 @@ class Solider extends UiObject {
             this.x = oldX
             this.y = oldY
             console.log('collide')
-            this.audioHit.play();
         }
 
         // Draw tracks of tank

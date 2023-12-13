@@ -1,6 +1,6 @@
 
 const Config = {
-    debug: false
+    debug: true
 }
 
 export { Config }

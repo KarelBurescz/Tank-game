@@ -4,6 +4,7 @@ import { mouse } from "./mouse.js";
 import { UiObjects } from "./arrayuiobjects.js";
 import { Game } from "./game.js";
 import { Camera } from "./camera.js";
+import { Tree } from "./tree.js";
 
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
@@ -50,8 +51,12 @@ function drawFogOfWar() {
 let myCamera = new Camera(0, 0, canvas.width, canvas.height, null);
 let myGame = new Game(myCamera, canvasBackground, ctx, backgroundCTX, UiObjects);
 
-let myWall3 = new Obstacle(myGame, 100, 400, 150, 30, 100, '')
-let myWall2 = new Obstacle(myGame, 300, 100, 30, 100, 100, '')
+let myTree2 = new Tree(myGame, 50, 80, 20, 40, 100);
+let myTree1 = new Tree(myGame, 500, 300, 30, 40, 100);
+let myTree = new Tree(myGame, 200, 700, 50, 50, 100);
+let myWall3 = new Obstacle(myGame, 400, 600, 150, 30, 100, '');
+let myWall2 = new Obstacle(myGame, 100, 400, 150, 30, 100, '');
+let myWall1 = new Obstacle(myGame, 300, 100, 30, 100, 100, '');
 let myWall = new Obstacle(myGame, 100, 200, 100, 30, 100, '');
 let mySolider = new Solider(myGame, 400, 500, 51, 50, 180, 0.7, 180, 100);
 let mySolider1 = new Solider(myGame, 300, 250, 51, 50, 360, 0.7, 360, 100);
@@ -59,10 +64,14 @@ let mySolider1 = new Solider(myGame, 300, 250, 51, 50, 360, 0.7, 360, 100);
 myCamera.followedObject = mySolider;
 myCamera.update();
 
+UiObjects.push(myTree2);
+UiObjects.push(myWall3);
+UiObjects.push(myTree1);
+UiObjects.push(myTree);
 UiObjects.push(mySolider);
 UiObjects.push(myWall);
+UiObjects.push(myWall1);
 UiObjects.push(myWall2);
-UiObjects.push(myWall3);
 UiObjects.push(mySolider1);
 
 
