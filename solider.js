@@ -25,6 +25,7 @@ class Solider extends UiObject {
         this.gunDirection = 0;
         this.turretMovingRight = false;
         this.turretMovingLeft = false;
+        this.turretSpeed = 0.03;
         this.audioMoving = new Audio('tank-moving1.mp3');
         this.audioTurretRotating = new Audio('tank-turret-rotate.mp3');
         this.audioReloading = new Audio('tank-reload.mp3');
@@ -32,8 +33,12 @@ class Solider extends UiObject {
         // this.firingAudio = false;
         this.bulletsLoaded = 5;
         this.speedBoost = false;
-        this.speedBoostCouter = 50;
+        this.speedBoostCouter = 200;
         this.collingDown = false;
+        this.explodingSequence = 0;
+        this.exploding = false;
+        this.audioTankExplode = new Audio('tank-explode.mp3')
+        this.focusMode = false;
     }
 
     collisionBox() {
@@ -100,6 +105,10 @@ class Solider extends UiObject {
             camera.ctx.lineTo(co.x + gx, co.y + gy)
             camera.ctx.stroke()
         }
+
+        if(this.exploding === true){
+            this.drawExplosion(camera)
+        }
     }
 
     drawTracks(x, y){
@@ -133,10 +142,10 @@ class Solider extends UiObject {
             if (this.collingDown === false) {
                 setTimeout(
                     () => {
-                        this.speedBoostCouter = 1500;
+                        this.speedBoostCouter = 200;
                         this.collingDown = false;
                         this.audioMoving.pause();
-                    }, 3000
+                    }, 2000
                 )
             }
 
@@ -202,6 +211,32 @@ class Solider extends UiObject {
         UiObjects.push(myBullet)
     }
 
+    drawExplosion(camera){
+        let lc = this.localCoords(camera);
+        let explodeImg = new Image();
+        explodeImg.src = `./Explode-sequence/explode-sequence${this.explodingSequence}.png`
+        camera.ctx.drawImage(
+            explodeImg, 
+            lc.x - explodeImg.width/2, 
+            lc.y - explodeImg.height/2
+        )
+    }
+
+    explode(){
+        if (this.exploding) return;
+
+        this.exploding = true;
+        this.audioTankExplode.play();
+        let intId = setInterval(() => {
+            this.explodingSequence++;
+            if(this.explodingSequence > 8){
+                clearInterval(intId);
+                this.exploding = false;
+                super.explode();
+            }
+        },80);
+    }
+
     update() {
         // let dx = this.x - mouse.x;
         // let dy = this.y - mouse.y;
@@ -219,11 +254,16 @@ class Solider extends UiObject {
         if (this.rotatingLeft === true) {
             this.direction -= this.speed * Math.PI / 120;
         }
+        let ts = this.turretSpeed;
+
+        if (this.focusMode === true) {
+            ts = ts * 0.3;
+        }
         if (this.turretMovingLeft) {
-            this.gunDirection -= 0.03;
+            this.gunDirection -= ts;
         }
         if (this.turretMovingRight) {
-            this.gunDirection += 0.03;
+            this.gunDirection += ts;
         }
 
         if ((this.turretMovingLeft) || (this.turretMovingRight)) {

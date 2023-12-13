@@ -185,6 +185,19 @@ window.addEventListener('keyup', (e) => {
     }
 })
 
+window.addEventListener('keydown', (e) => {
+    if (e.key === 'x') {
+        mySolider.focusMode = true;
+    }
+})
+
+
+window.addEventListener('keyup', (e) => {
+    if (e.key === 'x') {
+        mySolider.focusMode = false;
+    }
+})
+
 function handleUiObjects() {
     UiObjects.forEach(function (o) {
         o.update();

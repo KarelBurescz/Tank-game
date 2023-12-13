@@ -14,7 +14,6 @@ class Camera {
     update() {
         this.x = this.followedObject.x - this.w / 2;
         this.y = this.followedObject.y - this.h / 2;
-        console.log(`Camera: ${this.x}, ${this.y}`)
     }
 }
 
