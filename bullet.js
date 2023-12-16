@@ -35,7 +35,7 @@ class Bullet extends UiObject {
         camera.ctx.fill();
         super.draw(camera)
     }
-d
+
     update() {
         this.x += this.speed * Math.cos(this.direction)
         this.y += this.speed * Math.sin(this.direction)

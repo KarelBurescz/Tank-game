@@ -34,12 +34,13 @@ class Solider extends UiObject {
         this.bulletsLoaded = 5;
         this.speedBoost = false;
         this.speedBoostCouter = 200;
-        this.collingDown = false;
+        this.coolingDown = false;
         this.explodingSequence = 0;
         this.exploding = false;
         this.audioTankExplode = new Audio('tank-explode.mp3')
         this.focusMode = false;
         this.playerDead = false;
+        this.audioCoolingDown = new Audio('tank-cooling-down.mp3')
     }
 
     collisionBox() {
@@ -139,18 +140,20 @@ class Solider extends UiObject {
 
         if (this.speedBoostCouter <= 0) {
             speed = 0;
+            this.audioCoolingDown.play();
 
-            if (this.collingDown === false) {
+            if (this.coolingDown === false) {
                 setTimeout(
                     () => {
                         this.speedBoostCouter = 200;
-                        this.collingDown = false;
+                        this.coolingDown = false;
                         this.audioMoving.pause();
+                        this.audioCoolingDown.pause();
                     }, 2000
                 )
             }
 
-            this.collingDown = true;
+            this.coolingDown = true;
         }
 
         this.x += dir * Math.cos(this.direction) * speed;
@@ -198,7 +201,7 @@ class Solider extends UiObject {
             8,
             5,
             this.direction + this.gunDirection,
-            25,
+            20,
             this
         );
 

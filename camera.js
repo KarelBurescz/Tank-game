@@ -24,7 +24,7 @@ class Camera {
         this.fogCtx.fillRect(0, 0, fog.width, fog.height);
 
         // Create a radial gradient
-        let gradient = this.ctx.createRadialGradient(this.w/2, this.h/2, 50, this.w/2, this.h/2, this.visibilityRadius);
+        let gradient = this.ctx.createRadialGradient(this.w / 2, this.h / 2, 50, this.w / 2, this.h / 2, this.visibilityRadius);
         gradient.addColorStop(0, 'rgba(0, 0, 0, 1)');  // Fully transparent in the center
         gradient.addColorStop(0.9, 'rgba(0, 0, 0, 1)');  // Fully transparent in the center
         gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');  // Fully opaque at the edges
@@ -34,8 +34,8 @@ class Camera {
         this.fogCtx.fillStyle = gradient;
         this.fogCtx.beginPath();
         this.fogCtx.arc(
-            this.w/2, 
-            this.h/2, 
+            this.w / 2,
+            this.h / 2,
             this.visibilityRadius, 0, Math.PI * 2);
         this.fogCtx.fill();
         this.fogCtx.globalCompositeOperation = 'source-over';
@@ -58,17 +58,43 @@ class Camera {
             this.h
         );
         this.drawFogOfWar()
-        this.drawHood();
+        this.drawHud();
     }
 
-    drawHood() {
-        this.fogCtx.beginPath()
-        this.fogCtx.fillStyle = 'rgba(1, 255, 50, 1)';
-        this.fogCtx.fillRect(5, 5, innerWidth/4, 40)
+    drawHud() {
 
-        this.fogCtx.beginPath();
-        this.fogCtx.strokeStyle = 'black';
-        this.fogCtx.strokeRect(5, 5, innerWidth/4,40)
+        const myWidth = 70;
+        const myHeight = 40;
+
+        let myX = 5;
+        let myY = 5;
+
+        const lives = this.followedObject.hp / 20;
+
+        for (let i = 0; i < 5; i++) {
+
+            this.fogCtx.beginPath();
+
+            if (i < lives) {
+                this.fogCtx.fillStyle = 'rgba(1, 255, 50, 1)';
+            } else {
+                this.fogCtx.fillStyle = 'rgba(255, 0, 0, 1)';
+            }
+
+            this.fogCtx.fillRect(myX, myY, myWidth, myHeight);
+
+            myX += myWidth + 3;
+
+        }
+
+        //     this.fogCtx.beginPath()
+        //     this.fogCtx.fillStyle = 'rgba(1, 255, 50, 1)';
+        //     this.fogCtx.fillRect(5, 5, 70, 40)
+
+        //     this.fogCtx.beginPath();
+        //     this.fogCtx.strokeStyle = 'black';
+        //     this.fogCtx.strokeRect(5, 5, innerWidth/4,40)
+
     }
 }
 
