@@ -12,14 +12,25 @@ const canvas = document.getElementById('canvas');
 const canvas1 = document.getElementById('canvas1');
 // const ctx1 = canvas1.getContext('2d')
 
+const fogCanvas = document.getElementById('fog');
+const fog1Canvas = document.getElementById('fog1');
+
+// const fogContext = fogCanvas.getContext('2d')
+
 const canvasBackground = document.getElementById('canvas-background');
 const backgroundCTX = canvasBackground.getContext('2d');
 
-canvas.width = window.innerWidth/2;
+canvas.width = window.innerWidth / 2;
 canvas.height = window.innerHeight;
 
-canvas1.width = window.innerWidth/2;
+canvas1.width = window.innerWidth / 2;
 canvas1.height = window.innerHeight;
+
+fogCanvas.width = canvas.width;
+fogCanvas.height = canvas.height;
+
+fog1Canvas.width = canvas1.width;
+fog1Canvas.height = canvas1.height;
 
 canvasBackground.width = 5000;
 canvasBackground.height = 5000;
@@ -30,66 +41,80 @@ canvas.addEventListener('mousemove', function (event) {
 });
 
 window.addEventListener('resize', function () {
-    canvas.width = window.innerWidth/2;
+    canvas.width = window.innerWidth / 2;
     canvas.height = window.innerHeight;
-    canvas1.width = window.innerWidth/2;
+    canvas1.width = window.innerWidth / 2;
     canvas1.height = window.innerHeight;
-    myCamera.w = canvas.width/2;
+    myCamera.w = canvas.width / 2;
     myCamera.h = canvas.height;
-    myCamera1.w = canvas1.width/2;
+    myCamera1.w = canvas1.width / 2;
     myCamera1.h = canvas1.height;
     canvasBackground.width = window.innerWidth;
     canvasBackground.height = window.innerHeight;
+    fogCanvas.width = canvas.width;
+    fogCanvas.height = canvas.height;
+    fog1Canvas.width = canvas.width;
+    fog1Canvas.height = canvas.height;
 });
 
-function drawFogOfWar() {
-    fogContext.fillStyle = 'black';
-    fogContext.fillRect(0, 0, canvas1.width, canvas1.height);
-    
-    // Create a radial gradient
-    var gradient = fogContext.createRadialGradient(player.x, player.y, 0, player.x, player.y, visibilityRadius);
-    gradient.addColorStop(0, 'rgba(0, 0, 0, 0)');  // Fully transparent in the center
-    gradient.addColorStop(1, 'rgba(0, 0, 0, 1)');  // Fully opaque at the edges
-    
-    // Apply the gradient
-    fogContext.globalCompositeOperation = 'destination-out';
-    fogContext.fillStyle = gradient;
-    fogContext.beginPath();
-    fogContext.arc(x, y, visibilityRadius, 0, Math.PI * 2);
-    fogContext.fill();
-    fogContext.globalCompositeOperation = 'source-over';
-}
-
-let myCamera = new Camera(0, 0, canvas, null);
-let myCamera1 = new Camera(0, 0, canvas1, null);
+let myCamera = new Camera(0, 0, canvas, fogCanvas, null);
+let myCamera1 = new Camera(0, 0, canvas1, fog1Canvas, null);
 
 let myGame = new Game(canvasBackground, backgroundCTX, UiObjects);
 
-
-for (let i = 0; i <= 100; i++) {
-    const myX = (Math.random() * 5000) + 40;
-    const myY = (Math.random() * 5000) + 40;
-    
-    let myWidth = 30
-    let myHeight = (Math.random() * 230) + 70
-
-    if (Math.random() > 0.5) {
-        myWidth, myHeight = myHeight, myWidth
-    }
-
-    UiObjects.push(new Obstacle(myGame, myX, myY, myWidth, myHeight, 100, ''))    
-}
-
-
-let myTree2 = new Tree(myGame, 2250, 2280, 20, 40, 100);
-let myTree1 = new Tree(myGame, 2700, 2500, 30, 40, 100);
-let myTree = new Tree(myGame, 2400, 2900, 50, 50, 100);
-let myWall3 = new Obstacle(myGame, 2600, 2800, 150, 30, 100, '');
-let myWall2 = new Obstacle(myGame, 2300, 2600, 150, 30, 100, '');
-let myWall1 = new Obstacle(myGame, 2500, 2300, 30, 100, 100, '');
-let myWall = new Obstacle(myGame, 2300, 2400, 100, 30, 100, '');
 let mySolider = new Solider(myGame, 2600, 2400, 51, 50, 180, 0.7, 180, 100);
 let mySolider1 = new Solider(myGame, 2800, 2850, 51, 50, 360, 0.7, 360, 100);
+
+UiObjects.push(mySolider);
+UiObjects.push(mySolider1);
+
+for (let i = 0; i <= 150; i++) {
+    const myX = (Math.random() * 5000) + 40;
+    const myY = (Math.random() * 5000) + 40;
+
+    let myWidth = 30
+    let myHeight = (Math.random() * 200) + 70
+
+    if (Math.random() > 0.5) {
+        myWidth = myHeight;
+        myHeight = 30;
+    }
+
+
+    const maybeWall = new Obstacle(myGame, myX, myY, myWidth, myHeight, 100, '')
+
+    const wallCollides
+        = UiObjects.some((e) => {
+            if (e.collides(maybeWall)) {
+                return true;
+            }
+        })
+
+    if (wallCollides === false) {
+        UiObjects.push(maybeWall);
+    }
+};
+
+for (let j = 0; j <= 150; ++j) {
+    const myX = (Math.random() * 5000) + 40;
+    const myY = (Math.random() * 5000) + 40;
+
+    let myHeight = (Math.random() + 1) * 30;
+
+    const maybeTree = new Tree(myGame, myX, myY, myHeight, 0, 100)
+
+    const treeCollides
+        = UiObjects.some((e) => {
+            if (e.collides(maybeTree)) {
+                return true;
+            }
+        })
+
+    if (!treeCollides) {
+        UiObjects.push(maybeTree);
+    }
+};
+
 
 myCamera.followedObject = mySolider;
 myCamera1.followedObject = mySolider1;
@@ -97,15 +122,8 @@ myCamera1.followedObject = mySolider1;
 myCamera.update();
 myCamera1.update();
 
-UiObjects.push(myTree2);
-UiObjects.push(myWall3);
-UiObjects.push(myTree1);
-UiObjects.push(myTree);
-UiObjects.push(mySolider);
-UiObjects.push(myWall);
-UiObjects.push(myWall1);
-UiObjects.push(myWall2);
-UiObjects.push(mySolider1);
+
+
 
 
 window.addEventListener('keydown', function (e) {
@@ -189,14 +207,14 @@ window.addEventListener('keydown', function (e) {
 })
 
 window.addEventListener('keydown', (e) => {
-    if(e.key === 'r'){
+    if (e.key === 'r') {
         mySolider.speedBoost = true;
     }
 })
 
 
 window.addEventListener('keyup', (e) => {
-    if(e.key === 'r'){
+    if (e.key === 'r') {
         mySolider.speedBoost = false;
     }
 })
@@ -220,7 +238,7 @@ function handleUiObjects() {
     })
     myCamera.update();
     myCamera1.update();
-    
+
     UiObjects.forEach(function (o) {
         o.draw(myCamera);
         o.draw(myCamera1);
@@ -228,51 +246,26 @@ function handleUiObjects() {
 }
 
 myGame.bgctx.fillStyle = 'rgba(200,255,90,1)';
-myGame.bgctx.fillRect(0,0, canvasBackground.width, canvasBackground.height);
+myGame.bgctx.fillRect(0, 0, canvasBackground.width, canvasBackground.height);
 
 
 let counter = 0;
 function animate() {
-    
-    myCamera.ctx.clearRect(0, 0, canvas.width, canvas.height)
-    myCamera1.ctx.clearRect(0, 0, canvas.width, canvas.height)
 
     //Take the background canvas, cut out the area needed for the
     //camera, and draw it to the main canvas at position 0,0.
-    myCamera.ctx.drawImage(
-        myGame.bgcanvas,
-        //source rectangle:
-        myCamera.x, 
-        myCamera.y, 
-        myCamera.w,
-        myCamera.h,
-        //destination rectangle:
-        0,0, 
-        myCamera.w,
-        myCamera.h
-    );
 
-    myCamera1.ctx.drawImage(
-        myGame.bgcanvas, 
-        //source rectangle:
-        myCamera1.x, 
-        myCamera1.y, 
-        myCamera1.w,
-        myCamera1.h,
-        //destination rectangle:
-        0,0, 
-        myCamera1.w,
-        myCamera1.h
-    );
+    myCamera.draw(myGame.bgcanvas);
+    myCamera1.draw(myGame.bgcanvas);
 
     handleUiObjects();
 
     if (counter > 10) {
         myGame.bgctx.fillStyle = 'rgba(200,255,90,0.05)'
         myGame.bgctx.fillRect(
-            0, 
-            0, 
-            myGame.bgcanvas.width, 
+            0,
+            0,
+            myGame.bgcanvas.width,
             myGame.bgcanvas.height)
 
         counter = 0

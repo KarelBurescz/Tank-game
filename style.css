@@ -1,25 +1,28 @@
 * {
     margin: 0px;
     padding: 0px;
-}
-
-#canvas-container {
-    position: relative;
-}
-
-#canvas-container canvas {
-    border: 1px green;
-    border-right:1px black solid ;
-    /* position: absolute;
-    top: 0px;
-    left: 0px; */
-}
-
-#canvas-background {
-    display: none;
+    border: 0px;
 }
 
 #canvas-container {
     display: flex;
     flex-direction: row;
+    height: 100vh;
 }
+
+#canvas-container div {
+    position: relative;
+    width: 50%;
+    height: 100vh;
+}
+
+#canvas-container div canvas {
+    position: absolute;
+    width: 100%;
+    top: 0px;
+    left: 0px;
+}
+#canvas-background {
+    display: none;
+}
+

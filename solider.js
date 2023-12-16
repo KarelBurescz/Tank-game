@@ -39,6 +39,7 @@ class Solider extends UiObject {
         this.exploding = false;
         this.audioTankExplode = new Audio('tank-explode.mp3')
         this.focusMode = false;
+        this.playerDead = false;
     }
 
     collisionBox() {
@@ -106,13 +107,13 @@ class Solider extends UiObject {
             camera.ctx.stroke()
         }
 
-        if(this.exploding === true){
+        if (this.exploding === true) {
             this.drawExplosion(camera)
         }
     }
 
-    drawTracks(x, y){
-        
+    drawTracks(x, y) {
+
         const center = this.center()
         this.bgCtx.save()
         this.bgCtx.translate(this.x, this.y)
@@ -180,10 +181,14 @@ class Solider extends UiObject {
 
     fire() {
 
+        if (this.playerDead) {
+            return;
+        }
         if (this.bulletsLoaded < 1) {
             this.audioEmptyGunShot.play();
             return;
         }
+
 
         let myBullet = new Bullet(
             this.game,
@@ -211,30 +216,31 @@ class Solider extends UiObject {
         UiObjects.push(myBullet)
     }
 
-    drawExplosion(camera){
+    drawExplosion(camera) {
         let lc = this.localCoords(camera);
         let explodeImg = new Image();
         explodeImg.src = `./Explode-sequence/explode-sequence${this.explodingSequence}.png`
         camera.ctx.drawImage(
-            explodeImg, 
-            lc.x - explodeImg.width/2, 
-            lc.y - explodeImg.height/2
+            explodeImg,
+            lc.x - explodeImg.width / 2,
+            lc.y - explodeImg.height / 2
         )
     }
 
-    explode(){
+    explode() {
         if (this.exploding) return;
 
         this.exploding = true;
+        this.playerDead = true;
         this.audioTankExplode.play();
         let intId = setInterval(() => {
             this.explodingSequence++;
-            if(this.explodingSequence > 8){
+            if (this.explodingSequence > 8) {
                 clearInterval(intId);
                 this.exploding = false;
                 super.explode();
             }
-        },80);
+        }, 80);
     }
 
     update() {
