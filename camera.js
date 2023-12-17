@@ -3,6 +3,20 @@ class Camera {
     constructor(x, y, canvas, fog, followedObject) {
         this.x = x;
         this.y = y;
+        this.vx = 0;
+        this.vy = 0;
+
+        // Mass
+        this.m = 2;
+        
+        // Acceleration
+        this.ax = 0;
+        this.ay = 0;
+
+        // Honey
+        this.M = 0.04;
+        // Spring strength
+        this.k = 0.002;
         this.w = canvas.width;
         this.h = canvas.height;
         this.canvas = canvas;
@@ -11,12 +25,30 @@ class Camera {
         this.fogCtx = this.fog.getContext('2d');
         this.followedObject = followedObject;
         this.visibilityRadius = 300;
+        // this.x = this.followedObject.x - this.w / 2;
+        // this.y = this.followedObject.y - this.h / 2;
 
     }
 
-    update() {
+    setFollowedObj(followedObject) {
+        this.followedObject = followedObject;
         this.x = this.followedObject.x - this.w / 2;
         this.y = this.followedObject.y - this.h / 2;
+    }
+
+    update() {
+        let Lx = this.x + this.w/2 - this.followedObject.x;
+        let Ly = this.y + this.h/2 - this.followedObject.y;
+
+        
+        this.ax = (-1 * this.k * Lx -this.M * this.vx) / this.m
+        this.ay = (-1 * this.k * Ly -this.M * this.vy) / this.m
+
+        this.vx += this.ax;
+        this.vy += this.ay;
+        
+        this.x += this.vx;
+        this.y += this.vy;
     }
 
     drawFogOfWar() {
@@ -57,7 +89,7 @@ class Camera {
             this.w,
             this.h
         );
-        // this.drawFogOfWar()w
+        this.drawFogOfWar()
         this.drawHud();
     }
 
