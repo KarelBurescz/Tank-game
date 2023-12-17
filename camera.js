@@ -89,7 +89,7 @@ class Camera {
             this.w,
             this.h
         );
-        this.drawFogOfWar()
+        this.drawFogOfWar();
         this.drawHud();
     }
 
