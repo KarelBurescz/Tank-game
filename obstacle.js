@@ -1,6 +1,15 @@
 import { UiObject } from "./uiobject.js";
 
 class Obstacle extends UiObject {
+
+    static {
+        if (!this.audioExplodeSrc) {
+            this.audioExplodeSrc = new Audio('explosion.mp3')
+            this.audioExplodeSrc.preload = 'auto'
+            this.audioExplodeSrc.load()
+        }
+    }
+
     constructor(game, x, y, width, height, hp, color) {
         super(game, x, y, width, height, hp)
         this.color = color;
@@ -8,7 +17,10 @@ class Obstacle extends UiObject {
         this.wallImg.src = 'walls1.png'
         this.explodingSequence = 0;
         this.exploding = false;
-        this.audioExplode = new Audio('explosion.mp3')
+        this.audioExplode = new Audio();
+        this.audioExplode.src = Obstacle.audioExplodeSrc.src;
+
+
     }
     draw(camera) {
         

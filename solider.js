@@ -6,6 +6,25 @@ import { UiObjects } from "./arrayuiobjects.js";
 
 
 class Solider extends UiObject {
+
+
+
+    static {
+        this.audioMovingSrc = UiObject.loadAudio('tank-moving1.mp3')
+
+        this.audioTurretRotatingSrc = UiObject.loadAudio('tank-turret-rotate.mp3');
+
+        this.audioReloadingSrc = UiObject.loadAudio('tank-reload.mp3');
+
+        this.audioEmptyGunShotSrc = UiObject.loadAudio('empty-gun-shot.mp3');
+
+        this.audioTankExplodeSrc = UiObject.loadAudio('tank-explode.mp3');
+
+        this.audioCoolingDownSrc = UiObject.loadAudio('tank-cooling-down.mp3');
+    }
+
+
+
     constructor(game, x, y, width, height, direction, speed, gunDirection, hp) {
         super(game, x, y, width, height, hp)
         this.direction = direction;
@@ -26,21 +45,26 @@ class Solider extends UiObject {
         this.turretMovingRight = false;
         this.turretMovingLeft = false;
         this.turretSpeed = 0.03;
-        this.audioMoving = new Audio('tank-moving1.mp3');
-        this.audioTurretRotating = new Audio('tank-turret-rotate.mp3');
-        this.audioReloading = new Audio('tank-reload.mp3');
-        this.audioEmptyGunShot = new Audio('empty-gun-shot.mp3');
-        // this.firingAudio = false;
+        this.audioMoving = new Audio();
+        this.audioMoving.src = Solider.audioMovingSrc.src;
+        this.audioTurretRotating = new Audio();
+        this.audioTurretRotating.src = Solider.audioTurretRotatingSrc.src;
+        this.audioReloading = new Audio();
+        this.audioReloading.src = Solider.audioReloadingSrc.src;
+        this.audioEmptyGunShot = new Audio();
+        this.audioEmptyGunShot.src = Solider.audioEmptyGunShotSrc.src;
         this.bulletsLoaded = 5;
         this.speedBoost = false;
         this.speedBoostCouter = 200;
         this.coolingDown = false;
         this.explodingSequence = 0;
         this.exploding = false;
-        this.audioTankExplode = new Audio('tank-explode.mp3')
+        this.audioTankExplode = new Audio();
+        this.audioTankExplode.src = Solider.audioTankExplodeSrc.src;
         this.focusMode = false;
         this.playerDead = false;
-        this.audioCoolingDown = new Audio('tank-cooling-down.mp3')
+        this.audioCoolingDown = new Audio();
+        this.audioCoolingDown.src = Solider.audioCoolingDownSrc.src;
     }
 
     collisionBox() {

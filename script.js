@@ -68,7 +68,7 @@ let mySolider1 = new Solider(myGame, 2800, 2850, 51, 50, 360, 0.7, 360, 100);
 UiObjects.push(mySolider);
 UiObjects.push(mySolider1);
 
-for (let i = 0; i <= 1; i++) {
+for (let i = 0; i <= 150; i++) {
     const myX = (Math.random() * 5000) + 40;
     const myY = (Math.random() * 5000) + 40;
 
@@ -95,7 +95,7 @@ for (let i = 0; i <= 1; i++) {
     }
 };
 
-for (let j = 0; j <= 1; ++j) {
+for (let j = 0; j <= 150; ++j) {
     const myX = (Math.random() * 5000) + 40;
     const myY = (Math.random() * 5000) + 40;
 
@@ -228,6 +228,33 @@ window.addEventListener('keydown', (e) => {
 window.addEventListener('keyup', (e) => {
     if (e.key === 'x') {
         mySolider.focusMode = false;
+    }
+})
+
+
+window.addEventListener('keydown', (e) => {
+    if (e.key === 'l') {
+        mySolider1.speedBoost = true;
+    }
+})
+
+
+window.addEventListener('keyup', (e) => {
+    if (e.key === 'l') {
+        mySolider1.speedBoost = false;
+    }
+})
+
+window.addEventListener('keydown', (e) => {
+    if (e.key === 'k') {
+        mySolider1.focusMode = true;
+    }
+})
+
+
+window.addEventListener('keyup', (e) => {
+    if (e.key === 'k') {
+        mySolider1.focusMode = false;
     }
 })
 

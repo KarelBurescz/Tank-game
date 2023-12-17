@@ -27,3 +27,50 @@
     display: none;
 }
 
+
+body{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#main-menu-conteiner{
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 2px black solid;
+    background-image: url(background.jpeg);
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+}
+
+#main-menu {
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+#play-button{
+    width: 200px;
+    height: 50px;
+    border: 1px black solid;
+    font-size: xx-large;
+    border-radius: 10px;
+    background-color: yellow;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+#title{
+    font-size: 80px;
+    color: black;
+}
+

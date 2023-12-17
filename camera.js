@@ -57,7 +57,7 @@ class Camera {
             this.w,
             this.h
         );
-        // this.drawFogOfWar()w
+        this.drawFogOfWar();
         this.drawHud();
     }
 
@@ -131,7 +131,7 @@ class Camera {
             this.fogCtx.beginPath();
 
             if (k < bulletsLoaded) {
-                this.fogCtx.fillStyle = 'rgba(200, 100, 100, 0.5)';
+                this.fogCtx.fillStyle = 'rgba(	255, 215, 0, 0.5)';
             } else {
                 this.fogCtx.fillStyle = 'rgba(0, 0, 0, 0.5)';
             }

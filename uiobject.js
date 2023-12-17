@@ -2,6 +2,19 @@ import { Config } from "./config.js";
 import { UiObjects } from "./arrayuiobjects.js";
 
 class UiObject {
+
+    static loadAudio(audioFilename) {
+        const audio = new Audio(audioFilename);
+        audio.preload = 'auto';
+        audio.load();
+
+        return audio;
+    }
+
+    static {
+        this.audioHitSrc = UiObject.loadAudio('./sword-hit.mp3');
+    }
+
     constructor(game, x, y, width, height, hp) {
         this.x = x;
         this.y = y;
@@ -10,8 +23,10 @@ class UiObject {
         this.ctx = game.ctx;
         this.game = game;
         this.hp = hp;
-        this.audioHit = new Audio('sword-hit.mp3')
+        this.audioHit = new Audio();
+        this.audioHit.src = UiObject.audioHitSrc.src;
     }
+
     update() {
         if (this.hp <= 0) {
             this.explode()
