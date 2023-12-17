@@ -108,9 +108,9 @@ class Camera {
             this.fogCtx.beginPath();
 
             if (i < lives) {
-                this.fogCtx.fillStyle = 'rgba(1, 255, 50, 0.5)';
+                this.fogCtx.fillStyle = 'rgba(1, 255, 50, 1)';
             } else {
-                this.fogCtx.fillStyle = 'rgba(255, 0, 0, 0.5)';
+                this.fogCtx.fillStyle = 'rgba(255, 0, 0, 1)';
             }
 
             this.fogCtx.fillRect(myX, myY, myWidth, myHeight);
@@ -136,9 +136,9 @@ class Camera {
             this.fogCtx.beginPath();
 
             if (j < speedBoost) {
-                this.fogCtx.fillStyle = 'rgba(0, 0, 255, 0.5)';
+                this.fogCtx.fillStyle = 'rgba(0, 0, 255, 1)';
             } else {
-                this.fogCtx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+                this.fogCtx.fillStyle = 'rgba(0, 0, 0, 1)';
             }
 
             this.fogCtx.fillRect(myXB, myYB, myWidthB, myHeightB);
@@ -163,9 +163,9 @@ class Camera {
             this.fogCtx.beginPath();
 
             if (k < bulletsLoaded) {
-                this.fogCtx.fillStyle = 'rgba(	255, 215, 0, 0.5)';
+                this.fogCtx.fillStyle = 'rgba(	255, 215, 0, 1)';
             } else {
-                this.fogCtx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+                this.fogCtx.fillStyle = 'rgba(0, 0, 0, 1)';
             }
 
             this.fogCtx.fillRect(myXBu, myYBu, myWidthBu, myHeightBu);

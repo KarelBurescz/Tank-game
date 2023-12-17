@@ -151,9 +151,9 @@ window.addEventListener('keyup', function (e) {
         mySolider.rotatingLeft = false;
     } else if (e.key === 's') {
         mySolider.movingBack = false;
-    } else if (e.key === 'q') {
+    } else if (e.key === 't') {
         mySolider.turretMovingLeft = false;
-    } else if (e.key === 'e') {
+    } else if (e.key === 'u') {
         mySolider.turretMovingRight = false;
     }
 });
@@ -206,27 +206,27 @@ window.addEventListener('keydown', function (e) {
 })
 
 window.addEventListener('keydown', (e) => {
-    if (e.key === 'r') {
+    if (e.key === 'y') {
         mySolider.speedBoost = true;
     }
 })
 
 
 window.addEventListener('keyup', (e) => {
-    if (e.key === 'r') {
+    if (e.key === 'y') {
         mySolider.speedBoost = false;
     }
 })
 
 window.addEventListener('keydown', (e) => {
-    if (e.key === 'x') {
+    if (e.key === 'h') {
         mySolider.focusMode = true;
     }
 })
 
 
 window.addEventListener('keyup', (e) => {
-    if (e.key === 'x') {
+    if (e.key === 'h') {
         mySolider.focusMode = false;
     }
 })
