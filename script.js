@@ -68,7 +68,7 @@ let mySolider1 = new Solider(myGame, 2800, 2850, 51, 50, 360, 0.7, 360, 100);
 UiObjects.push(mySolider);
 UiObjects.push(mySolider1);
 
-for (let i = 0; i <= 1; i++) {
+for (let i = 0; i <= 100; i++) {
     const myX = (Math.random() * 5000) + 40;
     const myY = (Math.random() * 5000) + 40;
 
@@ -95,7 +95,7 @@ for (let i = 0; i <= 1; i++) {
     }
 };
 
-for (let j = 0; j <= 1; ++j) {
+for (let j = 0; j <= 100; ++j) {
     const myX = (Math.random() * 5000) + 40;
     const myY = (Math.random() * 5000) + 40;
 
@@ -116,8 +116,8 @@ for (let j = 0; j <= 1; ++j) {
 };
 
 
-myCamera.followedObject = mySolider;
-myCamera1.followedObject = mySolider1;
+myCamera.setFollowedObj(mySolider);
+myCamera1.setFollowedObj(mySolider1);
 
 myCamera.update();
 myCamera1.update();
