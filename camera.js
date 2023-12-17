@@ -57,14 +57,14 @@ class Camera {
             this.w,
             this.h
         );
-        this.drawFogOfWar()
+        // this.drawFogOfWar()w
         this.drawHud();
     }
 
     drawHud() {
 
-        const myWidth = 70;
-        const myHeight = 40;
+        const myWidth = 40;
+        const myHeight = 30;
 
         let myX = 5;
         let myY = 5;
@@ -76,25 +76,74 @@ class Camera {
             this.fogCtx.beginPath();
 
             if (i < lives) {
-                this.fogCtx.fillStyle = 'rgba(1, 255, 50, 1)';
+                this.fogCtx.fillStyle = 'rgba(1, 255, 50, 0.5)';
             } else {
-                this.fogCtx.fillStyle = 'rgba(255, 0, 0, 1)';
+                this.fogCtx.fillStyle = 'rgba(255, 0, 0, 0.5)';
             }
 
             this.fogCtx.fillRect(myX, myY, myWidth, myHeight);
+
+            this.fogCtx.strokeRect(myX, myY, myWidth, myHeight);
+            this.fogCtx.strokeStyle =  'black';
+
 
             myX += myWidth + 3;
 
         }
 
-        //     this.fogCtx.beginPath()
-        //     this.fogCtx.fillStyle = 'rgba(1, 255, 50, 1)';
-        //     this.fogCtx.fillRect(5, 5, 70, 40)
+        const myWidthB = 40;
+        const myHeightB = 30;
 
-        //     this.fogCtx.beginPath();
-        //     this.fogCtx.strokeStyle = 'black';
-        //     this.fogCtx.strokeRect(5, 5, innerWidth/4,40)
+        let myXB = 5;
+        let myYB = myY + myHeight + 4;
 
+        const speedBoost = this.followedObject.speedBoostCouter / 40;        
+
+        for (let j = 0; j < 5; j++) {
+
+            this.fogCtx.beginPath();
+
+            if (j < speedBoost) {
+                this.fogCtx.fillStyle = 'rgba(0, 0, 255, 0.5)';
+            } else {
+                this.fogCtx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+            }
+
+            this.fogCtx.fillRect(myXB, myYB, myWidthB, myHeightB);
+
+            this.fogCtx.strokeRect(myXB, myYB, myWidthB, myHeightB);
+            this.fogCtx.strokeStyle =  'black';
+
+            myXB += myWidthB + 3;
+
+        }
+
+        const myWidthBu = 40;
+        const myHeightBu = 30;
+
+        let myXBu = 5;
+        let myYBu = myYB + myHeightB + 4;
+
+        const bulletsLoaded = this.followedObject.bulletsLoaded;
+
+        for (let k = 0; k < 5; k++) {
+
+            this.fogCtx.beginPath();
+
+            if (k < bulletsLoaded) {
+                this.fogCtx.fillStyle = 'rgba(200, 100, 100, 0.5)';
+            } else {
+                this.fogCtx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+            }
+
+            this.fogCtx.fillRect(myXBu, myYBu, myWidthBu, myHeightBu);
+
+            this.fogCtx.strokeRect(myXBu, myYBu, myWidthBu, myHeightBu);
+            this.fogCtx.strokeStyle =  'black';
+
+            myXBu += myWidthBu + 3;
+
+        }
     }
 }
 

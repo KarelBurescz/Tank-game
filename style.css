@@ -21,6 +21,7 @@
     width: 100%;
     top: 0px;
     left: 0px;
+    border-left: 5px solid black;
 }
 #canvas-background {
     display: none;

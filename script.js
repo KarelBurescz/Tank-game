@@ -68,7 +68,7 @@ let mySolider1 = new Solider(myGame, 2800, 2850, 51, 50, 360, 0.7, 360, 100);
 UiObjects.push(mySolider);
 UiObjects.push(mySolider1);
 
-for (let i = 0; i <= 150; i++) {
+for (let i = 0; i <= 1; i++) {
     const myX = (Math.random() * 5000) + 40;
     const myY = (Math.random() * 5000) + 40;
 
@@ -95,7 +95,7 @@ for (let i = 0; i <= 150; i++) {
     }
 };
 
-for (let j = 0; j <= 150; ++j) {
+for (let j = 0; j <= 1; ++j) {
     const myX = (Math.random() * 5000) + 40;
     const myY = (Math.random() * 5000) + 40;
 
@@ -160,7 +160,6 @@ window.addEventListener('keyup', function (e) {
 
 
 window.addEventListener('keydown', function (e) {
-    console.log(e)
     if (e.key === 'ArrowUp') {
         mySolider1.movingFoward = true;
     } else if (e.key === 'ArrowRight') {
