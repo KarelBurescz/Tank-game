@@ -62,8 +62,8 @@ let myCamera1 = new Camera(0, 0, canvas1, fog1Canvas, null);
 
 let myGame = new Game(canvasBackground, backgroundCTX, UiObjects);
 
-let mySolider = new Solider(myGame, 2600, 2400, 51, 50, 180, 0.7, 180, 100);
-let mySolider1 = new Solider(myGame, 2800, 2850, 51, 50, 360, 0.7, 360, 100);
+let mySolider = new Solider(myGame, 2600, 2400, 51, 50, 180, 1, 180, 100);
+let mySolider1 = new Solider(myGame, 2800, 2850, 51, 50, 360, 1, 360, 100);
 
 UiObjects.push(mySolider);
 UiObjects.push(mySolider1);
