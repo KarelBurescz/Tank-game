@@ -5,6 +5,7 @@ import { UiObjects } from "./arrayuiobjects.js";
 import { Game } from "./game.js";
 import { Camera } from "./camera.js";
 import { Tree } from "./tree.js";
+import { Config } from "./config.js"
 
 const canvas = document.getElementById('canvas');
 // const ctx = canvas.getContext('2d');
@@ -127,34 +128,44 @@ myCamera1.update();
 
 
 window.addEventListener('keydown', function (e) {
-    if (e.key === 'w') {
+    if (e.key === Config.p1.forward) {
         mySolider.movingFoward = true;
-    } else if (e.key === 'd') {
+    } else if (e.key === Config.p1.right) {
         mySolider.rotatingRight = true;
-    } else if (e.key === 'a') {
+    } else if (e.key === Config.p1.left) {
         mySolider.rotatingLeft = true;
-    } else if (e.key === 's') {
+    } else if (e.key === Config.p1.backward) {
         mySolider.movingBack = true;
-    } else if (e.key === 'q') {
+    } else if (e.key === Config.p1.turret_left) {
         mySolider.turretMovingLeft = true;
-    } else if (e.key === 'e') {
+    } else if (e.key === Config.p1.turret_right) {
         mySolider.turretMovingRight = true;
+    } else if (e.key === Config.p1.fire) {
+            mySolider.fire()
+    } else if (e.key === Config.p1.nitro) {
+        mySolider.speedBoost = true;
+    } else if (e.key === Config.p1.focus) {
+        mySolider.focusMode = true;
     }
 });
 
 window.addEventListener('keyup', function (e) {
-    if (e.key === 'w') {
+    if (e.key === Config.p1.forward) {
         mySolider.movingFoward = false;
-    } else if (e.key === 'd') {
+    } else if (e.key === Config.p1.right) {
         mySolider.rotatingRight = false;
-    } else if (e.key === 'a') {
+    } else if (e.key === Config.p1.left) {
         mySolider.rotatingLeft = false;
-    } else if (e.key === 's') {
+    } else if (e.key === Config.p1.backward) {
         mySolider.movingBack = false;
-    } else if (e.key === 't') {
+    } else if (e.key === Config.p1.turret_left) {
         mySolider.turretMovingLeft = false;
-    } else if (e.key === 'u') {
+    } else if (e.key === Config.p1.turret_right) {
         mySolider.turretMovingRight = false;
+    } else if (e.key === Config.p1.nitro) {
+        mySolider.speedBoost = false;
+    } else if (e.key === Config.p1.focus) {
+        mySolider.focusMode = false;
     }
 });
 
@@ -192,42 +203,12 @@ window.addEventListener('keyup', function (e) {
 });
 
 
-window.addEventListener('keydown', function (e) {
-    if (e.key === 'f') {
-        mySolider.fire()
-    }
-})
+
 
 
 window.addEventListener('keydown', function (e) {
     if (e.key === 'o') {
         mySolider1.fire()
-    }
-})
-
-window.addEventListener('keydown', (e) => {
-    if (e.key === 'y') {
-        mySolider.speedBoost = true;
-    }
-})
-
-
-window.addEventListener('keyup', (e) => {
-    if (e.key === 'y') {
-        mySolider.speedBoost = false;
-    }
-})
-
-window.addEventListener('keydown', (e) => {
-    if (e.key === 'h') {
-        mySolider.focusMode = true;
-    }
-})
-
-
-window.addEventListener('keyup', (e) => {
-    if (e.key === 'h') {
-        mySolider.focusMode = false;
     }
 })
 
