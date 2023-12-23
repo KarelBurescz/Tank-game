@@ -4,14 +4,15 @@ const Config = {
 
     p1: {
         forward: 't',
-        backward:'g',
+        backward: 'g',
         left: 'f',
         right: 'h',
         turret_left: 'q',
         turret_right: 'e',
         fire: 'w',
         nitro: 'd',
-        focus: 's'
+        focus: 's',
+        mineDeploy: 'a'
     }
 
 }
