@@ -141,11 +141,13 @@ window.addEventListener('keydown', function (e) {
     } else if (e.key === Config.p1.turret_right) {
         mySolider.turretMovingRight = true;
     } else if (e.key === Config.p1.fire) {
-            mySolider.fire()
+        mySolider.fire()
     } else if (e.key === Config.p1.nitro) {
         mySolider.speedBoost = true;
     } else if (e.key === Config.p1.focus) {
         mySolider.focusMode = true;
+    } else if (e.key === Config.p1.mineDeploy) {
+        mySolider.mineDeployed = true;
     }
 });
 
@@ -183,6 +185,8 @@ window.addEventListener('keydown', function (e) {
         mySolider1.turretMovingLeft = true;
     } else if (e.key === 'p') {
         mySolider1.turretMovingRight = true;
+    } else if (e.key === 'j') {
+        mySolider1.mineDeployed = true;
     }
 });
 

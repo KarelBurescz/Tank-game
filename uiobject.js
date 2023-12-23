@@ -25,6 +25,7 @@ class UiObject {
         this.hp = hp;
         this.audioHit = new Audio();
         this.audioHit.src = UiObject.audioHitSrc.src;
+        this.type = 'none';
     }
 
     update() {

@@ -3,6 +3,7 @@ import { Bullet } from "./bullet.js";
 import { Config } from "./config.js";
 import { mouse } from "./mouse.js";
 import { UiObjects } from "./arrayuiobjects.js";
+import { LandMine } from "./landMine.js";
 
 
 class Solider extends UiObject {
@@ -22,8 +23,6 @@ class Solider extends UiObject {
 
         this.audioCoolingDownSrc = UiObject.loadAudio('tank-cooling-down.mp3');
     }
-
-
 
     constructor(game, x, y, width, height, direction, speed, gunDirection, hp) {
         super(game, x, y, width, height, hp)
@@ -65,6 +64,7 @@ class Solider extends UiObject {
         this.playerDead = false;
         this.audioCoolingDown = new Audio();
         this.audioCoolingDown.src = Solider.audioCoolingDownSrc.src;
+        this.mineDeployed = false;
     }
 
     collisionBox() {
@@ -82,6 +82,7 @@ class Solider extends UiObject {
             y: this.y
         }
     }
+
     draw(camera) {
 
         let co = this.localCoords(camera);
@@ -206,8 +207,14 @@ class Solider extends UiObject {
         this.moveFront(-1);
     }
 
-    fire() {
+    deployMine() {
+        let myMine = new LandMine(this.game, this.x, this.y, 20, 20, 10, 100, this);
+        this.mineDeployed = false;
+        let nevim = UiObjects.unshift(myMine)
+        console.log(nevim)
+    }
 
+    fire() {
         if (this.playerDead) {
             return;
         }
@@ -270,10 +277,20 @@ class Solider extends UiObject {
         }, 80);
     }
 
+    collides(uiobject) {
+        if (uiobject.type === 'landMine') {
+            return false;
+        }
+        return super.collides(uiobject);
+    }
+
     update() {
         // let dx = this.x - mouse.x;
         // let dy = this.y - mouse.y;
         // this.gunDirection = Math.atan2(-dy, -dx);
+        if (this.mineDeployed === true) {
+            this.deployMine();
+        }
 
         if (this.movingFoward === true) {
             this.moveFront();
@@ -316,6 +333,7 @@ class Solider extends UiObject {
 
         super.update()
     }
+
 }
 
 export { Solider }
