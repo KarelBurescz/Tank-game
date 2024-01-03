@@ -4,6 +4,7 @@ import { Config } from "./config.js";
 import { mouse } from "./mouse.js";
 import { UiObjects } from "./arrayuiobjects.js";
 import { LandMine } from "./landMine.js";
+import { Radar } from "./radar.js";
 
 
 class Solider extends UiObject {
@@ -44,6 +45,15 @@ class Solider extends UiObject {
         this.turretMovingRight = false;
         this.turretMovingLeft = false;
         this.turretSpeed = 0.03;
+        this.bulletsLoaded = 5;
+        this.speedBoost = false;
+        this.speedBoostCouter = 200;
+        this.coolingDown = false;
+        this.explodingSequence = 0;
+        this.exploding = false;
+        this.focusMode = false;
+        this.playerDead = false;
+        // Audios :
         this.audioMoving = new Audio();
         this.audioMoving.src = Solider.audioMovingSrc.src;
         this.audioTurretRotating = new Audio();
@@ -52,19 +62,16 @@ class Solider extends UiObject {
         this.audioReloading.src = Solider.audioReloadingSrc.src;
         this.audioEmptyGunShot = new Audio();
         this.audioEmptyGunShot.src = Solider.audioEmptyGunShotSrc.src;
-        this.bulletsLoaded = 5;
-        this.speedBoost = false;
-        this.speedBoostCouter = 200;
-        this.coolingDown = false;
-        this.explodingSequence = 0;
-        this.exploding = false;
         this.audioTankExplode = new Audio();
         this.audioTankExplode.src = Solider.audioTankExplodeSrc.src;
-        this.focusMode = false;
-        this.playerDead = false;
         this.audioCoolingDown = new Audio();
         this.audioCoolingDown.src = Solider.audioCoolingDownSrc.src;
+        // Mine indicator
         this.mineDeployed = false;
+        // Radar indicator
+        this.radarOn = false;
+        // Radar instance
+        this.radar = new Radar(120);
     }
 
     collisionBox() {
@@ -107,6 +114,10 @@ class Solider extends UiObject {
 
         )
         camera.ctx.restore()
+
+        if (this.radarOn) {
+            this.radar.draw(camera, co.x, co.y);
+        }
 
         //Draw a debug geometry: collision box, direction and aim direction.
         if (Config.debug) {
@@ -153,6 +164,11 @@ class Solider extends UiObject {
     }
 
     moveFront(dir = 1) {
+
+        if (this.radarOn) {
+            return;
+        }
+
         const oldX = this.x
         const oldY = this.y
 
@@ -331,7 +347,9 @@ class Solider extends UiObject {
             this.audioMoving.pause();
         }
 
-        super.update()
+        super.update();
+
+        this.radar.update();
     }
 
 }

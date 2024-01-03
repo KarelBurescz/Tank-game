@@ -148,6 +148,8 @@ window.addEventListener('keydown', function (e) {
         mySolider.focusMode = true;
     } else if (e.key === Config.p1.mineDeploy) {
         mySolider.mineDeployed = true;
+    } else if (e.key === Config.p1.radar) {
+        mySolider.radarOn = true;
     }
 });
 
@@ -168,6 +170,8 @@ window.addEventListener('keyup', function (e) {
         mySolider.speedBoost = false;
     } else if (e.key === Config.p1.focus) {
         mySolider.focusMode = false;
+    } else if (e.key === Config.p1.radar) {
+        mySolider.radarOn = false;
     }
 });
 
