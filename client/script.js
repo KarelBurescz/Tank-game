@@ -1,14 +1,11 @@
 import { Solider } from "./solider.js";
-import { Obstacle } from "../obstacle.js";
-import { mouse } from "../mouse.js";
-import { UiObjects } from "../arrayuiobjects.js";
-import { Game } from "../game.js";
-import { Camera } from "../camera.js";
-import { Tree } from "../tree.js";
+import { Obstacle } from "./obstacle.js";
+import { mouse } from "./mouse.js";
+import { UiObjects } from "./arrayuiobjects.js";
+import { Game } from "./game.js";
+import { Camera } from "./camera.js";
+import { Tree } from "./tree.js";
 import { Config } from "./config.js";
-
-const socket = io();
-socket.emit("join-room", "war-room-1");
 
 const canvas = document.getElementById("canvas");
 // const ctx = canvas.getContext('2d');
@@ -64,12 +61,13 @@ window.addEventListener("resize", function () {
 let myCamera = new Camera(0, 0, canvas, fogCanvas, null);
 let myCamera1 = new Camera(0, 0, canvas1, fog1Canvas, null);
 
-// TODO: This needs to be added to an update function, to construct the objects based on state received from the server.
-
 let myGame = new Game(canvasBackground, backgroundCTX, UiObjects);
 
-let mySolider = new Solider(myGame, 2600, 2400, 51, 50, 180, 1, 180, 100);
-let mySolider1 = new Solider(myGame, 2800, 2850, 51, 50, 360, 1, 360, 100);
+let mySolider = new Solider(myGame, 2500, 2500, 51, 50, 180, 1, 180, 100);
+let mySolider1 = new Solider(myGame, 3500, 2440, 51, 50, 360, 1, 360, 100);
+
+Game.addPlayer(mySolider);
+Game.addPlayer(mySolider1);
 
 UiObjects.push(mySolider);
 UiObjects.push(mySolider1);
@@ -145,6 +143,8 @@ window.addEventListener("keydown", function (e) {
     mySolider.focusMode = true;
   } else if (e.key === Config.p1.mineDeploy) {
     mySolider.mineDeployed = true;
+  } else if (e.key === Config.p1.radar) {
+    mySolider.radarOn = true;
   }
 });
 
@@ -165,6 +165,8 @@ window.addEventListener("keyup", function (e) {
     mySolider.speedBoost = false;
   } else if (e.key === Config.p1.focus) {
     mySolider.focusMode = false;
+  } else if (e.key === Config.p1.radar) {
+    mySolider.radarOn = false;
   }
 });
 
