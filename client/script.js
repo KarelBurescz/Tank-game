@@ -7,6 +7,9 @@ import { Camera } from "../camera.js";
 import { Tree } from "../tree.js";
 import { Config } from "../config.js";
 
+const socket = io();
+socket.emit("join-room", "war-room-1");
+
 const canvas = document.getElementById("canvas");
 // const ctx = canvas.getContext('2d');
 
@@ -60,6 +63,8 @@ window.addEventListener("resize", function () {
 
 let myCamera = new Camera(0, 0, canvas, fogCanvas, null);
 let myCamera1 = new Camera(0, 0, canvas1, fog1Canvas, null);
+
+// TODO: This needs to be added to an update function, to construct the objects based on state received from the server.
 
 let myGame = new Game(canvasBackground, backgroundCTX, UiObjects);
 
