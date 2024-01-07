@@ -9,6 +9,14 @@ import { Room } from "./room.js";
  */
 
 class ServerGame {
+  /**
+   * The class is a toplevel class in the backend. This is intended to hold all players connected into the server,
+   * and the rooms where players can connect.
+   *
+   * Once a player intends to connect to a room, the room is found, or a new one is created.
+   * The player object { Player } is then created. The primary key of the Player object is it's socket.io.socket.id value.
+   *
+   */
   constructor() {
     this.rooms = [];
     this.players = [];
