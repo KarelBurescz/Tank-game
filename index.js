@@ -3,9 +3,9 @@ import { createServer } from "node:http";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { Server } from "socket.io";
-import { ServerGame } from "./serverGame.js";
-import { Player } from "./player.js";
-import { Room } from "./room.js";
+import { ServerGame } from "./server/serverGame.js";
+import { Player } from "./server/player.js";
+import { Room } from "./server/room.js";
 
 const serverGame = new ServerGame();
 const app = express();
@@ -14,9 +14,10 @@ const io = new Server(server);
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-app.get("/", (req, res) => {
-  res.sendFile(join(__dirname, "index.html"));
-});
+app.use(express.static(__dirname + "/client"));
+// app.get("/", (req, res) => {
+//   res.sendFile(join(__dirname, "client/index.html"));
+// });
 
 io.on("connection", (socket) => {
   socket.on("chat message", (msg) => {
