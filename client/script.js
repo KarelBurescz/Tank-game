@@ -7,6 +7,9 @@ import { Camera } from "./camera.js";
 import { Tree } from "./tree.js";
 import { Config } from "./config.js";
 
+const socket = io();
+socket.emit("join-room", "war-room-1");
+
 const canvas = document.getElementById("canvas");
 // const ctx = canvas.getContext('2d');
 

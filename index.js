@@ -4,8 +4,6 @@ import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { Server } from "socket.io";
 import { ServerGame } from "./server/serverGame.js";
-import { Player } from "./server/player.js";
-import { Room } from "./server/room.js";
 
 const serverGame = new ServerGame();
 const app = express();

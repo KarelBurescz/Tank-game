@@ -1,34 +1,52 @@
 /**
- * @typedef { Object } ModelObject - A basic model for all objects modelled on the server side.
- *
- *
+ * Represents a basic model for all objects modeled on the server side.
+ * @typedef {Object} ModelObject
  */
 
 class ModelObject {
-  static lastId = 0;
+  static lastId = 0; // Static variable to keep track of the last assigned ID, across all ModelObjects.
 
+  /**
+   * Creates a new ModelObject instance.
+   * @param {Object} game - The game instance this object belongs to.
+   * @param {number} x - The x-coordinate of the object in the game world.
+   * @param {number} y - The y-coordinate of the object in the game world.
+   * @param {number} width - The width of the object.
+   * @param {number} height - The height of the object.
+   * @param {number} hp - The health points of the object.
+   */
   constructor(game, x, y, width, height, hp) {
-    this.id = ModelObject.lastId++;
+    this.id = ModelObject.lastId++; // Unique identifier for the object
 
-    this.x = x;
-    this.y = y;
-    this.width = width;
-    this.height = height;
-    this.game = game;
-    this.hp = hp;
-    this.type = "none";
+    this.x = x; // x-coordinate
+    this.y = y; // y-coordinate
+    this.width = width; // Object width
+    this.height = height; // Object height
+    this.game = game; // Game instance reference
+    this.hp = hp; // Health points
+    this.type = "none"; // Type of the object
   }
 
+  /**
+   * Updates the state of the object in time. Typically called each game tick.
+   */
   update() {
     if (this.hp <= 0) {
       this.explode();
     }
   }
 
+  /**
+   * Handles the destruction of the object. Placeholder for removal logic.
+   */
   explode() {
     //TODO: remove the object from a global registry.
   }
 
+  /**
+   * Computes and returns the collision box of the object.
+   * @return {{x: number, y: number, w: number, h: number}} The collision box of the object.
+   */
   collisionBox() {
     return {
       x: this.x,
@@ -38,37 +56,24 @@ class ModelObject {
     };
   }
 
+  /**
+   * Checks if this object collides with another object.
+   * @param {ModelObject} uiobject - Another object to check collision with.
+   * @return {boolean} True if there is a collision, false otherwise.
+   */
   collides(uiobject) {
     const cbx = this.collisionBox();
     const element = uiobject.collisionBox();
 
-    if (cbx.x + cbx.w < element.x) {
-      return false;
-    }
-
-    if (cbx.x > element.x + element.w) {
-      return false;
-    }
-
-    if (cbx.y + cbx.h < element.y) {
-      return false;
-    }
-
-    if (cbx.y > element.y + element.h) {
-      return false;
-    }
+    if (cbx.x + cbx.w < element.x) return false;
+    if (cbx.x > element.x + element.w) return false;
+    if (cbx.y + cbx.h < element.y) return false;
+    if (cbx.y > element.y + element.h) return false;
 
     return true;
   }
 
-  //   localCoords(camera) {
-  //     return {
-  //       y: this.y - camera.y,
-  //       x: this.x - camera.x,
-  //       // x : this.x,
-  //       // y : this.y
-  //     };
-  //   }
+  // Additional methods can be documented similarly.
 }
 
 export { ModelObject };

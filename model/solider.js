@@ -1,9 +1,5 @@
 import { ModelObject } from "./modelobject.js";
-// import { Bullet } from "./bullet.js";
 import { Config } from "../server/config.js";
-// import { mouse } from "./mouse.js";
-// import { UiObjects } from "./arrayuiobjects.js";
-// import { LandMine } from "./landMine.js";
 
 /**
  * @define { ModelObject } Solider
@@ -12,6 +8,16 @@ import { Config } from "../server/config.js";
  */
 
 class Solider extends ModelObject {
+  /**
+   * Represents a solider in the game, extending ModelObject.
+   * @extends ModelObject
+   */
+
+  /**
+   * Creates a Solider object at a random position.
+   * @param {Object} game - The game instance this solider is part of.
+   * @returns {Solider} A new Solider instance.
+   */
   static CreateOnRandomPosition(game) {
     //TODO: Read the max values for coordinates from a config file.
     const x = Math.random() * 5000;
@@ -19,12 +25,23 @@ class Solider extends ModelObject {
     return new Solider(game, x, y, 51, 50, 180, 1, 180, 100);
   }
 
+  /**
+   * Constructs a new Solider instance.
+   * @param {Object} game - The game instance this solider is part of.
+   * @param {number} x - The x-coordinate of the solider.
+   * @param {number} y - The y-coordinate of the solider.
+   * @param {number} width - The width of the solider.
+   * @param {number} height - The height of the solider.
+   * @param {number} direction - The initial direction of the solider.
+   * @param {number} speed - The speed of the solider.
+   * @param {number} gunDirection - The initial gun direction of the solider.
+   * @param {number} hp - The health points of the solider.
+   */
   constructor(game, x, y, width, height, direction, speed, gunDirection, hp) {
     super(game, x, y, width, height, hp);
-    this.playerId = null;
+    this.playerSocketId = null;
     this.direction = direction;
     this.speed = speed;
-    // this.gunDirection = gunDirection;
     this.movingFoward = false;
     this.rotatingRight = false;
     this.movingBack = false;
@@ -66,79 +83,6 @@ class Solider extends ModelObject {
     };
   }
 
-  draw(camera) {
-    let co = this.localCoords(camera);
-
-    const center = this.center();
-    camera.ctx.save();
-    camera.ctx.translate(co.x, co.y);
-    camera.ctx.rotate(this.direction);
-    camera.ctx.drawImage(
-      this.image,
-      -this.width / 2,
-      -this.height / 2,
-      this.width,
-      this.height
-    );
-    camera.ctx.restore();
-
-    camera.ctx.save();
-    camera.ctx.translate(co.x, co.y);
-    camera.ctx.rotate(this.direction + this.gunDirection);
-    camera.ctx.drawImage(
-      this.gunImage,
-      -this.width / 2,
-      -this.height / 2,
-      this.width,
-      this.height
-    );
-    camera.ctx.restore();
-
-    //Draw a debug geometry: collision box, direction and aim direction.
-    if (Config.debug) {
-      let cbx = this.collisionBox();
-      camera.ctx.strokeStyle = "green";
-      camera.ctx.strokeRect(cbx.x - camera.x, cbx.y - camera.y, cbx.w, cbx.h);
-
-      let px = Math.cos(this.direction) * 50;
-      let py = Math.sin(this.direction) * 50;
-
-      camera.ctx.beginPath();
-      camera.ctx.strokeStyle = "blue";
-      camera.ctx.moveTo(co.x, co.y);
-      camera.ctx.lineTo(co.x + px, co.y + py);
-      camera.ctx.stroke();
-
-      let gx = Math.cos(this.direction + this.gunDirection) * 70;
-      let gy = Math.sin(this.direction + this.gunDirection) * 70;
-
-      camera.ctx.beginPath();
-      camera.ctx.strokeStyle = "red";
-      camera.ctx.moveTo(co.x, co.y);
-      camera.ctx.lineTo(co.x + gx, co.y + gy);
-      camera.ctx.stroke();
-    }
-
-    if (this.exploding === true) {
-      this.drawExplosion(camera);
-    }
-  }
-
-  drawTracks(x, y) {
-    const center = this.center();
-    this.bgCtx.save();
-    this.bgCtx.translate(this.x, this.y);
-    this.bgCtx.rotate(this.direction);
-    this.bgCtx.drawImage(
-      this.tracksImg,
-      -this.width / 2,
-      -this.height / 2,
-      this.width - 15,
-      this.height
-    );
-    this.bgCtx.restore();
-  }
-
   moveFront(dir = 1) {
     const oldX = this.x;
     const oldY = this.y;
@@ -170,6 +114,7 @@ class Solider extends ModelObject {
     this.y += dir * Math.sin(this.direction) * speed;
 
     let collide = false;
+    //TODO: Fix this, this is not available on the server for now.
     UiObjects.forEach((uiobject) => {
       if (uiobject === this) return;
       if (this.collides(uiobject)) {
@@ -182,8 +127,8 @@ class Solider extends ModelObject {
       console.log("collide");
     }
 
-    // Draw tracks of tank
-    this.drawTracks(oldX, oldY);
+    //TODO: This has nothing to do here, it should be drawn on draw(), based of if tank is moving front.
+    //this.drawTracks(oldX, oldY);
   }
 
   moveBack() {
@@ -193,8 +138,8 @@ class Solider extends ModelObject {
   deployMine() {
     let myMine = new LandMine(this.game, this.x, this.y, 20, 20, 10, 100, this);
     this.mineDeployed = false;
-    let nevim = UiObjects.unshift(myMine);
-    console.log(nevim);
+    //TODO: Fix this, UiOBjects is not available.
+    UiObjects.unshift(myMine);
   }
 
   fire() {
@@ -230,31 +175,10 @@ class Solider extends ModelObject {
     UiObjects.push(myBullet);
   }
 
-  drawExplosion(camera) {
-    let lc = this.localCoords(camera);
-    let explodeImg = new Image();
-    explodeImg.src = `./Explode-sequence/explode-sequence${this.explodingSequence}.png`;
-    camera.ctx.drawImage(
-      explodeImg,
-      lc.x - explodeImg.width / 2,
-      lc.y - explodeImg.height / 2
-    );
-  }
-
   explode() {
     if (this.exploding) return;
-
     this.exploding = true;
     this.playerDead = true;
-    this.audioTankExplode.play();
-    let intId = setInterval(() => {
-      this.explodingSequence++;
-      if (this.explodingSequence > 8) {
-        clearInterval(intId);
-        this.exploding = false;
-        super.explode();
-      }
-    }, 80);
   }
 
   collides(uiobject) {
