@@ -1,3 +1,4 @@
+import { RoomRuntime } from "./roomRuntime.js";
 import { Player } from "./player.js";
 
 /**
@@ -18,6 +19,7 @@ class Room {
   constructor(id) {
     this.id = id;
     this.players = [];
+    this.roomRuntime = new RoomRuntime();
   }
 
   /**
@@ -28,9 +30,10 @@ class Room {
   playerJoinRoom(player) {
     if (!this.getPlayer(player.socket)) {
       this.players.push(player);
-      return true;
     }
-    return false;
+
+    const id = this.roomRuntime.createSoliderIfNotExists(player);
+    player.modelObjectId = id;
   }
 
   /**
@@ -51,6 +54,7 @@ class Room {
    */
   removePlayer(socket) {
     this.players = this.players.filter((p) => p.socket.id !== socket.id);
+    this.roomRuntime.removePlayer(socket);
   }
 }
 

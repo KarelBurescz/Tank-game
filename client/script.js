@@ -5,7 +5,7 @@ import { UiObjects } from "../arrayuiobjects.js";
 import { Game } from "../game.js";
 import { Camera } from "../camera.js";
 import { Tree } from "../tree.js";
-import { Config } from "../config.js";
+import { Config } from "./config.js";
 
 const socket = io();
 socket.emit("join-room", "war-room-1");

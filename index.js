@@ -56,9 +56,12 @@ function getInfo() {
   let str = `Game has : ${serverGame.players.length} players: `;
   serverGame.players.forEach((p) => (str += `${p.socket.id},`));
   str += "\n  Rooms:";
-  serverGame.rooms.forEach(
-    (r) => (str += `  ${r.id} (${r.players.length} players)\n`)
-  );
+  serverGame.rooms.forEach((r) => {
+    str += `  ${r.id} (${r.players.length} players)\n`;
+    str += r.roomRuntime.getInfo();
+    return str;
+  });
+
   return str;
 }
 
