@@ -12,7 +12,8 @@ const Config = {
         fire: 'w',
         nitro: 'd',
         focus: 's',
-        mineDeploy: 'a'
+        mineDeploy: 'a',
+        radar: 'r'
     }
 
 }
