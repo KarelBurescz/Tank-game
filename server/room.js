@@ -34,6 +34,10 @@ class Room {
 
     const id = this.roomRuntime.createSoliderIfNotExists(player);
     player.modelObjectId = id;
+
+    if(!this.roomRuntime.running && this.roomRuntime.playerSoliders.size > 0) {
+      this.roomRuntime.start();
+    }
   }
 
   /**
@@ -55,6 +59,10 @@ class Room {
   removePlayer(socket) {
     this.players = this.players.filter((p) => p.socket.id !== socket.id);
     this.roomRuntime.removePlayer(socket);
+
+    if(this.roomRuntime.running && this.roomRuntime.playerSoliders.size == 0) {
+      this.roomRuntime.stop();
+    }
   }
 }
 

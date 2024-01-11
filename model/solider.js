@@ -42,22 +42,24 @@ class Solider extends ModelObject {
     this.playerSocketId = null;
     this.direction = direction;
     this.speed = speed;
-    this.movingFoward = false;
-    this.rotatingRight = false;
-    this.movingBack = false;
-    this.rotatingLeft = false;
     this.gunDirection = 0;
-    this.turretMovingRight = false;
-    this.turretMovingLeft = false;
     this.turretSpeed = 0.03;
     this.bulletsLoaded = 5;
-    this.speedBoost = false;
     this.speedBoostCouter = 200;
-    this.coolingDown = false;
     this.explodingSequence = 0;
+    this.coolingDown = false;
     this.exploding = false;
-    this.focusMode = false;
     this.playerDead = false;
+    
+    /* Properties that will be updated from the client's controller */
+    this.movingFoward = false;
+    this.movingBack = false;
+    this.speedBoost = false;
+    this.rotatingRight = false;
+    this.rotatingLeft = false;
+    this.turretMovingRight = false;
+    this.turretMovingLeft = false;
+    this.focusMode = false;
     this.mineDeployed = false;
   }
 
@@ -221,20 +223,24 @@ class Solider extends ModelObject {
     }
 
     if (this.turretMovingLeft || this.turretMovingRight) {
-      this.audioTurretRotating.play();
+      //TODO: remove or fix
+      // this.audioTurretRotating.play();
     } else {
-      this.audioTurretRotating.pause();
+      //TODO: remove or fix
+      // this.audioTurretRotating.pause();
     }
-
+    
     if (
       this.movingFoward ||
       this.movingBack ||
       this.rotatingLeft ||
       this.rotatingRight
-    ) {
-      this.audioMoving.play();
+      ) {
+      //TODO: remove or fix
+      // this.audioMoving.play();
     } else {
-      this.audioMoving.pause();
+      //TODO: remove or fix
+      // this.audioMoving.pause();
     }
 
     super.update();
