@@ -136,6 +136,10 @@ class RoomRuntime {
     console.log("    Starting the roomRuntime.")
     this.updatingScheduler = setInterval(() => this.update(), 1000/60);
     this.tpsComputeScheduler = setInterval(() => this.updateTps(), 1000);
+    //TODO: Remove later
+    this.debugOutputScheduler = setInterval(()=> {
+      console.log(this.getInfo(), 3000);
+    })
 
     this.initScene();
     this.running = true;
@@ -148,6 +152,7 @@ class RoomRuntime {
     console.log("    Stopping the runtime");
     clearInterval(this.tpsComputeScheduler);
     clearInterval(this.updatingScheduler);
+    clearInterval(this.debugOutputScheduler);
 
     this.objects = [];
     this.running = false;
@@ -169,6 +174,24 @@ class RoomRuntime {
     return Number(process.hrtime.bigint() / 1000n);
   }
 
+  getSerializable() {
+
+    let serializable = {
+      gameScene: [],
+      players: [],
+      objects: []
+    }
+
+    this.objects.forEach( o => serializable.objects.push(o.getSerializable()));
+    this.playerSoliders.forEach( p => serializable.players.push(p.getSerializable()));
+
+    return serializable;
+  }
+
+  serializeToJson() {
+    return JSON.stringify(this.getSerializable(), undefined, "  ");
+  }
+
   /**
    * Retrieves information about the current state of the room.
    *
@@ -180,6 +203,7 @@ class RoomRuntime {
     for (const [k, v] of this.playerSoliders) {
       str += `      solider: { id: ${v.id}, playerId: ${v.playerSocketId}}\n`;
     }
+    str += `      objects json: \n${this.serializeToJson()}`
     return str;
   }
 }

@@ -10,6 +10,8 @@ class Tree extends ModelObject{
         this.ctx = game.ctx;
         this.game = game;
         this.hp = hp;
+
+        this.type = "tree";
     }
 
     collisionBox() {

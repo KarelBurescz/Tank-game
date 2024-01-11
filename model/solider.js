@@ -50,6 +50,14 @@ class Solider extends ModelObject {
     this.coolingDown = false;
     this.exploding = false;
     this.playerDead = false;
+    this.type = "player";
+
+    this.serializableProperties.push(...[
+      "direction", "gunDirection", "bulletsLoaded", "speedBoostCouter",
+      "coolingDown", "exploding", "playerDead", "movingForward", "movingBack",
+      "speedBoost", "rotatingRight", "rotatingLeft", "turretMovingRight",
+      "turretMovingLeft"
+    ])
     
     /* Properties that will be updated from the client's controller */
     this.movingFoward = false;
