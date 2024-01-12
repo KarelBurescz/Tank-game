@@ -15,9 +15,10 @@ class ModelObject {
    * @param {number} height - The height of the object.
    * @param {number} hp - The health points of the object.
    */
+  
   constructor(game, x, y, width, height, hp) {
     this.id = ModelObject.lastId++; // Unique identifier for the object
-
+    
     this.x = x; // x-coordinate
     this.y = y; // y-coordinate
     this.width = width; // Object width
@@ -25,6 +26,8 @@ class ModelObject {
     this.game = game; // Game instance reference
     this.hp = hp; // Health points
     this.type = "none"; // Type of the object
+
+    this.serializableProperties = ["x", "y", "width", "height", "hp", "type"];
   }
 
   /**
@@ -73,7 +76,14 @@ class ModelObject {
     return true;
   }
 
-  // Additional methods can be documented similarly.
+  getSerializable(){
+    let out = {};
+    let k = Object.keys(this);
+    for (let ks of this.serializableProperties) {
+      if (ks in this) out[ks] = this[ks];
+    }
+    return out;
+  }
 }
 
 export { ModelObject };

@@ -75,6 +75,7 @@ Game.addPlayer(mySolider1);
 UiObjects.push(mySolider);
 UiObjects.push(mySolider1);
 
+/* TODO:  This should be removed and ran on server only */
 for (let i = 0; i <= 150; i++) {
   const myX = Math.random() * 5000 + 40;
   const myY = Math.random() * 5000 + 40;
