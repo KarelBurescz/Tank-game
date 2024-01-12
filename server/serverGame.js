@@ -1,6 +1,7 @@
 import { RoomRuntime } from "./roomRuntime.js";
 import { Player } from "./player.js";
 import { Room } from "./room.js";
+import e from "express";
 
 /**
  * @typedef { Object } ServerGame
@@ -77,6 +78,22 @@ class ServerGame {
       }
     }
     return new Player(socket);
+  }
+
+  updateController(socket, csp){
+    let pl = this.getPlayer(socket);
+    if(!pl) return;
+
+    pl.updateController(csp);
+  }
+
+  getPlayer(socket) {
+    let pls = this.players.filter( p => p.socket.id == socket.id);
+    if (pls && pls.length > 0) {
+      return pls[0];
+    } else {
+      return null;
+    }
   }
 
   /**

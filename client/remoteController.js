@@ -59,7 +59,7 @@ class RemoteController {
             function (e) {
                 if (this.keyDownHandlers.hasOwnProperty(e.key)) {
                     this.keyDownHandlers[e.key]();
-                    this.socket.emit("update-controller", "{FAKE DATA}")
+                    this.updateServerState();
                 }
             }.bind(this)
         );
@@ -68,9 +68,15 @@ class RemoteController {
             function (e) {
                 if (this.keyUpHandlers.hasOwnProperty(e.key)) {
                     this.keyUpHandlers[e.key]();
-                    this.socket.emit("update-controller", "{FAKE DATA}")
+                    this.updateServerState();
                 }
             }.bind(this)
+        );
+    }
+
+    updateServerState() {
+        this.socket.emit("update-controller",
+            JSON.stringify(this.playerObject.csp, null, " "),
         );
     }
 }

@@ -51,7 +51,7 @@ class RoomRuntime {
       this.playerSoliders.set(solider.id, solider);
     }
 
-    return solider.id;
+    return solider;
   }
 
   /**

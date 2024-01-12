@@ -29,11 +29,14 @@ class Room {
    */
   playerJoinRoom(player) {
     if (!this.getPlayer(player.socket)) {
+      player.activeRoom = this;
       this.players.push(player);
     }
 
-    const id = this.roomRuntime.createSoliderIfNotExists(player);
-    player.modelObjectId = id;
+    const s = this.roomRuntime.createSoliderIfNotExists(player);
+    player.modelObjectId = s.id;
+    player.modelObject = s;
+    player.activeRoom = this;
 
     if(!this.roomRuntime.running && this.roomRuntime.playerSoliders.size > 0) {
       this.roomRuntime.start();

@@ -17,6 +17,16 @@ class Player {
   constructor(socket) {
     this.socket = socket;
     this.modelObjectId = null;
+
+    this.modelObject = null;
+    this.activeRoom = null;
+  }
+
+  updateController(csp) {
+    if(!this.activeRoom) return;
+    if(!this.modelObject) return;
+
+    this.modelObject.updateCsp(csp);
   }
 }
 

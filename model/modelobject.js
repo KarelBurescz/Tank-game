@@ -18,24 +18,39 @@ class ModelObject {
   
   constructor(game, x, y, width, height, hp) {
     this.id = ModelObject.lastId++; // Unique identifier for the object
+    this.game, // Game instance reference
     
-    this.x = x; // x-coordinate
-    this.y = y; // y-coordinate
-    this.width = width; // Object width
-    this.height = height; // Object height
-    this.game = game; // Game instance reference
-    this.hp = hp; // Health points
-    this.type = "none"; // Type of the object
+    this.ssp = {
+      x: x, // x-coordinate
+      y: y, // y-coordinate
+      width: width, // Object width
+      height: height, // Object height
+      hp: hp, // Health points
+      type: "none", // Type of the object
+    };
 
-    this.serializableProperties = ["x", "y", "width", "height", "hp", "type"];
+    this.csp = {};
   }
 
   /**
    * Updates the state of the object in time. Typically called each game tick.
    */
   update() {
-    if (this.hp <= 0) {
+    if (this.ssp.hp <= 0) {
       this.explode();
+    }
+  }
+
+  updateCsp(csp) {
+    console.log(`Updating CSP: ${csp}`);
+    try {
+      let update = JSON.parse(csp);
+      this.csp = {
+        ...this.csp, 
+        ...update,
+      }
+    } catch (e) {
+      console.log(`Error parsing CSP: ${csp}`);
     }
   }
 
@@ -52,10 +67,10 @@ class ModelObject {
    */
   collisionBox() {
     return {
-      x: this.x,
-      y: this.y,
-      w: this.width,
-      h: this.height,
+      x: this.ssp.x,
+      y: this.ssp.y,
+      w: this.ssp.width,
+      h: this.ssp.height,
     };
   }
 
@@ -77,12 +92,7 @@ class ModelObject {
   }
 
   getSerializable(){
-    let out = {};
-    let k = Object.keys(this);
-    for (let ks of this.serializableProperties) {
-      if (ks in this) out[ks] = this[ks];
-    }
-    return out;
+    return this.ssp;
   }
 }
 
