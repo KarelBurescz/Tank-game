@@ -133,6 +133,7 @@ class RoomRuntime {
    * Start the runtime, schedule the updates, computation of tps.
    */
   start() {
+    if (this.running) return;
     console.log("    Starting the roomRuntime.")
     this.updatingScheduler = setInterval(() => this.update(), 1000/60);
     this.tpsComputeScheduler = setInterval(() => this.updateTps(), 1000);
@@ -149,6 +150,7 @@ class RoomRuntime {
    * Stops the update and tps computers.
    */
   stop(){
+    if(!this.running) return;
     console.log("    Stopping the runtime");
     clearInterval(this.tpsComputeScheduler);
     clearInterval(this.updatingScheduler);
