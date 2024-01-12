@@ -18,7 +18,7 @@ class ModelObject {
   
   constructor(game, x, y, width, height, hp) {
     this.id = ModelObject.lastId++; // Unique identifier for the object
-    this.game, // Game instance reference
+    this.game = game; // Game instance reference
     
     this.ssp = {
       x: x, // x-coordinate
@@ -76,12 +76,12 @@ class ModelObject {
 
   /**
    * Checks if this object collides with another object.
-   * @param {ModelObject} uiobject - Another object to check collision with.
+   * @param {ModelObject} modelObject - Another object to check collision with.
    * @return {boolean} True if there is a collision, false otherwise.
    */
-  collides(uiobject) {
+  collides(modelObject) {
     const cbx = this.collisionBox();
-    const element = uiobject.collisionBox();
+    const element = modelObject.collisionBox();
 
     if (cbx.x + cbx.w < element.x) return false;
     if (cbx.x > element.x + element.w) return false;

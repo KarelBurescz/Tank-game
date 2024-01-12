@@ -1,10 +1,9 @@
-import { Solider } from "./solider.js";
-import { Obstacle } from "./obstacle.js";
+import { UiSolider } from "./uisolider.js";
+import { UiObstacle } from "./uiobstacle.js";
 import { mouse } from "./mouse.js";
-import { UiObjects } from "./arrayuiobjects.js";
 import { Game } from "./game.js";
 import { Camera } from "./camera.js";
-import { Tree } from "./tree.js";
+import { UiTree } from "./uitree.js";
 import { Config } from "./config.js";
 import { RemoteController } from "./remoteController.js";
 
@@ -65,16 +64,17 @@ window.addEventListener("resize", function () {
 let myCamera = new Camera(0, 0, canvas, fogCanvas, null);
 let myCamera1 = new Camera(0, 0, canvas1, fog1Canvas, null);
 
-let myGame = new Game(canvasBackground, backgroundCTX, UiObjects);
+let myGame = new Game(canvasBackground, backgroundCTX);
 
-let mySolider = new Solider(myGame, 2500, 2500, 51, 50, 180, 1, 180, 100);
-let mySolider1 = new Solider(myGame, 3500, 2440, 51, 50, 360, 1, 360, 100);
+let mySolider = new UiSolider(myGame, 2500, 2500, 51, 50, 180, 1, 180, 100);
+let mySolider1 = new UiSolider(myGame, 3500, 2440, 51, 50, 360, 1, 360, 100);
 
+//TODO: will fix this later.
 Game.addPlayer(mySolider);
 Game.addPlayer(mySolider1);
 
-UiObjects.push(mySolider);
-UiObjects.push(mySolider1);
+myGame.addObject(mySolider);
+myGame.addObject(mySolider1);
 
 /* TODO:  This should be removed and ran on server only */
 for (let i = 0; i <= 150; i++) {
@@ -89,16 +89,16 @@ for (let i = 0; i <= 150; i++) {
     myHeight = 30;
   }
 
-  const maybeWall = new Obstacle(myGame, myX, myY, myWidth, myHeight, 100, "");
+  const maybeWall = new UiObstacle(myGame, myX, myY, myWidth, myHeight, 100, "");
 
-  const wallCollides = UiObjects.some((e) => {
-    if (e.collides(maybeWall)) {
+  const wallCollides = myGame.objects.some((e) => {
+    if (e.model.collides(maybeWall.model)) {
       return true;
     }
   });
 
   if (wallCollides === false) {
-    UiObjects.push(maybeWall);
+    myGame.addObject(maybeWall);
   }
 }
 
@@ -108,21 +108,21 @@ for (let j = 0; j <= 150; ++j) {
 
   let myHeight = (Math.random() + 1) * 30;
 
-  const maybeTree = new Tree(myGame, myX, myY, myHeight, 0, 100);
+  const maybeTree = new UiTree(myGame, myX, myY, myHeight, 0, 100);
 
-  const treeCollides = UiObjects.some((e) => {
-    if (e.collides(maybeTree)) {
+  const treeCollides = myGame.objects.some((e) => {
+    if (e.model.collides(maybeTree.model)) {
       return true;
     }
   });
 
   if (!treeCollides) {
-    UiObjects.push(maybeTree);
+    myGame.addObject(maybeTree);
   }
 }
 
-myCamera.followedObject = mySolider;
-myCamera1.followedObject = mySolider1;
+myCamera.setFollowedModel(mySolider.model);
+myCamera1.setFollowedModel(mySolider1.model);
 
 myCamera.update();
 myCamera1.update();
@@ -130,78 +130,16 @@ myCamera1.update();
 let rc = new RemoteController(window, mySolider, Config, socket);
 rc.registerController(Config);
 
-window.addEventListener("keydown", function (e) {
-  if (e.key === "ArrowUp") {
-    mySolider1.movingFoward = true;
-  } else if (e.key === "ArrowRight") {
-    mySolider1.rotatingRight = true;
-  } else if (e.key === "ArrowLeft") {
-    mySolider1.rotatingLeft = true;
-  } else if (e.key === "ArrowDown") {
-    mySolider1.movingBack = true;
-  } else if (e.key === "i") {
-    mySolider1.turretMovingLeft = true;
-  } else if (e.key === "p") {
-    mySolider1.turretMovingRight = true;
-  } else if (e.key === "j") {
-    mySolider1.mineDeployed = true;
-  }
-});
-
-window.addEventListener("keyup", function (e) {
-  if (e.key === "ArrowUp") {
-    mySolider1.movingFoward = false;
-  } else if (e.key === "ArrowRight") {
-    mySolider1.rotatingRight = false;
-  } else if (e.key === "ArrowLeft") {
-    mySolider1.rotatingLeft = false;
-  } else if (e.key === "ArrowDown") {
-    mySolider1.movingBack = false;
-  } else if (e.key === "i") {
-    mySolider1.turretMovingLeft = false;
-  } else if (e.key === "p") {
-    mySolider1.turretMovingRight = false;
-  }
-});
-
-window.addEventListener("keydown", function (e) {
-  if (e.key === "o") {
-    mySolider1.fire();
-  }
-});
-
-window.addEventListener("keydown", (e) => {
-  if (e.key === "l") {
-    mySolider1.speedBoost = true;
-  }
-});
-
-window.addEventListener("keyup", (e) => {
-  if (e.key === "l") {
-    mySolider1.speedBoost = false;
-  }
-});
-
-window.addEventListener("keydown", (e) => {
-  if (e.key === "k") {
-    mySolider1.focusMode = true;
-  }
-});
-
-window.addEventListener("keyup", (e) => {
-  if (e.key === "k") {
-    mySolider1.focusMode = false;
-  }
-});
-
 function handleUiObjects() {
-  UiObjects.forEach(function (o) {
-    o.update();
+  myGame.objects.forEach(function (o) {
+    //TODO: Enable it this later on.
+    // o.model.update();
   });
+
   myCamera.update();
   myCamera1.update();
 
-  UiObjects.forEach(function (o) {
+  myGame.objects.forEach(function (o) {
     o.draw(myCamera);
     o.draw(myCamera1);
   });

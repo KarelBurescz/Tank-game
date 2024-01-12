@@ -13,6 +13,8 @@ const io = new Server(server);
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 app.use(express.static(__dirname + "/client"));
+app.use('/model', express.static(__dirname + "/model"));
+
 // app.get("/", (req, res) => {
 //   res.sendFile(join(__dirname, "client/index.html"));
 // });
@@ -49,7 +51,6 @@ io.on("connection", (socket) => {
 
   socket.on("update-controller", (msg) => {
     serverGame.updateController(socket,msg);
-    console.log(`Updating controller for ${socket.id} to: ${msg}`);
   })
 
   console.log(getInfo());

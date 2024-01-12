@@ -16,13 +16,13 @@ class RemoteController {
     prepareKeyDownHandlers(config) {
         let ret = {};
         ret[config.p1.forward] = () => {
-            this.playerObject.movingFoward = true;
-            this.playerObject.movingBack = false;
+            this.playerObject.csp.movingFoward = true;
+            this.playerObject.csp.movingBack = false;
         }
 
         ret[config.p1.backward] = () => {
-            this.playerObject.movingFoward = false;
-            this.playerObject.movingBack = true;
+            this.playerObject.csp.movingFoward = false;
+            this.playerObject.csp.movingBack = true;
         }
 
         ret[config.p1.right] = () => this.playerObject.rotatingRight = true;
@@ -40,8 +40,8 @@ class RemoteController {
 
     prepareKeyUpHandlers(config) {
         let ret = {};
-        ret[config.p1.forward] = () => this.playerObject.movingFoward = false;
-        ret[config.p1.backward] = () => this.playerObject.movingBack = false;
+        ret[config.p1.forward] = () => this.playerObject.csp.movingFoward = false;
+        ret[config.p1.backward] = () => this.playerObject.csp.movingBack = false;
         ret[config.p1.right] = () => this.playerObject.rotatingRight = false;
         ret[config.p1.left] = () => this.playerObject.rotatingLeft = false;
         ret[config.p1.turret_left] = () => this.playerObject.turretMovingLeft = false;

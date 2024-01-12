@@ -1,104 +1,93 @@
 import { UiObject } from "./uiobject.js";
 import { Bullet } from "./bullet.js";
 import { Config } from "./config.js";
-import { mouse } from "./mouse.js";
 import { UiObjects } from "./arrayuiobjects.js";
 import { LandMine } from "./landMine.js";
 import { Radar } from "./radar.js";
+import { Solider } from "/model/solider.js";
 
-class Solider extends UiObject {
+class UiSolider extends UiObject {
   static {
     this.audioMovingSrc = UiObject.loadAudio("tank-moving1.mp3");
-
     this.audioTurretRotatingSrc = UiObject.loadAudio("tank-turret-rotate.mp3");
-
     this.audioReloadingSrc = UiObject.loadAudio("tank-reload.mp3");
-
     this.audioEmptyGunShotSrc = UiObject.loadAudio("empty-gun-shot.mp3");
-
     this.audioTankExplodeSrc = UiObject.loadAudio("tank-explode.mp3");
-
     this.audioCoolingDownSrc = UiObject.loadAudio("tank-cooling-down.mp3");
   }
 
   constructor(game, x, y, width, height, direction, speed, gunDirection, hp) {
     super(game, x, y, width, height, hp);
-    this.direction = direction;
-    this.speed = speed;
+
+    this.model = new Solider(game, x, y, width, height, direction, speed, gunDirection, hp);
+    
+    this.csp = this.model.csp;
+    this.ssp = this.model.ssp;
+
     // this.gunDirection = gunDirection;
     this.image = new Image();
     this.image.src = "tank1.png";
     this.gunImage = new Image();
     this.gunImage.src = "turret.png";
-    this.movingFoward = false;
-    this.rotatingRight = false;
-    this.movingBack = false;
-    this.rotatingLeft = false;
-    this.bgCtx = game.bgctx;
     this.tracksImg = new Image();
     this.tracksImg.src = "tracks.png";
-    this.gunDirection = 0;
-    this.turretMovingRight = false;
-    this.turretMovingLeft = false;
-    this.turretSpeed = 0.03;
-    this.bulletsLoaded = 5;
-    this.speedBoost = false;
-    this.speedBoostCouter = 200;
-    this.coolingDown = false;
-    this.explodingSequence = 0;
-    this.exploding = false;
-    this.focusMode = false;
-    this.playerDead = false;
+
+    // this.direction = direction;
+    // this.speed = speed;
+    // this.movingFoward = false;
+    // this.rotatingRight = false;
+    // this.movingBack = false;
+    // this.rotatingLeft = false;
+    // this.bgCtx = game.bgctx;
+    // this.gunDirection = 0;
+    // this.turretMovingRight = false;
+    // this.turretMovingLeft = false;
+    // this.turretSpeed = 0.03;
+    // this.bulletsLoaded = 5;
+    // this.speedBoost = false;
+    // this.speedBoostCouter = 200;
+    // this.coolingDown = false;
+    // this.explodingSequence = 0;
+    // this.exploding = false;
+    // this.focusMode = false;
+    // this.playerDead = false;
+
+    // Mine indicator
+    // this.mineDeployed = false;
+    // Radar indicator
+    // this.radarOn = false;
+    // Radar instance
+
     // Audios :
     this.audioMoving = new Audio();
-    this.audioMoving.src = Solider.audioMovingSrc.src;
+    this.audioMoving.src = UiSolider.audioMovingSrc.src;
     this.audioTurretRotating = new Audio();
-    this.audioTurretRotating.src = Solider.audioTurretRotatingSrc.src;
+    this.audioTurretRotating.src = UiSolider.audioTurretRotatingSrc.src;
     this.audioReloading = new Audio();
-    this.audioReloading.src = Solider.audioReloadingSrc.src;
+    this.audioReloading.src = UiSolider.audioReloadingSrc.src;
     this.audioEmptyGunShot = new Audio();
-    this.audioEmptyGunShot.src = Solider.audioEmptyGunShotSrc.src;
+    this.audioEmptyGunShot.src = UiSolider.audioEmptyGunShotSrc.src;
     this.audioTankExplode = new Audio();
-    this.audioTankExplode.src = Solider.audioTankExplodeSrc.src;
+    this.audioTankExplode.src = UiSolider.audioTankExplodeSrc.src;
     this.audioCoolingDown = new Audio();
-    this.audioCoolingDown.src = Solider.audioCoolingDownSrc.src;
-    // Mine indicator
-    this.mineDeployed = false;
-    // Radar indicator
-    this.radarOn = false;
-    // Radar instance
+    this.audioCoolingDown.src = UiSolider.audioCoolingDownSrc.src;
     this.radar = new Radar(this, 120);
   }
 
-  collisionBox() {
-    return {
-      x: this.x - this.width / 2,
-      y: this.y - this.height / 2,
-      w: this.width,
-      h: this.height,
-    };
-  }
-
-  center() {
-    return {
-      x: this.x,
-      y: this.y,
-    };
-  }
+  center() { return this.model.center() }
 
   draw(camera) {
     let co = this.localCoords(camera);
 
-    const center = this.center();
     camera.ctx.save();
     camera.ctx.translate(co.x, co.y);
     camera.ctx.rotate(this.direction);
     camera.ctx.drawImage(
       this.image,
-      -this.width / 2,
-      -this.height / 2,
-      this.width,
-      this.height
+      -this.ssp.width / 2,
+      -this.ssp.height / 2,
+      this.ssp.width,
+      this.ssp.height
     );
     camera.ctx.restore();
 
@@ -107,10 +96,10 @@ class Solider extends UiObject {
     camera.ctx.rotate(this.direction + this.gunDirection);
     camera.ctx.drawImage(
       this.gunImage,
-      -this.width / 2,
-      -this.height / 2,
-      this.width,
-      this.height
+      -this.ssp.width / 2,
+      -this.ssp.height / 2,
+      this.ssp.width,
+      this.ssp.height
     );
     camera.ctx.restore();
 
@@ -124,8 +113,8 @@ class Solider extends UiObject {
       camera.ctx.strokeStyle = "green";
       camera.ctx.strokeRect(cbx.x - camera.x, cbx.y - camera.y, cbx.w, cbx.h);
 
-      let px = Math.cos(this.direction) * 50;
-      let py = Math.sin(this.direction) * 50;
+      let px = Math.cos(this.ssp.direction) * 50;
+      let py = Math.sin(this.ssp.direction) * 50;
 
       camera.ctx.beginPath();
       camera.ctx.strokeStyle = "blue";
@@ -133,8 +122,8 @@ class Solider extends UiObject {
       camera.ctx.lineTo(co.x + px, co.y + py);
       camera.ctx.stroke();
 
-      let gx = Math.cos(this.direction + this.gunDirection) * 70;
-      let gy = Math.sin(this.direction + this.gunDirection) * 70;
+      let gx = Math.cos(this.ssp.direction + this.ssp.gunDirection) * 70;
+      let gy = Math.sin(this.ssp.direction + this.ssp.gunDirection) * 70;
 
       camera.ctx.beginPath();
       camera.ctx.strokeStyle = "red";
@@ -151,71 +140,16 @@ class Solider extends UiObject {
   drawTracks(x, y) {
     const center = this.center();
     this.bgCtx.save();
-    this.bgCtx.translate(this.x, this.y);
-    this.bgCtx.rotate(this.direction);
+    this.bgCtx.translate(this.ssp.x, this.ssp.y);
+    this.bgCtx.rotate(this.ssp.direction);
     this.bgCtx.drawImage(
       this.tracksImg,
-      -this.width / 2,
-      -this.height / 2,
-      this.width - 15,
-      this.height
+      -this.ssp.width / 2,
+      -this.ssp.height / 2,
+      this.ssp.width - 15,
+      this.ssp.height
     );
     this.bgCtx.restore();
-  }
-
-  moveFront(dir = 1) {
-    if (this.radarOn) {
-      return;
-    }
-
-    const oldX = this.x;
-    const oldY = this.y;
-
-    let speed = this.speed;
-
-    if (this.speedBoost) {
-      speed += 1;
-      this.speedBoostCouter--;
-    }
-
-    if (this.speedBoostCouter <= 0) {
-      speed = 0;
-      this.audioCoolingDown.play();
-
-      if (this.coolingDown === false) {
-        setTimeout(() => {
-          this.speedBoostCouter = 200;
-          this.coolingDown = false;
-          this.audioMoving.pause();
-          this.audioCoolingDown.pause();
-        }, 2000);
-      }
-
-      this.coolingDown = true;
-    }
-
-    this.x += dir * Math.cos(this.direction) * speed;
-    this.y += dir * Math.sin(this.direction) * speed;
-
-    let collide = false;
-    UiObjects.forEach((uiobject) => {
-      if (uiobject === this) return;
-      if (this.collides(uiobject)) {
-        collide = true;
-      }
-    });
-    if (collide === true) {
-      this.x = oldX;
-      this.y = oldY;
-      console.log("collide");
-    }
-
-    // Draw tracks of tank
-    this.drawTracks(oldX, oldY);
-  }
-
-  moveBack() {
-    this.moveFront(-1);
   }
 
   deployMine() {
@@ -223,39 +157,6 @@ class Solider extends UiObject {
     this.mineDeployed = false;
     let nevim = UiObjects.unshift(myMine);
     console.log(nevim);
-  }
-
-  fire() {
-    if (this.playerDead) {
-      return;
-    }
-    if (this.bulletsLoaded < 1) {
-      this.audioEmptyGunShot.play();
-      return;
-    }
-
-    let myBullet = new Bullet(
-      this.game,
-      this.x,
-      this.y,
-      8,
-      8,
-      5,
-      this.direction + this.gunDirection,
-      20,
-      this
-    );
-
-    this.bulletsLoaded--;
-
-    if (this.bulletsLoaded < 1) {
-      setTimeout(() => {
-        this.audioReloading.play();
-        this.bulletsLoaded = 5;
-      }, 3000);
-    }
-
-    UiObjects.push(myBullet);
   }
 
   drawExplosion(camera) {
@@ -347,4 +248,4 @@ class Solider extends UiObject {
   }
 }
 
-export { Solider };
+export { UiSolider };

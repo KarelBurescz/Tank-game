@@ -1,12 +1,17 @@
 class Game {
-  constructor(bgcanvas, bgctx, Uiobjects) {
+  constructor(bgcanvas, bgctx) {
     this.bgcanvas = bgcanvas;
     this.bgctx = bgctx;
-    this.Uiobjects = Uiobjects;
+    this.objects = [];
   }
   static players = [];
+
   static addPlayer(player) {
     Game.players.push(player);
+  }
+
+  addObject(object) {
+    this.objects.push(object);
   }
 }
 

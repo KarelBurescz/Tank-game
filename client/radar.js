@@ -1,5 +1,3 @@
-import { Solider } from "./solider.js";
-import { UiObject } from "./uiobject.js";
 import { Game } from "./game.js";
 class Radar {
   constructor(tank, diameter) {

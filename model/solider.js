@@ -1,5 +1,4 @@
 import { ModelObject } from "./modelobject.js";
-import { Config } from "../server/config.js";
 
 /**
  * @define { ModelObject } Solider
@@ -27,7 +26,7 @@ class Solider extends ModelObject {
 
   /**
    * Constructs a new Solider instance.
-   * @param {Object} game - The game instance this solider is part of.
+   * @param {Object} game - The roomRuntime instance this solider is part of.
    * @param {number} x - The x-coordinate of the solider.
    * @param {number} y - The y-coordinate of the solider.
    * @param {number} width - The width of the solider.
@@ -88,6 +87,7 @@ class Solider extends ModelObject {
   }
 
   moveFront(dir = 1) {
+    console.log("Moving front!!")
     const oldX = this.ssp.x;
     const oldY = this.ssp.y;
 
@@ -116,9 +116,9 @@ class Solider extends ModelObject {
 
     let collide = false;
     //TODO: Fix this, this is not available on the server for now.
-    UiObjects.forEach((uiobject) => {
-      if (uiobject === this) return;
-      if (this.collides(uiobject)) {
+    this.game.objects.forEach((obj) => {
+      if (obj === this) return;
+      if (this.collides(obj)) {
         collide = true;
       }
     });

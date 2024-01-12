@@ -1,6 +1,6 @@
 class Camera {
 
-    constructor(x, y, canvas, fog, followedObject) {
+    constructor(x, y, canvas, fog, followedModel) {
         this.x = x;
         this.y = y;
         this.vx = 0;
@@ -23,22 +23,22 @@ class Camera {
         this.fog = fog;
         this.ctx = this.canvas.getContext('2d');
         this.fogCtx = this.fog.getContext('2d');
-        this.followedObject = followedObject;
+        this.followedModel = followedModel;
         this.visibilityRadius = 300;
-        // this.x = this.followedObject.x - this.w / 2;
-        // this.y = this.followedObject.y - this.h / 2;
+        // this.x = this.followedModel.x - this.w / 2;
+        // this.y = this.followedModel.y - this.h / 2;
 
     }
 
-    setFollowedObj(followedObject) {
-        this.followedObject = followedObject;
-        this.x = this.followedObject.x - this.w / 2;
-        this.y = this.followedObject.y - this.h / 2;
+    setFollowedModel(followedModel) {
+        this.followedModel = followedModel;
+        this.x = this.followedModel.ssp.x - this.w / 2;
+        this.y = this.followedModel.ssp.y - this.h / 2;
     }
 
     update() {
-        let Lx = this.x + this.w/2 - this.followedObject.x;
-        let Ly = this.y + this.h/2 - this.followedObject.y;
+        let Lx = this.x + this.w/2 - this.followedModel.ssp.x;
+        let Ly = this.y + this.h/2 - this.followedModel.ssp.y;
 
         
         this.ax = (-1 * this.k * Lx -this.M * this.vx) / this.m
@@ -101,7 +101,7 @@ class Camera {
         let myX = 5;
         let myY = 5;
 
-        const lives = this.followedObject.hp / 20;
+        const lives = this.followedModel.ssp.hp / 20;
 
         for (let i = 0; i < 5; i++) {
 
@@ -129,7 +129,7 @@ class Camera {
         let myXB = 5;
         let myYB = myY + myHeight + 4;
 
-        const speedBoost = this.followedObject.speedBoostCouter / 40;        
+        const speedBoost = this.followedModel.ssp.speedBoostCouter / 40;        
 
         for (let j = 0; j < 5; j++) {
 
@@ -156,7 +156,7 @@ class Camera {
         let myXBu = 5;
         let myYBu = myYB + myHeightB + 4;
 
-        const bulletsLoaded = this.followedObject.bulletsLoaded;
+        const bulletsLoaded = this.followedModel.ssp.bulletsLoaded;
 
         for (let k = 0; k < 5; k++) {
 
