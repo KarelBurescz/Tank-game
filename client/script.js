@@ -6,6 +6,7 @@ import { Game } from "./game.js";
 import { Camera } from "./camera.js";
 import { Tree } from "./tree.js";
 import { Config } from "./config.js";
+import { RemoteController } from "./remoteController.js";
 
 const socket = io();
 socket.emit("join-room", "war-room-1");
@@ -126,53 +127,8 @@ myCamera1.followedObject = mySolider1;
 myCamera.update();
 myCamera1.update();
 
-window.addEventListener("keydown", function (e) {
-  if (e.key === Config.p1.forward) {
-    mySolider.movingFoward = true;
-  } else if (e.key === Config.p1.right) {
-    mySolider.rotatingRight = true;
-  } else if (e.key === Config.p1.left) {
-    mySolider.rotatingLeft = true;
-  } else if (e.key === Config.p1.backward) {
-    mySolider.movingBack = true;
-  } else if (e.key === Config.p1.turret_left) {
-    mySolider.turretMovingLeft = true;
-  } else if (e.key === Config.p1.turret_right) {
-    mySolider.turretMovingRight = true;
-  } else if (e.key === Config.p1.fire) {
-    mySolider.fire();
-  } else if (e.key === Config.p1.nitro) {
-    mySolider.speedBoost = true;
-  } else if (e.key === Config.p1.focus) {
-    mySolider.focusMode = true;
-  } else if (e.key === Config.p1.mineDeploy) {
-    mySolider.mineDeployed = true;
-  } else if (e.key === Config.p1.radar) {
-    mySolider.radarOn = true;
-  }
-});
-
-window.addEventListener("keyup", function (e) {
-  if (e.key === Config.p1.forward) {
-    mySolider.movingFoward = false;
-  } else if (e.key === Config.p1.right) {
-    mySolider.rotatingRight = false;
-  } else if (e.key === Config.p1.left) {
-    mySolider.rotatingLeft = false;
-  } else if (e.key === Config.p1.backward) {
-    mySolider.movingBack = false;
-  } else if (e.key === Config.p1.turret_left) {
-    mySolider.turretMovingLeft = false;
-  } else if (e.key === Config.p1.turret_right) {
-    mySolider.turretMovingRight = false;
-  } else if (e.key === Config.p1.nitro) {
-    mySolider.speedBoost = false;
-  } else if (e.key === Config.p1.focus) {
-    mySolider.focusMode = false;
-  } else if (e.key === Config.p1.radar) {
-    mySolider.radarOn = false;
-  }
-});
+let rc = new RemoteController(window, mySolider, Config, socket);
+rc.registerController(Config);
 
 window.addEventListener("keydown", function (e) {
   if (e.key === "ArrowUp") {

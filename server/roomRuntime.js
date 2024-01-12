@@ -138,9 +138,9 @@ class RoomRuntime {
     this.updatingScheduler = setInterval(() => this.update(), 1000/60);
     this.tpsComputeScheduler = setInterval(() => this.updateTps(), 1000);
     //TODO: Remove later
-    this.debugOutputScheduler = setInterval(()=> {
-      console.log(this.getInfo(), 3000);
-    })
+    // this.debugOutputScheduler = setInterval(()=> {
+    //   console.log(this.getInfo(), 3000);
+    // })
 
     this.initScene();
     this.running = true;

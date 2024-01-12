@@ -47,6 +47,11 @@ io.on("connection", (socket) => {
     console.log(getInfo());
   });
 
+  socket.on("update-controller", (msg) => {
+    //serverGame.updateController(socket,msg);
+    console.log(`Updating controller for ${socket.id} to: ${msg}`);
+  })
+
   console.log(getInfo());
 });
 
