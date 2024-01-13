@@ -1,0 +1,13 @@
+{
+    "watch": [
+        "./index.js",
+        "server",
+        "model",
+        "client"
+    ],
+    "ext": "js,jsx,ts,tsx",
+    "ignore": [
+        "node_modules/"
+    ],
+    "exec": "npm run gen-and-start"
+}

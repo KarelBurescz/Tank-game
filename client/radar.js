@@ -89,7 +89,7 @@ class Radar {
   }
 
   getOponentsLocation() {
-    return Game.players
+    return Game.oponents
       .filter((e) => {
         return e !== this.tank;
       })

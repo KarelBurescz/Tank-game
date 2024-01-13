@@ -10,4 +10,4 @@ fi
 docker run -it \
  -v /home/pbures/node/Tank-game:/home/node/code \
  -p $PORT:3001 node /bin/bash \
- -c "cd /home/node/code && npm install && npm install -g nodemon && nodemon"
+ -c "cd /home/node/code && npm install && npm install -g nodemon && nodemon -c nodemon.json"

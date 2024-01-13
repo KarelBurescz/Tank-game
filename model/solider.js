@@ -1,40 +1,49 @@
+"use strict";
+// import { RoomRuntime } from "../server/roomRuntime.js";
 import { ModelObject } from "./modelobject.js";
+import { Bullet } from "./bullet.js";
 
 /**
- * @define { ModelObject } Solider
- * @property { String } playerId - An identifier of a player connected. It should be his socket ID on a server side.
- *
+ * Represents a solider in the game, extending ModelObject.
+ * @extends ModelObject
+ * 
+ * @property {number} ssp.direction: direction
+ * @property {number} ssp.speed: speed
+ * @property {number} ssp.gunDirection: direction of the gunTurret
+ * @property {number} ssp.turretSpeed: speed of rotating of the turret.
+ * @property {number} ssp.bulletsLoaded: number of bullets loaded.
+ * @property {number} ssp.speedBoostCouter: how many ticks a speed boost can work
+ * @property {number} ssp.explodingSequence: whidh exploding sequence is object on.
+ * @property {number} ssp.coolingDown: indicates if object can't move and is cooling down
+ * @property {number} ssp.exploding: indicates if object is exploding
+ * @property {number} ssp.playerDead: indicates if player is dead
+ * 
+ * @property {boolean} csp.movingFoward
+ * @property {boolean} csp.movingBack
+ * @property {boolean} csp.speedBoost
+ * @property {boolean} csp.rotatingRight
+ * @property {boolean} csp.rotatingLeft
+ * @property {boolean} csp.turretMovingRight
+ * @property {boolean} csp.turretMovingLeft
+ * @property {boolean} csp.focusMode
+ * @property {boolean} csp.mineDeploying
+ * @property {boolean} csp.firing
  */
-
 class Solider extends ModelObject {
   /**
-   * Represents a solider in the game, extending ModelObject.
-   * @extends ModelObject
-   */
-
-  /**
    * Creates a Solider object at a random position.
-   * @param {Object} game - The game instance this solider is part of.
+   * @param {RoomRuntime} game - The game instance this solider is part of.
    * @returns {Solider} A new Solider instance.
    */
   static CreateOnRandomPosition(game) {
     //TODO: Read the max values for coordinates from a config file.
     const x = Math.floor(Math.random() * 5000);
     const y = Math.floor(Math.random() * 5000);
-    return new Solider(game, x, y, 51, 50, 180, 1, 180, 100);
+    return new Solider(game, x, y, 51, 50, 0 * Math.PI/180, 1, 0 * Math.PI/180, 100);
   }
 
   /**
    * Constructs a new Solider instance.
-   * @param {Object} game - The roomRuntime instance this solider is part of.
-   * @param {number} x - The x-coordinate of the solider.
-   * @param {number} y - The y-coordinate of the solider.
-   * @param {number} width - The width of the solider.
-   * @param {number} height - The height of the solider.
-   * @param {number} direction - The initial direction of the solider.
-   * @param {number} speed - The speed of the solider.
-   * @param {number} gunDirection - The initial gun direction of the solider.
-   * @param {number} hp - The health points of the solider.
    */
   constructor(game, x, y, width, height, direction, speed, gunDirection, hp) {
     super(game, x, y, width, height, hp);
@@ -66,6 +75,7 @@ class Solider extends ModelObject {
       turretMovingLeft: false,
       focusMode: false,
       mineDeploying:false,
+      firing: false,
     }
 
   }
@@ -173,7 +183,8 @@ class Solider extends ModelObject {
       }, 3000);
     }
 
-    UiObjects.push(myBullet);
+    this.game.objects.push(myBullet);
+    console.log(`Firing!`)
   }
 
   explode() {
@@ -204,10 +215,10 @@ class Solider extends ModelObject {
       this.moveBack();
     }
     if (this.csp.rotatingRight === true) {
-      this.direction += (this.speed * Math.PI) / 120;
+      this.ssp.direction += (this.ssp.speed * Math.PI) / 120;
     }
     if (this.csp.rotatingLeft === true) {
-      this.direction -= (this.speed * Math.PI) / 120;
+      this.ssp.direction -= (this.ssp.speed * Math.PI) / 120;
     }
     let ts = this.ssp.turretSpeed;
 
@@ -215,10 +226,15 @@ class Solider extends ModelObject {
       ts = ts * 0.3;
     }
     if (this.csp.turretMovingLeft) {
-      this.gunDirection -= ts;
+      this.ssp.gunDirection -= ts;
     }
     if (this.csp.turretMovingRight) {
-      this.gunDirection += ts;
+      this.ssp.gunDirection += ts;
+    }
+
+    if (this.csp.firing) {
+      this.fire();
+      this.csp.firing = false;
     }
 
     if (this.csp.turretMovingLeft || this.csp.turretMovingRight) {

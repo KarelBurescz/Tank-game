@@ -1,15 +1,20 @@
+"use strict";
+
 /**
- * @typedef { Object } Player
- * @property { String } socket
- * @property { Number | null } modelOBjectID - It's a foreign key to the list of game model. The value denotes the game model of the player (the tank). Can be null, if the player is not part of any room.
+ * <p>
+ * The class represents the connected user to the server.
+ * The player may alreday be in some {@link Room}.
+ * </p>
+ * <p>
+ * The player
+ * also may already be playing, represented by
+ * the {@link Solider} in the {@link RoomRuntime}.
+ * </p>
+ * 
+ * @property { socket.io } socket - A socket.io socket by which the player is connected to the server.
+ * @property { Solider | null } modelObject - A reference to the object representing the player.
  */
-
 class Player {
-  /**
-   * The class represents the connected user to the server.
-   * The player may alreday be in a room, where his game object is represented by modelObjectID: Number.
-   */
-
   /**
    * @constructor
    * @param {String} socket - This is a socket.io.socket.id socket ID of the connected player. It serves as unique identifier for the players.

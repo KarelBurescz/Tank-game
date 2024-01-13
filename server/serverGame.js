@@ -1,22 +1,25 @@
-import { RoomRuntime } from "./roomRuntime.js";
 import { Player } from "./player.js";
 import { Room } from "./room.js";
-import e from "express";
 
 /**
- * @typedef { Object } ServerGame
+ * Class representing the whole server.
+ * 
  * @property {Array<Room>} rooms - A list of rooms where the games happen.
  * @property {Array<Player>} players - A list of players that are connected to the server.
+ * 
+ * <p>
+ * The class is a toplevel class in the backend.
+ * This class holds and manages all the rooms where players can connect.
+ * </p>
+ * 
+ * <p>
+ * Once a player intends to connect to a room, the room is found, or a new one is created.
+ * The player {@link Player} is then created. The primary key of the Player object is it's socket.io.socket.id value.
+ * </p>
  */
-
 class ServerGame {
   /**
-   * The class is a toplevel class in the backend. This is intended to hold all players connected into the server,
-   * and the rooms where players can connect.
-   *
-   * Once a player intends to connect to a room, the room is found, or a new one is created.
-   * The player object { Player } is then created. The primary key of the Player object is it's socket.io.socket.id value.
-   *
+   * @constructor
    */
   constructor() {
     this.rooms = [];
@@ -24,8 +27,7 @@ class ServerGame {
   }
 
   /**
-   * Adds a new player to the game if does not exist yet.
-   *
+   * Creates (if does not exist yet) and adds a new player to the game if does not exist yet.
    * @param {socket.io.socket} socket - An instance of a socket of socket.io, result of a connection of a client.
    * @returns {boolean} - True if a new player was created. False otherwise.
    */
@@ -109,6 +111,7 @@ class ServerGame {
     }
     this.rooms.forEach((r) => r.removePlayer(socket));
   }
+
 }
 
 export { ServerGame };

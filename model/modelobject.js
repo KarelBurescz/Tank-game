@@ -1,14 +1,19 @@
 /**
  * Represents a basic model for all objects modeled on the server side.
- * @typedef {Object} ModelObject
+ * @property {RoomRuntime} game - The roomRuntime instance this object belongs to.
+ * @property {number} ssp.id - Server side id for client-server identity identification.
+ * @property {number} ssp.x - The x-coordinate of the object in the game world.
+ * @property {number} ssp.y - The y-coordinate of the object in the game world.
+ * @property {number} ssp.width - The width of the object.
+ * @property {number} ssp.height - The height of the object.
+ * @property {number} ssp.hp - The health points of the object.
  */
-
 class ModelObject {
   static lastId = 0; // Static variable to keep track of the last assigned ID, across all ModelObjects.
 
   /**
    * Creates a new ModelObject instance.
-   * @param {Object} game - The game instance this object belongs to.
+   * @param {RoomTime} game - The game instance this object belongs to.
    * @param {number} x - The x-coordinate of the object in the game world.
    * @param {number} y - The y-coordinate of the object in the game world.
    * @param {number} width - The width of the object.
@@ -18,9 +23,11 @@ class ModelObject {
   
   constructor(game, x, y, width, height, hp) {
     this.id = ModelObject.lastId++; // Unique identifier for the object
+
     this.game = game; // Game instance reference
     
     this.ssp = {
+      id: this.id, //for identification for client side.
       x: x, // x-coordinate
       y: y, // y-coordinate
       width: width, // Object width

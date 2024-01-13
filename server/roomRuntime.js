@@ -6,16 +6,16 @@ import { Solider } from "../model/solider.js";
 
 /**
  * Keeps the game mechanics and the game objects for a single room.
- *
- * @typedef { Object } RoomRuntime
- * @property { Map<Number, Solider> } playerSoliders - A key-value store for the game objects representing the players. The key is the object's ID.
- *
+ * 
+ * @property { Map<Number, Solider> } playerSoliders - A key-value store for the game objects representing the players. 
+ * The key is the {@link Solider#playerId} property.
+ * @property { Array<ModelObject> } objects - A list of all objects in the room runtime.
+ * @property { Number } currentTps - Computed ticks per second if the runtime is running.
+ * @property { boolean } running - indicates if the runtime running.
  */
-
 class RoomRuntime {
   /**
    * Constructs a new instance of RoomRuntime.
-   * Initializes an empty Map to store player soldiers.
    */
   constructor() {
     this.playerSoliders = new Map();
@@ -138,9 +138,9 @@ class RoomRuntime {
     this.updatingScheduler = setInterval(() => this.update(), 1000/60);
     this.tpsComputeScheduler = setInterval(() => this.updateTps(), 1000);
     //TODO: Remove later
-    // this.debugOutputScheduler = setInterval(()=> {
-    //   console.log(this.getInfo(), 3000);
-    // })
+    this.debugOutputScheduler = setInterval(()=> {
+      console.log(this.getInfo(), 10000);
+    })
 
     this.initScene();
     this.running = true;
@@ -168,7 +168,7 @@ class RoomRuntime {
     this.currentTps = this.ticks * Number(1000000 / dt);
     this.ticks = 0;
 
-    console.log(`   TPS: ${this.currentTps}`)
+    // console.log(`   TPS: ${this.currentTps}`)
     this.lastTime = this.now();
   }
 
@@ -176,16 +176,30 @@ class RoomRuntime {
     return Number(process.hrtime.bigint() / 1000n);
   }
 
-  getSerializable() {
+  getPlayerState(soliderId) {
+    let playerSolider = this.playerSoliders.get(soliderId);
+    let st = this.getSerializable(soliderId);
+    return st;
+  }
+
+  getSerializable(soliderId) {
 
     let serializable = {
+      player: {},
       gameScene: [],
-      players: [],
+      oponents: [],
       objects: []
     }
-
-    this.objects.forEach( o => serializable.objects.push(o.getSerializable()));
-    this.playerSoliders.forEach( p => serializable.players.push(p.getSerializable()));
+    
+    // Ignore for now.
+    // this.objects.forEach( o => serializable.objects.push(o.getSerializable()));
+    this.playerSoliders.forEach( p => {
+      if (p.id == soliderId){
+        serializable.player = p.getSerializable();
+      } else {
+        serializable.oponents.push(p.getSerializable())
+      }
+    });
 
     return serializable;
   }

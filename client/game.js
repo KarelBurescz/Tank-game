@@ -3,11 +3,17 @@ class Game {
     this.bgcanvas = bgcanvas;
     this.bgctx = bgctx;
     this.objects = [];
+    this.oponents = [];
+    this.player = null;
   }
-  static players = [];
 
-  static addPlayer(player) {
-    Game.players.push(player);
+  setPlayer(player) {
+    this.player = player;
+    this.objects.push(player);
+  }
+
+  addOponent(oponents) {
+    this.oponents.push(oponents);
   }
 
   addObject(object) {

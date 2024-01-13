@@ -2,14 +2,9 @@ import { RoomRuntime } from "./roomRuntime.js";
 import { Player } from "./player.js";
 
 /**
- * @typedef { Object } Room
+ * Represents a room (one world where a fight of players happens)
  * @property {String} id - An ID of a room, can be any string.
  * @property {Array<Player>} players - A list of Players that joined the room.
- */
-
-/**
- * Represents a room (one world where a fight of players happens)
- *
  */
 class Room {
   /**
@@ -20,6 +15,9 @@ class Room {
     this.id = id;
     this.players = [];
     this.roomRuntime = new RoomRuntime();
+
+    this.stateUpdater = null;
+    this.running = false;
   }
 
   /**
@@ -38,9 +36,33 @@ class Room {
     player.modelObject = s;
     player.activeRoom = this;
 
-    if(!this.roomRuntime.running && this.roomRuntime.playerSoliders.size > 0) {
-      this.roomRuntime.start();
+    if(this.roomRuntime.playerSoliders.size > 0) {
+      this.start();
     }
+  }
+
+  start() {
+    this.stateUpdater = setInterval(this.updatePlayers.bind(this), 60);
+    this.running = true;
+    this.roomRuntime.start();
+  }
+
+  stop() {
+    clearInterval(this.stateUpdater);
+    this.roomRuntime.stop();
+    this.running = false;
+  }
+
+  /** 
+   * Updates players state over socket
+   */
+  updatePlayers(){
+    this.players.forEach((p) => {
+      let st = this.roomRuntime.getPlayerState(p.modelObject.id);
+      let json = JSON.stringify(st, null, " ");
+      // console.log(`Sending to socket: ${p.socket.id} update:\n${json}`)
+      p.socket.emit("state-upate", json);
+    })
   }
 
   /**
@@ -63,8 +85,8 @@ class Room {
     this.players = this.players.filter((p) => p.socket.id !== socket.id);
     this.roomRuntime.removePlayer(socket);
 
-    if(this.roomRuntime.running && this.roomRuntime.playerSoliders.size == 0) {
-      this.roomRuntime.stop();
+    if(this.roomRuntime.playerSoliders.size == 0) {
+      this.stop();
     }
   }
 }

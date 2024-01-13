@@ -25,15 +25,15 @@ class RemoteController {
             this.playerObject.csp.movingBack = true;
         }
 
-        ret[config.p1.right] = () => this.playerObject.rotatingRight = true;
-        ret[config.p1.left] = () => this.playerObject.rotatingLeft = true;
-        ret[config.p1.turret_left] = () => this.playerObject.turretMovingLeft = true;
-        ret[config.p1.turret_right] = () => this.playerObject.turretMovingRight = true;
-        ret[config.p1.fire] = () => this.playerObject.fire();
-        ret[config.p1.nitro] = () => this.playerObject.speedBoost = true;
-        ret[config.p1.focus] = () => this.playerObject.focusMode = true;
-        ret[config.p1.mineDeploy] = () => this.playerObject.mineDeployed = true;
-        ret[config.p1.radar] = () => this.playerObject.radarOn = true;
+        ret[config.p1.right] = () => this.playerObject.csp.rotatingRight = true;
+        ret[config.p1.left] = () => this.playerObject.csp.rotatingLeft = true;
+        ret[config.p1.turret_left] = () => this.playerObject.csp.turretMovingLeft = true;
+        ret[config.p1.turret_right] = () => this.playerObject.csp.turretMovingRight = true;
+        ret[config.p1.fire] = () => this.playerObject.csp.firing=true;
+        ret[config.p1.nitro] = () => this.playerObject.csp.speedBoost = true;
+        ret[config.p1.focus] = () => this.playerObject.csp.focusMode = true;
+        ret[config.p1.mineDeploy] = () => this.playerObject.csp.mineDeployed = true;
+        ret[config.p1.radar] = () => this.playerObject.csp.radarOn = true;
 
         return ret;
     }
@@ -42,14 +42,15 @@ class RemoteController {
         let ret = {};
         ret[config.p1.forward] = () => this.playerObject.csp.movingFoward = false;
         ret[config.p1.backward] = () => this.playerObject.csp.movingBack = false;
-        ret[config.p1.right] = () => this.playerObject.rotatingRight = false;
-        ret[config.p1.left] = () => this.playerObject.rotatingLeft = false;
-        ret[config.p1.turret_left] = () => this.playerObject.turretMovingLeft = false;
-        ret[config.p1.turret_right] = () => this.playerObject.turretMovingRight = false;
-        ret[config.p1.nitro] = () => this.playerObject.speedBoost = false;
-        ret[config.p1.focus] = () => this.playerObject.focusMode = false;
-        ret[config.p1.mineDeploy] = () => this.playerObject.mineDeployed = false;
-        ret[config.p1.radar] = () => this.playerObject.radarOn = false;
+        ret[config.p1.right] = () => this.playerObject.csp.rotatingRight = false;
+        ret[config.p1.left] = () => this.playerObject.csp.rotatingLeft = false;
+        ret[config.p1.turret_left] = () => this.playerObject.csp.turretMovingLeft = false;
+        ret[config.p1.turret_right] = () => this.playerObject.csp.turretMovingRight = false;
+        ret[config.p1.fire] = () => this.playerObject.csp.firing=false;
+        ret[config.p1.nitro] = () => this.playerObject.csp.speedBoost = false;
+        ret[config.p1.focus] = () => this.playerObject.csp.focusMode = false;
+        ret[config.p1.mineDeploy] = () => this.playerObject.csp.mineDeployed = false;
+        ret[config.p1.radar] = () => this.playerObject.csp.radarOn = false;
 
         return ret;
     }
