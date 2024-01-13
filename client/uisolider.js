@@ -107,22 +107,28 @@ class UiSolider extends UiObject {
     if (this.exploding === true) {
       this.drawExplosion(camera);
     }
+
+    if(this.model.csp.movingFoward || this.model.csp.movingBack) {
+      this.drawTracks()
+    }
   }
 
-  drawTracks(x, y) {
+  drawTracks() {
     let ssp = this.model.ssp;
+    let bgCtx = this.model.game.bgctx;
+
     const center = this.center();
-    this.bgCtx.save();
-    this.bgCtx.translate(ssp.x, ssp.y);
-    this.bgCtx.rotate(ssp.direction);
-    this.bgCtx.drawImage(
+    bgCtx.save();
+    bgCtx.translate(ssp.x, ssp.y);
+    bgCtx.rotate(ssp.direction);
+    bgCtx.drawImage(
       this.tracksImg,
       -ssp.width / 2,
       -ssp.height / 2,
       ssp.width - 15,
       ssp.height
     );
-    this.bgCtx.restore();
+    bgCtx.restore();
   }
 
   deployMine() {
