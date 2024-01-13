@@ -37,9 +37,10 @@ class Solider extends ModelObject {
    */
   static CreateOnRandomPosition(game) {
     //TODO: Read the max values for coordinates from a config file.
-    const x = 2300 + Math.floor(Math.random() * 100);
-    const y = 2300 + Math.floor(Math.random() * 100);
-    return new Solider(game, x, y, 51, 50, 0 * Math.PI/180, 1, 0 * Math.PI/180, 100);
+    let margin = 50;
+    const x = margin + Math.floor(Math.random() * (game.config.gameRoom.sizeX - 2*margin));
+    const y = margin + Math.floor(Math.random() * (game.config.gameRoom.sizeY - 2*margin));
+    return new Solider(game, x, y, 50, 50, 0 * Math.PI/180, 1, 0 * Math.PI/180, 100);
   }
 
   /**
@@ -97,7 +98,6 @@ class Solider extends ModelObject {
   }
 
   moveFront(dir = 1) {
-    console.log("Moving front!!")
     const oldX = this.ssp.x;
     const oldY = this.ssp.y;
 
@@ -125,7 +125,7 @@ class Solider extends ModelObject {
     this.ssp.y += dir * Math.sin(this.ssp.direction) * speed;
 
     let collide = false;
-    //TODO: Fix this, this is not available on the server for now.
+
     this.game.objects.forEach((obj) => {
       if (obj === this) return;
       if (this.collides(obj)) {
@@ -135,7 +135,6 @@ class Solider extends ModelObject {
     if (collide === true) {
       this.ssp.x = oldX;
       this.ssp.y = oldY;
-      console.log("collide");
     }
 
     //TODO: This has nothing to do here, it should be drawn on draw(), based of if tank is moving front.

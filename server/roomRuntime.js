@@ -27,6 +27,7 @@ class RoomRuntime {
     this.currentTps = 0;
 
     this.running = false;
+    this.config = Config;
   }
 
   /**
@@ -49,6 +50,7 @@ class RoomRuntime {
       solider = Solider.CreateOnRandomPosition(this);
       solider.playerSocketId = player.socket.id;
       this.playerSoliders.set(solider.ssp.id, solider);
+      this.objects.push(solider);
     }
 
     return solider;
