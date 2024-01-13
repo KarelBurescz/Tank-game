@@ -188,7 +188,7 @@ class RoomRuntime {
       player: {},
       gameScene: [],
       oponents: {},
-      objects: []
+      objects: {},
     }
     
     // Ignore for now.
@@ -199,9 +199,12 @@ class RoomRuntime {
       } else {
         serializable.oponents[p.ssp.id] = p.getSerializable();
       }
-      
     });
 
+    this.objects.forEach( o => {
+      serializable.objects[o.ssp.id] = o.ssp;
+    })
+    
     return serializable;
   }
 
