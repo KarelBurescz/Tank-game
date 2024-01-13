@@ -3,7 +3,7 @@ class Game {
     this.bgcanvas = bgcanvas;
     this.bgctx = bgctx;
     this.objects = [];
-    this.oponents = [];
+    this.oponents = {};
     this.player = null;
   }
 

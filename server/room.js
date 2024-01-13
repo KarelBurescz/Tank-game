@@ -58,7 +58,7 @@ class Room {
    */
   updatePlayers(){
     this.players.forEach((p) => {
-      let st = this.roomRuntime.getPlayerState(p.modelObject.id);
+      let st = this.roomRuntime.getPlayerState(p.modelObject.ssp.id);
       let json = JSON.stringify(st, null, " ");
       // console.log(`Sending to socket: ${p.socket.id} update:\n${json}`)
       p.socket.emit("state-upate", json);

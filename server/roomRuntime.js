@@ -48,7 +48,7 @@ class RoomRuntime {
     if (solider === null) {
       solider = Solider.CreateOnRandomPosition(this);
       solider.playerSocketId = player.socket.id;
-      this.playerSoliders.set(solider.id, solider);
+      this.playerSoliders.set(solider.ssp.id, solider);
     }
 
     return solider;
@@ -138,9 +138,9 @@ class RoomRuntime {
     this.updatingScheduler = setInterval(() => this.update(), 1000/60);
     this.tpsComputeScheduler = setInterval(() => this.updateTps(), 1000);
     //TODO: Remove later
-    this.debugOutputScheduler = setInterval(()=> {
-      console.log(this.getInfo(), 10000);
-    })
+    // this.debugOutputScheduler = setInterval(()=> {
+    //   console.log(this.getInfo(), 10000);
+    // })
 
     this.initScene();
     this.running = true;
@@ -187,18 +187,19 @@ class RoomRuntime {
     let serializable = {
       player: {},
       gameScene: [],
-      oponents: [],
+      oponents: {},
       objects: []
     }
     
     // Ignore for now.
     // this.objects.forEach( o => serializable.objects.push(o.getSerializable()));
     this.playerSoliders.forEach( p => {
-      if (p.id == soliderId){
+      if (p.ssp.id == soliderId){
         serializable.player = p.getSerializable();
       } else {
-        serializable.oponents.push(p.getSerializable())
+        serializable.oponents[p.ssp.id] = p.getSerializable();
       }
+      
     });
 
     return serializable;
@@ -215,11 +216,10 @@ class RoomRuntime {
    */
   getInfo() {
     let str = "";
-    str += `    RoomRuntime, num of players: ${this.playerSoliders.size}\n`;
-    for (const [k, v] of this.playerSoliders) {
-      str += `      solider: { id: ${v.id}, playerId: ${v.playerSocketId}}\n`;
-    }
-    str += `      objects json: \n${this.serializeToJson()}`
+    // for (const [k, v] of this.playerSoliders) {
+    //   str += `      solider: { id: ${v.id}, playerId: ${v.playerSocketId}}\n`;
+    // }
+    // str += `      objects json: \n${this.serializeToJson()}`
     return str;
   }
 }

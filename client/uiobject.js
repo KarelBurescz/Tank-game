@@ -18,17 +18,6 @@ class UiObject {
   constructor(game, x, y, width, height, hp) {
     this.model = new ModelObject(game, x, y, width, height, hp);
 
-    this.ssp = this.model.ssp;
-    this.csp = this.model.csp;
-
-    // this.x = x;
-    // this.y = y;
-    // this.width = width;
-    // this.height = height;
-    // this.ctx = game.ctx;
-    // this.game = game;
-    // this.hp = hp;
-
     this.audioHit = new Audio();
     this.audioHit.src = UiObject.audioHitSrc.src;
     this.type = "none";
@@ -46,16 +35,6 @@ class UiObject {
       UiObjects.splice(i, 1);
     }
   }
-
-  // collisionBox() {
-  //   console.log("Dont call me!")
-  //   return {
-  //     x: this.ssp.x,
-  //     y: this.ssp.y,
-  //     w: this.ssp.width,
-  //     h: this.ssp.height,
-  //   };
-  // }
 
   draw(camera) {
     if (Config.debug === true) {

@@ -59,53 +59,67 @@ socket.on("state-upate", (msg) => {
 function updateGame(game, gameUpdate) {
   if (gameUpdate.hasOwnProperty('player')){
     game.player.model.ssp = gameUpdate.player;
-  } 
+  }
+  if (gameUpdate.hasOwnProperty('oponents')){
+    // console.log(`Update containsz`)
+    Object.keys(gameUpdate.oponents).forEach(
+      (id) =>{
+        if(game.oponents.hasOwnProperty(id)){
+          game.oponents[id].model.ssp = gameUpdate.oponents[id];
+        } else {
+          let s = new UiSolider(game,0,0,0,0,0,0,0,0);
+          game.oponents[id] = s;
+          game.oponents[id].model.ssp = gameUpdate.oponents[id];
+          game.objects.push(s);
+        }
+    })
+  }
 }
 
 /* TODO:  This should be removed and ran on server only */
-for (let i = 0; i <= 150; i++) {
-  const myX = Math.random() * 5000 + 40;
-  const myY = Math.random() * 5000 + 40;
+// for (let i = 0; i <= 10; i++) {
+//   const myX = Math.random() * 5000 + 40;
+//   const myY = Math.random() * 5000 + 40;
 
-  let myWidth = 30;
-  let myHeight = Math.random() * 200 + 70;
+//   let myWidth = 30;
+//   let myHeight = Math.random() * 200 + 70;
 
-  if (Math.random() > 0.5) {
-    myWidth = myHeight;
-    myHeight = 30;
-  }
+//   if (Math.random() > 0.5) {
+//     myWidth = myHeight;
+//     myHeight = 30;
+//   }
 
-  const maybeWall = new UiObstacle(myGame, myX, myY, myWidth, myHeight, 100, "");
+//   const maybeWall = new UiObstacle(myGame, myX, myY, myWidth, myHeight, 100, "");
 
-  const wallCollides = myGame.objects.some((e) => {
-    if (e.model.collides(maybeWall.model)) {
-      return true;
-    }
-  });
+//   const wallCollides = myGame.objects.some((e) => {
+//     if (e.model.collides(maybeWall.model)) {
+//       return true;
+//     }
+//   });
 
-  if (wallCollides === false) {
-    myGame.addObject(maybeWall);
-  }
-}
+//   if (wallCollides === false) {
+//     myGame.addObject(maybeWall);
+//   }
+// }
 
-for (let j = 0; j <= 150; ++j) {
-  const myX = Math.random() * 5000 + 40;
-  const myY = Math.random() * 5000 + 40;
+// for (let j = 0; j <= 10; ++j) {
+//   const myX = Math.random() * 5000 + 40;
+//   const myY = Math.random() * 5000 + 40;
 
-  let myHeight = (Math.random() + 1) * 30;
+//   let myHeight = (Math.random() + 1) * 30;
 
-  const maybeTree = new UiTree(myGame, myX, myY, myHeight, 0, 100);
+//   const maybeTree = new UiTree(myGame, myX, myY, myHeight, 0, 100);
 
-  const treeCollides = myGame.objects.some((e) => {
-    if (e.model.collides(maybeTree.model)) {
-      return true;
-    }
-  });
+//   const treeCollides = myGame.objects.some((e) => {
+//     if (e.model.collides(maybeTree.model)) {
+//       return true;
+//     }
+//   });
 
-  if (!treeCollides) {
-    myGame.addObject(maybeTree);
-  }
-}
+//   if (!treeCollides) {
+//     myGame.addObject(maybeTree);
+//   }
+// }
 
 myCamera.setFollowedModel(mySolider.model);
 // myCamera1.setFollowedModel(mySolider1.model);

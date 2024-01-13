@@ -22,12 +22,11 @@ class ModelObject {
    */
   
   constructor(game, x, y, width, height, hp) {
-    this.id = ModelObject.lastId++; // Unique identifier for the object
 
     this.game = game; // Game instance reference
     
     this.ssp = {
-      id: this.id, //for identification for client side.
+      id: ModelObject.lastId++, //for identification for client side.
       x: x, // x-coordinate
       y: y, // y-coordinate
       width: width, // Object width

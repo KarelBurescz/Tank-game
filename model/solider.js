@@ -37,8 +37,8 @@ class Solider extends ModelObject {
    */
   static CreateOnRandomPosition(game) {
     //TODO: Read the max values for coordinates from a config file.
-    const x = Math.floor(Math.random() * 5000);
-    const y = Math.floor(Math.random() * 5000);
+    const x = 2300 + Math.floor(Math.random() * 100);
+    const y = 2300 + Math.floor(Math.random() * 100);
     return new Solider(game, x, y, 51, 50, 0 * Math.PI/180, 1, 0 * Math.PI/180, 100);
   }
 
