@@ -13,10 +13,7 @@ class UiObstacle extends UiObject {
 
     constructor(game, x, y, width, height, hp, color) {
         super(game, x, y, width, height, hp)
-        
         this.model = new Obstacle(game, x, y, width, height, hp, color);
-        this.ssp = this.model.ssp;
-        this.csp = this.model.csp;
 
         this.color = color;
         this.wallImg = new Image();
@@ -31,25 +28,26 @@ class UiObstacle extends UiObject {
     draw(camera) {
         
         let co = this.localCoords(camera);
+        let ssp = this.model.ssp;
 
         // let pt = this.ctx.createPattern(this.wallImg, 'repeat');
         camera.ctx.fillStyle = '#B26336';
         
         if(this.height > this.width){
             camera.ctx.save()
-            camera.ctx.translate(co.x + this.ssp.width/2, co.y + this.ssp.height/2)
+            camera.ctx.translate(co.x + ssp.width/2, co.y + ssp.height/2)
             camera.ctx.rotate(90 * Math.PI / 180)
             camera.ctx.fillStyle = '#B26336';
             camera.ctx.fillRect(
-              -this.ssp.height/2, 
-              -this.ssp.width/2,
-              this.ssp.height,
-              this.ssp.width
+              -ssp.height/2, 
+              -ssp.width/2,
+              ssp.height,
+              ssp.width
             )
 
             camera.ctx.restore();
         } else {
-            camera.ctx.fillRect(co.x, co.y, this.ssp.width, this.ssp.height);
+            camera.ctx.fillRect(co.x, co.y, ssp.width, ssp.height);
         }
 
         if(this.exploding === true){

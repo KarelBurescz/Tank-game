@@ -47,29 +47,6 @@ class UiObject {
     }
   }
 
-  collides(uiobject) {
-    const cbx = this.collisionBox();
-    const element = uiobject.collisionBox();
-
-    if (cbx.x + cbx.w < element.x) {
-      return false;
-    }
-
-    if (cbx.x > element.x + element.w) {
-      return false;
-    }
-
-    if (cbx.y + cbx.h < element.y) {
-      return false;
-    }
-
-    if (cbx.y > element.y + element.h) {
-      return false;
-    }
-
-    return true;
-  }
-
   localCoords(camera) {
     return {
       y: this.model.ssp.y - camera.y,

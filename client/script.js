@@ -91,7 +91,7 @@ function updateGame(game, gameUpdate) {
               break;
             }
             case "obstacle": {
-              newObject = new UiTree(game,0,0,0,0,0);
+              newObject = new UiObstacle(game,0,0,0,0,0,'brown');
               break;
             }
           }
