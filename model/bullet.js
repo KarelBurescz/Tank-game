@@ -9,17 +9,19 @@ class Bullet extends ModelObject {
             damage: damage,
             direction: direction,
             speed: speed,
+            type: "bullet",
         }
 
         this.owner = null;
     }
 
     collisionBox() {
+        let ssp = this.ssp;
         return {
-            x: this.x - this.width / 2,
-            y: this.y - this.height / 2,
-            w: this.width,
-            h: this.height
+            x: ssp.x - ssp.width / 2,
+            y: ssp.y - ssp.height / 2,
+            w: ssp.width,
+            h: ssp.height
         }
     }
 
