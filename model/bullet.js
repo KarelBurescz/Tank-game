@@ -12,7 +12,7 @@ class Bullet extends ModelObject {
             type: "bullet",
         }
 
-        this.owner = null;
+        this.owner = owner;
     }
 
     collisionBox() {

@@ -1,5 +1,4 @@
 import { UiObject } from "./uiobject.js";
-import { Bullet } from "./bullet.js";
 import { Config } from "./config.js";
 import { UiObjects } from "./arrayuiobjects.js";
 import { LandMine } from "./landMine.js";

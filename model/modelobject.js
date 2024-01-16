@@ -48,7 +48,6 @@ class ModelObject {
   }
 
   updateCsp(csp) {
-    console.log(`Updating CSP: ${csp}`);
     try {
       let update = JSON.parse(csp);
       this.csp = {

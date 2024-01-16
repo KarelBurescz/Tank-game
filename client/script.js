@@ -8,6 +8,7 @@ import { Camera } from "./camera.js";
 import { UiTree } from "./uitree.js";
 import { Config } from "./config.js";
 import { RemoteController } from "./remoteController.js";
+import { UiBullet } from "./uibullet.js";
 
 const socket = io();
 socket.emit("join-room", "war-room-1");
@@ -92,6 +93,10 @@ function updateGame(game, gameUpdate) {
             }
             case "obstacle": {
               newObject = new UiObstacle(game,0,0,0,0,0,'brown');
+              break;
+            }
+            case "bullet": {
+              newObject = new UiBullet(game, 0, 0, 0, 0, 0, 0, 100, null);
               break;
             }
           }
