@@ -15,6 +15,10 @@ class Game {
     return this.objects.hasOwnProperty(id);
   }
 
+  getObjectIds(){
+    return Object.keys(this.objects);
+  }
+
   getObject(id) {
     return this.objects[id];
   }

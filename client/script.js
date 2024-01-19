@@ -49,15 +49,28 @@ let myGame = new Game(canvasBackground, backgroundCTX);
 //TODO: this is temporary, update whole game, not just the player.
 socket.on("state-upate", (msg) => {
   let gameUpdate = JSON.parse(msg);
+  removeGameObjects(myGame, gameUpdate);
   updateGame(myGame, gameUpdate);
 })
+
+function removeGameObjects(game, gameUpdate) {
+  if (gameUpdate.hasOwnProperty('objects')){
+
+    game.getObjectIds().forEach((id) => {
+      if (!gameUpdate.objects.hasOwnProperty(id)) {
+        game.removeObject(id);
+      }
+    })
+
+  }
+}
 
 /**
  * Updates the local model of the game based on the updates from server.
  * @param { Game } game 
  */
 function updateGame(game, gameUpdate) {
-
+  
   if (gameUpdate.hasOwnProperty('oponents')){
     Object.keys(gameUpdate.oponents).forEach(
       (id) =>{
