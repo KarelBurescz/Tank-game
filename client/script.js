@@ -70,29 +70,12 @@ function removeGameObjects(game, gameUpdate) {
  * @param { Game } game 
  */
 function updateGame(game, gameUpdate) {
-  
-  if (gameUpdate.hasOwnProperty('oponents')){
-    Object.keys(gameUpdate.oponents).forEach(
-      (id) =>{
-        if(game.oponents.hasOwnProperty(id)){
-          game.oponents[id].model.ssp = gameUpdate.oponents[id];
-        } else {
-          let s = new UiSolider(game,0,0,0,0,0,0,0,0);
-          game.oponents[id] = s;
-          game.oponents[id].model.ssp = gameUpdate.oponents[id];
-          game.addObject(s);
-        }
-    })
-  }
 
   if (gameUpdate.hasOwnProperty('objects')){
     Object.keys(gameUpdate.objects).forEach(
       (id) => {
         let o = gameUpdate.objects[id];
-        // console.log(`game id: ${id} -- o.id: ${o.id}`)
-        if (id != o.id) {
-          debugger;
-        }
+
         if (game.hasObject(id)){
           game.getObject(id).model.ssp = gameUpdate.objects[id];
         } else {
@@ -112,10 +95,7 @@ function updateGame(game, gameUpdate) {
             }
             case "player": {
               newObject = new UiSolider(game, 0, 0, 0, 0, 0, 0, 0, 100);
-              game.player = newObject;
-              myCamera.setFollowedModel(game.player.model);
-              let rc = new RemoteController(window, game.player, Config, socket);
-              rc.registerController(Config);
+              break;
             }
           }
 
@@ -126,12 +106,22 @@ function updateGame(game, gameUpdate) {
         }
       let outStr = "";
       Object.keys(game.objects).forEach( (k) => {
-        outStr += `k: ${k} type: ${game.objects[k].model.ssp.type}, `;
+        outStr += ` k: ${k} type: ${game.objects[k].model.ssp.type}, `;
       })
       console.log(outStr);
 
       }
     )
+
+    if (!game.player && gameUpdate.hasOwnProperty('player')) {
+      const player = game.getObject(gameUpdate.player.id);
+      game.setPlayer(player);
+
+      myCamera.setFollowedModel(game.player.model);
+      let rc = new RemoteController(window, game.player, Config, socket);
+      rc.registerController(Config);
+    }
+
   }
 }
 

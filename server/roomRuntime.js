@@ -47,13 +47,21 @@ class RoomRuntime {
     }
 
     if (solider === null) {
-      solider = Solider.CreateOnRandomPosition(this);
-      solider.playerSocketId = player.socket.id;
-      this.playerSoliders.set(solider.ssp.id, solider);
-      this.objects.push(solider);
+      for (let i=0; i < 1000; i++){
+        solider = Solider.CreateOnRandomPosition(this);
+        if (!this.objects.some(e => e.collides(solider))) {
+          solider.playerSocketId = player.socket.id;
+          this.playerSoliders.set(solider.ssp.id, solider);
+          this.objects.push(solider);
+
+          return solider;
+        }
+      }
+
+      console.log("Can't place a new player!");
     }
 
-    return solider;
+    return null;
   }
 
   /**
@@ -197,7 +205,8 @@ class RoomRuntime {
     // this.objects.forEach( o => serializable.objects.push(o.getSerializable()));
     this.playerSoliders.forEach( p => {
       if (p.ssp.id == soliderId){
-        serializable.player = p.getSerializable();
+        // serializable.player = p.getSerializable();
+        serializable.player.id = p.ssp.id;
       } else {
         serializable.oponents[p.ssp.id] = p.getSerializable();
       }
@@ -209,7 +218,7 @@ class RoomRuntime {
     
     let outStr = "";
     Object.keys(serializable.objects).forEach((k) => {
-      outStr += `k: ${k} type: ${serializable.objects[k].type}`;
+      outStr += `k: ${k} type: ${serializable.objects[k].type}, `;
     })
 
     console.log(outStr);
