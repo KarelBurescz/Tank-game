@@ -37,6 +37,8 @@ class Camera {
     }
 
     update() {
+        if (!this.followedModel) return;
+
         let Lx = this.x + this.w/2 - this.followedModel.ssp.x;
         let Ly = this.y + this.h/2 - this.followedModel.ssp.y;
 
@@ -94,7 +96,7 @@ class Camera {
     }
 
     drawHud() {
-
+        if (!this.followedModel) return;
         const myWidth = 40;
         const myHeight = 30;
 

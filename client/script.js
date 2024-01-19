@@ -46,9 +46,6 @@ window.addEventListener("resize", function () {
 let myCamera = new Camera(0, 0, canvas, fogCanvas, null);
 let myGame = new Game(canvasBackground, backgroundCTX);
 
-let mySolider = new UiSolider(myGame, 2500, 2500, 51, 50, 0, 1, 0, 100);
-myGame.setPlayer(mySolider);
-
 //TODO: this is temporary, update whole game, not just the player.
 socket.on("state-upate", (msg) => {
   let gameUpdate = JSON.parse(msg);
@@ -60,9 +57,6 @@ socket.on("state-upate", (msg) => {
  * @param { Game } game 
  */
 function updateGame(game, gameUpdate) {
-  if (gameUpdate.hasOwnProperty('player')){
-    game.player.model.ssp = gameUpdate.player;
-  }
 
   if (gameUpdate.hasOwnProperty('oponents')){
     Object.keys(gameUpdate.oponents).forEach(
@@ -73,7 +67,7 @@ function updateGame(game, gameUpdate) {
           let s = new UiSolider(game,0,0,0,0,0,0,0,0);
           game.oponents[id] = s;
           game.oponents[id].model.ssp = gameUpdate.oponents[id];
-          game.objects[id] = s;
+          game.addObject(s);
         }
     })
   }
@@ -82,6 +76,10 @@ function updateGame(game, gameUpdate) {
     Object.keys(gameUpdate.objects).forEach(
       (id) => {
         let o = gameUpdate.objects[id];
+        // console.log(`game id: ${id} -- o.id: ${o.id}`)
+        if (id != o.id) {
+          debugger;
+        }
         if (game.hasObject(id)){
           game.getObject(id).model.ssp = gameUpdate.objects[id];
         } else {
@@ -99,26 +97,30 @@ function updateGame(game, gameUpdate) {
               newObject = new UiBullet(game, 0, 0, 0, 0, 0, 0, 100, null);
               break;
             }
+            case "player": {
+              newObject = new UiSolider(game, 0, 0, 0, 0, 0, 0, 0, 100);
+              game.player = newObject;
+              myCamera.setFollowedModel(game.player.model);
+              let rc = new RemoteController(window, game.player, Config, socket);
+              rc.registerController(Config);
+            }
           }
 
           if (newObject) {
             newObject.model.ssp = o;
-            game.addObject(id, newObject);
+            game.addObject(newObject);
           }
         }
+      let outStr = "";
+      Object.keys(game.objects).forEach( (k) => {
+        outStr += `k: ${k} type: ${game.objects[k].model.ssp.type}, `;
+      })
+      console.log(outStr);
+
       }
     )
   }
 }
-
-myCamera.setFollowedModel(mySolider.model);
-// myCamera1.setFollowedModel(mySolider1.model);
-
-myCamera.update();
-// myCamera1.update();
-
-let rc = new RemoteController(window, mySolider, Config, socket);
-rc.registerController(Config);
 
 function handleUiObjects() {
   myGame.eachObject(function (o) {
@@ -127,11 +129,9 @@ function handleUiObjects() {
   });
 
   myCamera.update();
-  // myCamera1.update();
 
   myGame.eachObject(function (o) {
     o.draw(myCamera);
-    // o.draw(myCamera1);
   });
 }
 

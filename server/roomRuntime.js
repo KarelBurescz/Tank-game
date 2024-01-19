@@ -62,7 +62,7 @@ class RoomRuntime {
    */
   initScene(){
 
-    for (let i = 0; i <= Config.gameRoom.numOfObstacles; i++) {
+    for (let i = 0; i < Config.gameRoom.numOfObstacles; i++) {
       const myX = Math.random() * (Config.gameRoom.sizeX - 80) + 40;
       const myY = Math.random() * (Config.gameRoom.sizeY - 80) + 40;
 
@@ -87,7 +87,7 @@ class RoomRuntime {
       }
     }
 
-    for (let j = 0; j <= Config.gameRoom.numOfTrees; ++j) {
+    for (let j = 0; j < Config.gameRoom.numOfTrees; ++j) {
       const myX = Math.random() * (Config.gameRoom.sizeX - 80) + 40;
       const myY = Math.random() * (Config.gameRoom.sizeY - 80) + 40;
 
@@ -207,6 +207,12 @@ class RoomRuntime {
       serializable.objects[o.ssp.id] = o.ssp;
     })
     
+    let outStr = "";
+    Object.keys(serializable.objects).forEach((k) => {
+      outStr += `k: ${k} type: ${serializable.objects[k].type}`;
+    })
+
+    console.log(outStr);
     return serializable;
   }
 

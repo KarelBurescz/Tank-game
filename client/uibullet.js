@@ -4,7 +4,7 @@ import { Bullet } from "/model/bullet.js";
 class UiBullet extends UiObject {
     constructor(game, x, y, width, height, speed, direction, damage, owner) {
         super(game, x, y, width, height, 1000)
-        this.model = new Bullet(x, y, width, height, speed, direction, damage, owner);
+        this.model = new Bullet(game, x, y, width, height, speed, direction, damage, owner);
 
         this.owner = owner;
         // this.audioShooting = new Audio('tank-firing.mp3');

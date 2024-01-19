@@ -34,6 +34,7 @@ class ModelObject {
       hp: hp, // Health points
       type: "none", // Type of the object
     };
+    console.log(`Last id: ${this.ssp.id}`)
 
     this.csp = {};
   }

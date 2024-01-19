@@ -7,8 +7,8 @@ class Game {
     this.player = null;
   }
 
-  addObject(id, object) {
-    this.objects[id] = object;
+  addObject(object) {
+    this.objects[object.model.ssp.id] = object;
   }
 
   hasObject(id) {
@@ -29,7 +29,7 @@ class Game {
 
   setPlayer(player) {
     this.player = player;
-    this.addObject(player.model.ssp.id, player);
+    this.addObject(player);
   }
 
   addOponent(oponents) {
