@@ -4,7 +4,8 @@ import { UiObjects } from "./arrayuiobjects.js";
 import { LandMine } from "./landMine.js";
 import { Radar } from "./radar.js";
 import { Solider } from "/model/solider.js";
-import { Coumuflage } from './coumuflage.js'
+import { Coumuflage } from "./coumuflage.js";
+import { Animation } from "./animation.js";
 
 class UiSolider extends UiObject {
   static {
@@ -19,7 +20,17 @@ class UiSolider extends UiObject {
   constructor(game, x, y, width, height, direction, speed, gunDirection, hp) {
     super(game, x, y, width, height, hp);
 
-    this.model = new Solider(game, x, y, width, height, direction, speed, gunDirection, hp);
+    this.model = new Solider(
+      game,
+      x,
+      y,
+      width,
+      height,
+      direction,
+      speed,
+      gunDirection,
+      hp
+    );
 
     // this.gunDirection = gunDirection;
     this.image = new Image();
@@ -46,9 +57,20 @@ class UiSolider extends UiObject {
     this.radarOn = false;
     this.coumuflage = new Coumuflage(this, 100);
     this.coumuflageOn = false;
+
+    this.animations = [];
   }
 
-  center() { return this.model.center() }
+  center() {
+    return this.model.center();
+  }
+
+  update() {
+    super.update();
+    if (this.model.csp.radarOn) {
+      this.radar.update();
+    }
+  }
 
   draw(camera) {
     let co = this.localCoords(camera);
@@ -111,13 +133,15 @@ class UiSolider extends UiObject {
       camera.ctx.stroke();
     }
 
-    if (this.exploding === true) {
-      this.drawExplosion(camera);
+    // if (this.exploding === true) {
+    //   this.drawExplosion(camera);
+    // }
+
+    if (this.model.csp.movingFoward || this.model.csp.movingBack) {
+      this.drawTracks();
     }
 
-    if(this.model.csp.movingFoward || this.model.csp.movingBack) {
-      this.drawTracks()
-    }
+    this.animations.forEach((a) => a.draw());
   }
 
   drawTracks() {
@@ -171,7 +195,6 @@ class UiSolider extends UiObject {
       }
     }, 80);
   }
-
 }
 
 export { UiSolider };
