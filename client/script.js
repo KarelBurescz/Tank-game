@@ -27,11 +27,6 @@ fogCanvas.height = canvas.height;
 canvasBackground.width = 5000;
 canvasBackground.height = 5000;
 
-canvas.addEventListener("mousemove", function (event) {
-  mouse.x = event.x;
-  mouse.y = event.y;
-});
-
 window.addEventListener("resize", function () {
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
@@ -107,8 +102,14 @@ function updateGame(game, gameUpdate) {
       let outStr = "";
       Object.keys(game.objects).forEach( (k) => {
         outStr += ` k: ${k} type: ${game.objects[k].model.ssp.type}, `;
+        if (game.objects[k].model.ssp.type === "player") {
+          let locssp = game.objects[k].model.ssp
+          outStr += `${JSON.stringify(locssp)}`;
+        }
       })
-      console.log(outStr);
+
+
+      // console.log(outStr);
 
       }
     )
@@ -123,12 +124,16 @@ function updateGame(game, gameUpdate) {
     }
 
   }
+
+  if (gameUpdate.hasOwnProperty('oponents')) {
+    game.oponents = gameUpdate.oponents;
+  }
 }
 
 function handleUiObjects() {
   myGame.eachObject(function (o) {
     //TODO: Enable it this later on.
-    // o.model.update();
+    o.update();
   });
 
   myCamera.update();

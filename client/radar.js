@@ -6,13 +6,9 @@ class Radar {
     this.phase = Math.PI / 3;
   }
   draw(camera, locX, locY) {
-    // camera.ctx.beginPath();
-    // camera.ctx.fillStyle = 'red'
-    // camera.ctx.arc(locX, locY, 50, 0, Math.PI / 180, true);
-    // camera.ctx.fill();
-    // console.log('HAHA 😎')
-    const tankX = this.tank.x;
-    const tankY = this.tank.y;
+
+    const tankX = this.tank.model.ssp.x;
+    const tankY = this.tank.model.ssp.y;
     let r = this.diameter / 2;
     camera.ctx.save();
     camera.ctx.translate(locX, locY);
@@ -22,7 +18,6 @@ class Radar {
     camera.ctx.fillStyle = "black";
     camera.ctx.arc(0, 0, 0.8 * r, 0, 2 * Math.PI, true);
     camera.ctx.fill();
-    // camera.ctx.rotate(direction)
 
     camera.ctx.lineWidth = 2;
     camera.ctx.strokeStyle = "rgba(0, 255, 0, 0.7)"; // Semi-transparent green
@@ -47,11 +42,7 @@ class Radar {
       }
       let tr = 1 - (this.phase - el.angle) / ((45 * Math.PI) / 180);
       tr = tr < 0 ? 0 : tr;
-      // console.log(
-      //   `phase: ${(this.phase * 180) / Math.PI}, angle: ${
-      //     (el.angle * 180) / Math.PI
-      //   }, tr: ${tr}`
-      // );
+
       if (el.angle < this.phase && tr > 0) {
         camera.ctx.fillStyle = `rgba(100, 100, 255, ${tr})`;
         camera.ctx.beginPath();
@@ -89,16 +80,17 @@ class Radar {
   }
 
   getOponentsLocation() {
-    return Game.oponents
-      .filter((e) => {
-        return e !== this.tank;
-      })
-      .map((p) => {
-        return {
-          x: p.x,
-          y: p.y,
-        };
-      });
+    let opIds = this.tank.model.game.oponents;
+
+    let res = opIds.map((id) => {
+      let o = this.tank.model.game.getObject(id);
+      return {
+        x: o.model.ssp.x,
+        y: o.model.ssp.y,
+      }
+    });
+
+    return res;
   }
 
   getOponentsRadarLocation(locations, tankX, tankY) {

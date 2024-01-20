@@ -46,6 +46,13 @@ class UiSolider extends UiObject {
 
   center() { return this.model.center() }
 
+  update() {
+    super.update();
+    if(this.model.csp.radarOn) {
+      this.radar.update();
+    }
+  }
+
   draw(camera) {
     let co = this.localCoords(camera);
     let ssp = this.model.ssp;
@@ -74,7 +81,7 @@ class UiSolider extends UiObject {
     );
     camera.ctx.restore();
 
-    if (this.radarOn) {
+    if (this.model.csp.radarOn) {
       this.radar.draw(camera, co.x, co.y);
     }
 
