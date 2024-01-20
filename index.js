@@ -1,3 +1,29 @@
+/**
+ * @fileoverview
+ * The entry file for the server part of the game.
+ * <p>
+ * The data model of the game starts with {@link ServerGame} object.
+ * This class holds all the data structures of the game.
+ * </p>
+ * <p>
+ * The game allows to create a several players represented by {@link Player}.
+ * Each player connects with a roomName which is a string identifier.
+ * A room {@link Room} is created for each new roomName and the player is added.
+ * </p>
+ * 
+ * <pre>
+ *   ServerGame (1) --> (0..*) Room
+ *   Room (1) --> (0..*) Player
+ *   Room (1) --> (0..1) RoomRuntime
+ * </pre>
+ * 
+ * @mermaid
+ * graph TD;
+ *    ServerGame --> Room
+ *    Room --> Player
+ *    Room --> RoomRuntime
+ *   
+ */
 import express from "express";
 import { createServer } from "node:http";
 import { fileURLToPath } from "node:url";
@@ -13,8 +39,11 @@ const io = new Server(server);
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 app.use(express.static(__dirname + "/client"));
-// app.get("/", (req, res) => {
-//   res.sendFile(join(__dirname, "client/index.html"));
+app.use('/model', express.static(__dirname + "/model"));
+app.use('/docs', express.static(__dirname + "/docs"));
+
+// app.get("/docs", (req, res) => {
+//   res.sendFile(join(__dirname, "docs/index.html"));
 // });
 
 io.on("connection", (socket) => {
@@ -46,6 +75,10 @@ io.on("connection", (socket) => {
     serverGame.removePlayer(socket);
     console.log(getInfo());
   });
+
+  socket.on("update-controller", (msg) => {
+    serverGame.updateController(socket,msg);
+  })
 
   console.log(getInfo());
 });

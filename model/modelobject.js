@@ -1,14 +1,19 @@
 /**
  * Represents a basic model for all objects modeled on the server side.
- * @typedef {Object} ModelObject
+ * @property {RoomRuntime} game - The roomRuntime instance this object belongs to.
+ * @property {number} ssp.id - Server side id for client-server identity identification.
+ * @property {number} ssp.x - The x-coordinate of the object in the game world.
+ * @property {number} ssp.y - The y-coordinate of the object in the game world.
+ * @property {number} ssp.width - The width of the object.
+ * @property {number} ssp.height - The height of the object.
+ * @property {number} ssp.hp - The health points of the object.
  */
-
 class ModelObject {
   static lastId = 0; // Static variable to keep track of the last assigned ID, across all ModelObjects.
 
   /**
    * Creates a new ModelObject instance.
-   * @param {Object} game - The game instance this object belongs to.
+   * @param {RoomTime} game - The game instance this object belongs to.
    * @param {number} x - The x-coordinate of the object in the game world.
    * @param {number} y - The y-coordinate of the object in the game world.
    * @param {number} width - The width of the object.
@@ -17,25 +22,41 @@ class ModelObject {
    */
   
   constructor(game, x, y, width, height, hp) {
-    this.id = ModelObject.lastId++; // Unique identifier for the object
-    
-    this.x = x; // x-coordinate
-    this.y = y; // y-coordinate
-    this.width = width; // Object width
-    this.height = height; // Object height
-    this.game = game; // Game instance reference
-    this.hp = hp; // Health points
-    this.type = "none"; // Type of the object
 
-    this.serializableProperties = ["x", "y", "width", "height", "hp", "type"];
+    this.game = game; // Game instance reference
+    
+    this.ssp = {
+      id: ModelObject.lastId++, //for identification for client side.
+      x: x, // x-coordinate
+      y: y, // y-coordinate
+      width: width, // Object width
+      height: height, // Object height
+      hp: hp, // Health points
+      type: "none", // Type of the object
+    };
+    console.log(`Last id: ${this.ssp.id}`)
+
+    this.csp = {};
   }
 
   /**
    * Updates the state of the object in time. Typically called each game tick.
    */
   update() {
-    if (this.hp <= 0) {
+    if (this.ssp.hp <= 0) {
       this.explode();
+    }
+  }
+
+  updateCsp(csp) {
+    try {
+      let update = JSON.parse(csp);
+      this.csp = {
+        ...this.csp, 
+        ...update,
+      }
+    } catch (e) {
+      console.log(`Error parsing CSP: ${csp}`);
     }
   }
 
@@ -52,21 +73,21 @@ class ModelObject {
    */
   collisionBox() {
     return {
-      x: this.x,
-      y: this.y,
-      w: this.width,
-      h: this.height,
+      x: this.ssp.x,
+      y: this.ssp.y,
+      w: this.ssp.width,
+      h: this.ssp.height,
     };
   }
 
   /**
    * Checks if this object collides with another object.
-   * @param {ModelObject} uiobject - Another object to check collision with.
+   * @param {ModelObject} modelObject - Another object to check collision with.
    * @return {boolean} True if there is a collision, false otherwise.
    */
-  collides(uiobject) {
+  collides(modelObject) {
     const cbx = this.collisionBox();
-    const element = uiobject.collisionBox();
+    const element = modelObject.collisionBox();
 
     if (cbx.x + cbx.w < element.x) return false;
     if (cbx.x > element.x + element.w) return false;
@@ -77,12 +98,7 @@ class ModelObject {
   }
 
   getSerializable(){
-    let out = {};
-    let k = Object.keys(this);
-    for (let ks of this.serializableProperties) {
-      if (ks in this) out[ks] = this[ks];
-    }
-    return out;
+    return this.ssp;
   }
 }
 

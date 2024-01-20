@@ -6,16 +6,16 @@ import { Solider } from "../model/solider.js";
 
 /**
  * Keeps the game mechanics and the game objects for a single room.
- *
- * @typedef { Object } RoomRuntime
- * @property { Map<Number, Solider> } playerSoliders - A key-value store for the game objects representing the players. The key is the object's ID.
- *
+ * 
+ * @property { Map<Number, Solider> } playerSoliders - A key-value store for the game objects representing the players. 
+ * The key is the {@link Solider#playerId} property.
+ * @property { Array<ModelObject> } objects - A list of all objects in the room runtime.
+ * @property { Number } currentTps - Computed ticks per second if the runtime is running.
+ * @property { boolean } running - indicates if the runtime running.
  */
-
 class RoomRuntime {
   /**
    * Constructs a new instance of RoomRuntime.
-   * Initializes an empty Map to store player soldiers.
    */
   constructor() {
     this.playerSoliders = new Map();
@@ -27,6 +27,7 @@ class RoomRuntime {
     this.currentTps = 0;
 
     this.running = false;
+    this.config = Config;
   }
 
   /**
@@ -46,12 +47,21 @@ class RoomRuntime {
     }
 
     if (solider === null) {
-      solider = Solider.CreateOnRandomPosition(this);
-      solider.playerSocketId = player.socket.id;
-      this.playerSoliders.set(solider.id, solider);
+      for (let i=0; i < 1000; i++){
+        solider = Solider.CreateOnRandomPosition(this);
+        if (!this.objects.some(e => e.collides(solider))) {
+          solider.playerSocketId = player.socket.id;
+          this.playerSoliders.set(solider.ssp.id, solider);
+          this.objects.push(solider);
+
+          return solider;
+        }
+      }
+
+      console.log("Can't place a new player!");
     }
 
-    return solider.id;
+    return null;
   }
 
   /**
@@ -60,7 +70,7 @@ class RoomRuntime {
    */
   initScene(){
 
-    for (let i = 0; i <= Config.gameRoom.numOfObstacles; i++) {
+    for (let i = 0; i < Config.gameRoom.numOfObstacles; i++) {
       const myX = Math.random() * (Config.gameRoom.sizeX - 80) + 40;
       const myY = Math.random() * (Config.gameRoom.sizeY - 80) + 40;
 
@@ -85,7 +95,7 @@ class RoomRuntime {
       }
     }
 
-    for (let j = 0; j <= Config.gameRoom.numOfTrees; ++j) {
+    for (let j = 0; j < Config.gameRoom.numOfTrees; ++j) {
       const myX = Math.random() * (Config.gameRoom.sizeX - 80) + 40;
       const myY = Math.random() * (Config.gameRoom.sizeY - 80) + 40;
 
@@ -135,12 +145,12 @@ class RoomRuntime {
   start() {
     if (this.running) return;
     console.log("    Starting the roomRuntime.")
-    this.updatingScheduler = setInterval(() => this.update(), 1000/60);
+    this.updatingScheduler = setInterval(this.update.bind(this), 1000/60);
     this.tpsComputeScheduler = setInterval(() => this.updateTps(), 1000);
     //TODO: Remove later
-    this.debugOutputScheduler = setInterval(()=> {
-      console.log(this.getInfo(), 3000);
-    })
+    // this.debugOutputScheduler = setInterval(()=> {
+    //   console.log(this.getInfo(), 10000);
+    // })
 
     this.initScene();
     this.running = true;
@@ -168,7 +178,7 @@ class RoomRuntime {
     this.currentTps = this.ticks * Number(1000000 / dt);
     this.ticks = 0;
 
-    console.log(`   TPS: ${this.currentTps}`)
+    // console.log(`   TPS: ${this.currentTps}`)
     this.lastTime = this.now();
   }
 
@@ -176,22 +186,52 @@ class RoomRuntime {
     return Number(process.hrtime.bigint() / 1000n);
   }
 
-  getSerializable() {
+  getPlayerState(soliderId) {
+    let playerSolider = this.playerSoliders.get(soliderId);
+    let st = this.getSerializable(soliderId);
+    return st;
+  }
+
+  getSerializable(soliderId) {
 
     let serializable = {
+      player: {},
       gameScene: [],
-      players: [],
-      objects: []
+      oponents: {},
+      objects: {},
     }
+    
+    // Ignore for now.
+    // this.objects.forEach( o => serializable.objects.push(o.getSerializable()));
+    this.playerSoliders.forEach( p => {
+      if (p.ssp.id == soliderId){
+        // serializable.player = p.getSerializable();
+        serializable.player.id = p.ssp.id;
+      } else {
+        serializable.oponents[p.ssp.id] = p.getSerializable();
+      }
+    });
 
-    this.objects.forEach( o => serializable.objects.push(o.getSerializable()));
-    this.playerSoliders.forEach( p => serializable.players.push(p.getSerializable()));
+    this.objects.forEach( o => {
+      serializable.objects[o.ssp.id] = o.ssp;
+    })
+    
+    let outStr = "";
+    Object.keys(serializable.objects).forEach((k) => {
+      outStr += `k: ${k} type: ${serializable.objects[k].type}, `;
+    })
 
+    console.log(outStr);
     return serializable;
   }
 
   serializeToJson() {
     return JSON.stringify(this.getSerializable(), undefined, "  ");
+  }
+
+  removeObject(objectId) {
+    this.objects = this.objects.filter((o) =>  o.ssp.id !== objectId )
+    console.log(`Object ${objectId} removed from runtime`)
   }
 
   /**
@@ -201,11 +241,10 @@ class RoomRuntime {
    */
   getInfo() {
     let str = "";
-    str += `    RoomRuntime, num of players: ${this.playerSoliders.size}\n`;
-    for (const [k, v] of this.playerSoliders) {
-      str += `      solider: { id: ${v.id}, playerId: ${v.playerSocketId}}\n`;
-    }
-    str += `      objects json: \n${this.serializeToJson()}`
+    // for (const [k, v] of this.playerSoliders) {
+    //   str += `      solider: { id: ${v.id}, playerId: ${v.playerSocketId}}\n`;
+    // }
+    // str += `      objects json: \n${this.serializeToJson()}`
     return str;
   }
 }

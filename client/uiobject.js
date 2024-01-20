@@ -1,5 +1,6 @@
 import { Config } from "./config.js";
 import { UiObjects } from "./arrayuiobjects.js";
+import { ModelObject } from "/model/modelobject.js";
 
 class UiObject {
   static loadAudio(audioFilename) {
@@ -15,20 +16,15 @@ class UiObject {
   }
 
   constructor(game, x, y, width, height, hp) {
-    this.x = x;
-    this.y = y;
-    this.width = width;
-    this.height = height;
-    this.ctx = game.ctx;
-    this.game = game;
-    this.hp = hp;
+    this.model = new ModelObject(game, x, y, width, height, hp);
+
     this.audioHit = new Audio();
     this.audioHit.src = UiObject.audioHitSrc.src;
     this.type = "none";
   }
 
   update() {
-    if (this.hp <= 0) {
+    if (this.ssp.hp <= 0) {
       this.explode();
     }
   }
@@ -40,55 +36,21 @@ class UiObject {
     }
   }
 
-  collisionBox() {
-    return {
-      x: this.x,
-      y: this.y,
-      w: this.width,
-      h: this.height,
-    };
-  }
-
   draw(camera) {
     if (Config.debug === true) {
       camera.ctx.lineWidth = 1;
       camera.ctx.strokeStyle = "green";
 
-      const cbx = this.collisionBox();
+      const cbx = this.model.collisionBox();
 
       camera.ctx.strokeRect(cbx.x - camera.x, cbx.y - camera.y, cbx.w, cbx.h);
     }
   }
 
-  collides(uiobject) {
-    const cbx = this.collisionBox();
-    const element = uiobject.collisionBox();
-
-    if (cbx.x + cbx.w < element.x) {
-      return false;
-    }
-
-    if (cbx.x > element.x + element.w) {
-      return false;
-    }
-
-    if (cbx.y + cbx.h < element.y) {
-      return false;
-    }
-
-    if (cbx.y > element.y + element.h) {
-      return false;
-    }
-
-    return true;
-  }
-
   localCoords(camera) {
     return {
-      y: this.y - camera.y,
-      x: this.x - camera.x,
-      // x : this.x,
-      // y : this.y
+      y: this.model.ssp.y - camera.y,
+      x: this.model.ssp.x - camera.x,
     };
   }
 }

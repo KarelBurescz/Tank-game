@@ -4,8 +4,8 @@ const Config = {
   gameRoom: {
     sizeX: 500,
     sizeY: 500,
-    numOfObstacles: 1,
-    numOfTrees: 1,
+    numOfObstacles: 10,
+    numOfTrees: 10,
   }
 };
 

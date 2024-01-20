@@ -1,140 +1,140 @@
+"use strict";
+// import { RoomRuntime } from "../server/roomRuntime.js";
 import { ModelObject } from "./modelobject.js";
-import { Config } from "../server/config.js";
+import { Bullet } from "./bullet.js";
 
 /**
- * @define { ModelObject } Solider
- * @property { String } playerId - An identifier of a player connected. It should be his socket ID on a server side.
- *
+ * Represents a solider in the game, extending ModelObject.
+ * @extends ModelObject
+ * 
+ * @property {number} ssp.direction: direction
+ * @property {number} ssp.speed: speed
+ * @property {number} ssp.gunDirection: direction of the gunTurret
+ * @property {number} ssp.turretSpeed: speed of rotating of the turret.
+ * @property {number} ssp.bulletsLoaded: number of bullets loaded.
+ * @property {number} ssp.speedBoostCouter: how many ticks a speed boost can work
+ * @property {number} ssp.explodingSequence: whidh exploding sequence is object on.
+ * @property {number} ssp.coolingDown: indicates if object can't move and is cooling down
+ * @property {number} ssp.exploding: indicates if object is exploding
+ * @property {number} ssp.playerDead: indicates if player is dead
+ * 
+ * @property {boolean} csp.movingFoward
+ * @property {boolean} csp.movingBack
+ * @property {boolean} csp.speedBoost
+ * @property {boolean} csp.rotatingRight
+ * @property {boolean} csp.rotatingLeft
+ * @property {boolean} csp.turretMovingRight
+ * @property {boolean} csp.turretMovingLeft
+ * @property {boolean} csp.focusMode
+ * @property {boolean} csp.mineDeploying
+ * @property {boolean} csp.firing
  */
-
 class Solider extends ModelObject {
   /**
-   * Represents a solider in the game, extending ModelObject.
-   * @extends ModelObject
-   */
-
-  /**
    * Creates a Solider object at a random position.
-   * @param {Object} game - The game instance this solider is part of.
+   * @param {RoomRuntime} game - The game instance this solider is part of.
    * @returns {Solider} A new Solider instance.
    */
   static CreateOnRandomPosition(game) {
     //TODO: Read the max values for coordinates from a config file.
-    const x = Math.random() * 5000;
-    const y = Math.random() * 5000;
-    return new Solider(game, x, y, 51, 50, 180, 1, 180, 100);
+    let margin = 50;
+    const x = margin + Math.floor(Math.random() * (game.config.gameRoom.sizeX - 2*margin));
+    const y = margin + Math.floor(Math.random() * (game.config.gameRoom.sizeY - 2*margin));
+    return new Solider(game, x, y, 50, 50, 0 * Math.PI/180, 1, 0 * Math.PI/180, 100);
   }
 
   /**
    * Constructs a new Solider instance.
-   * @param {Object} game - The game instance this solider is part of.
-   * @param {number} x - The x-coordinate of the solider.
-   * @param {number} y - The y-coordinate of the solider.
-   * @param {number} width - The width of the solider.
-   * @param {number} height - The height of the solider.
-   * @param {number} direction - The initial direction of the solider.
-   * @param {number} speed - The speed of the solider.
-   * @param {number} gunDirection - The initial gun direction of the solider.
-   * @param {number} hp - The health points of the solider.
    */
   constructor(game, x, y, width, height, direction, speed, gunDirection, hp) {
     super(game, x, y, width, height, hp);
     this.playerSocketId = null;
-    this.direction = direction;
-    this.speed = speed;
-    this.gunDirection = 0;
-    this.turretSpeed = 0.03;
-    this.bulletsLoaded = 5;
-    this.speedBoostCouter = 200;
-    this.explodingSequence = 0;
-    this.coolingDown = false;
-    this.exploding = false;
-    this.playerDead = false;
-    this.type = "player";
 
-    this.serializableProperties.push(...[
-      "direction", "gunDirection", "bulletsLoaded", "speedBoostCouter",
-      "coolingDown", "exploding", "playerDead", "movingForward", "movingBack",
-      "speedBoost", "rotatingRight", "rotatingLeft", "turretMovingRight",
-      "turretMovingLeft"
-    ])
-    
+    this.ssp = {
+      ...this.ssp,
+      direction: direction,
+      speed: speed,
+      gunDirection: 0,
+      turretSpeed: 0.03,
+      bulletsLoaded: 5,
+      speedBoostCouter: 200,
+      explodingSequence: 0,
+      coolingDown: false,
+      exploding: false,
+      playerDead: false,
+      type: "player",
+    }
+
     /* Properties that will be updated from the client's controller */
-    this.movingFoward = false;
-    this.movingBack = false;
-    this.speedBoost = false;
-    this.rotatingRight = false;
-    this.rotatingLeft = false;
-    this.turretMovingRight = false;
-    this.turretMovingLeft = false;
-    this.focusMode = false;
-    this.mineDeployed = false;
-  }
+    this.csp = {
+      movingFoward: false,
+      movingBack: false,
+      speedBoost: false,
+      rotatingRight: false,
+      rotatingLeft: false,
+      turretMovingRight: false,
+      turretMovingLeft: false,
+      focusMode: false,
+      mineDeploying:false,
+      firing: false,
+    }
 
-  /**
-   * Provides a representation of the object data for sending over network.
-   * @returns {String} A string representing the serialized object.
-   */
-  serialize() {}
+  }
 
   collisionBox() {
     return {
-      x: this.x - this.width / 2,
-      y: this.y - this.height / 2,
-      w: this.width,
-      h: this.height,
+      x: this.ssp.x - this.ssp.width / 2,
+      y: this.ssp.y - this.ssp.height / 2,
+      w: this.ssp.width,
+      h: this.ssp.height,
     };
   }
 
   center() {
     return {
-      x: this.x,
-      y: this.y,
+      x: this.ssp.x,
+      y: this.ssp.y,
     };
   }
 
   moveFront(dir = 1) {
-    const oldX = this.x;
-    const oldY = this.y;
+    const oldX = this.ssp.x;
+    const oldY = this.ssp.y;
 
-    let speed = this.speed;
+    let speed = this.ssp.speed;
 
-    if (this.speedBoost) {
+    if (this.ssp.speedBoost) {
       speed += 1;
-      this.speedBoostCouter--;
+      this.ssp.speedBoostCouter--;
     }
 
-    if (this.speedBoostCouter <= 0) {
+    if (this.ssp.speedBoostCouter <= 0) {
       speed = 0;
-      this.audioCoolingDown.play();
 
-      if (this.coolingDown === false) {
+      if (this.ssp.coolingDown === false) {
         setTimeout(() => {
-          this.speedBoostCouter = 200;
-          this.coolingDown = false;
-          this.audioMoving.pause();
-          this.audioCoolingDown.pause();
+          this.ssp.speedBoostCouter = 200;
+          this.ssp.coolingDown = false;
         }, 2000);
       }
 
-      this.coolingDown = true;
+      this.ssp.coolingDown = true;
     }
 
-    this.x += dir * Math.cos(this.direction) * speed;
-    this.y += dir * Math.sin(this.direction) * speed;
+    this.ssp.x += dir * Math.cos(this.ssp.direction) * speed;
+    this.ssp.y += dir * Math.sin(this.ssp.direction) * speed;
 
     let collide = false;
-    //TODO: Fix this, this is not available on the server for now.
-    UiObjects.forEach((uiobject) => {
-      if (uiobject === this) return;
-      if (this.collides(uiobject)) {
+
+    this.game.objects.forEach((obj) => {
+      if (obj === this) return;
+      if (this.collides(obj)) {
         collide = true;
       }
     });
     if (collide === true) {
-      this.x = oldX;
-      this.y = oldY;
-      console.log("collide");
+      this.ssp.x = oldX;
+      this.ssp.y = oldY;
     }
 
     //TODO: This has nothing to do here, it should be drawn on draw(), based of if tank is moving front.
@@ -146,49 +146,56 @@ class Solider extends ModelObject {
   }
 
   deployMine() {
-    let myMine = new LandMine(this.game, this.x, this.y, 20, 20, 10, 100, this);
-    this.mineDeployed = false;
+    let myMine = new LandMine(this.game, this.ssp.x, this.ssp.y, 20, 20, 10, 100, this);
+    this.csp.mineDeploying = false;
     //TODO: Fix this, UiOBjects is not available.
     UiObjects.unshift(myMine);
   }
 
   fire() {
-    if (this.playerDead) {
+    if (this.ssp.playerDead) {
       return;
     }
-    if (this.bulletsLoaded < 1) {
-      this.audioEmptyGunShot.play();
+    if (this.ssp.bulletsLoaded < 1) {
+      // this.audioEmptyGunShot.play();
       return;
     }
 
     let myBullet = new Bullet(
       this.game,
-      this.x,
-      this.y,
+      this.ssp.x,
+      this.ssp.y,
       8,
       8,
       5,
-      this.direction + this.gunDirection,
+      this.ssp.direction + this.ssp.gunDirection,
       20,
       this
     );
 
-    this.bulletsLoaded--;
+    this.ssp.bulletsLoaded--;
 
-    if (this.bulletsLoaded < 1) {
+    if (this.ssp.bulletsLoaded < 1) {
       setTimeout(() => {
-        this.audioReloading.play();
-        this.bulletsLoaded = 5;
+        // this.audioReloading.play();
+        this.ssp.bulletsLoaded = 5;
       }, 3000);
     }
 
-    UiObjects.push(myBullet);
+    this.game.objects.push(myBullet);
+    console.log(`Firing!`)
   }
 
   explode() {
-    if (this.exploding) return;
-    this.exploding = true;
-    this.playerDead = true;
+    if (this.ssp.exploding) return;
+    this.ssp.exploding = true;
+    this.ssp.playerDead = true;
+    
+    setTimeout( (() => {
+      this.game.removeObject(this.ssp.id)
+    }).bind(this), 120 * 1000);
+    
+    console.log(`${this.ssp.id} - Exploded!!!`)
   }
 
   collides(uiobject) {
@@ -202,35 +209,40 @@ class Solider extends ModelObject {
     // let dx = this.x - mouse.x;
     // let dy = this.y - mouse.y;
     // this.gunDirection = Math.atan2(-dy, -dx);
-    if (this.mineDeployed === true) {
+    if (this.csp.mineDeploying === true) {
       this.deployMine();
     }
 
-    if (this.movingFoward === true) {
+    if (this.csp.movingFoward === true) {
       this.moveFront();
     }
-    if (this.movingBack === true) {
+    if (this.csp.movingBack === true) {
       this.moveBack();
     }
-    if (this.rotatingRight === true) {
-      this.direction += (this.speed * Math.PI) / 120;
+    if (this.csp.rotatingRight === true) {
+      this.ssp.direction += (this.ssp.speed * Math.PI) / 120;
     }
-    if (this.rotatingLeft === true) {
-      this.direction -= (this.speed * Math.PI) / 120;
+    if (this.csp.rotatingLeft === true) {
+      this.ssp.direction -= (this.ssp.speed * Math.PI) / 120;
     }
-    let ts = this.turretSpeed;
+    let ts = this.ssp.turretSpeed;
 
-    if (this.focusMode === true) {
+    if (this.csp.focusMode === true) {
       ts = ts * 0.3;
     }
-    if (this.turretMovingLeft) {
-      this.gunDirection -= ts;
+    if (this.csp.turretMovingLeft) {
+      this.ssp.gunDirection -= ts;
     }
-    if (this.turretMovingRight) {
-      this.gunDirection += ts;
+    if (this.csp.turretMovingRight) {
+      this.ssp.gunDirection += ts;
     }
 
-    if (this.turretMovingLeft || this.turretMovingRight) {
+    if (this.csp.firing) {
+      this.fire();
+      this.csp.firing = false;
+    }
+
+    if (this.csp.turretMovingLeft || this.csp.turretMovingRight) {
       //TODO: remove or fix
       // this.audioTurretRotating.play();
     } else {
@@ -239,10 +251,10 @@ class Solider extends ModelObject {
     }
     
     if (
-      this.movingFoward ||
-      this.movingBack ||
-      this.rotatingLeft ||
-      this.rotatingRight
+      this.csp.movingFoward ||
+      this.csp.movingBack ||
+      this.csp.rotatingLeft ||
+      this.csp.rotatingRight
       ) {
       //TODO: remove or fix
       // this.audioMoving.play();
