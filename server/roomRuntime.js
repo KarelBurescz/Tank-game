@@ -197,7 +197,7 @@ class RoomRuntime {
     let serializable = {
       player: {},
       gameScene: [],
-      oponents: {},
+      oponents: [],
       objects: {},
     }
     
@@ -208,7 +208,7 @@ class RoomRuntime {
         // serializable.player = p.getSerializable();
         serializable.player.id = p.ssp.id;
       } else {
-        serializable.oponents[p.ssp.id] = p.getSerializable();
+        serializable.oponents.push(p.ssp.id);
       }
     });
 
@@ -221,7 +221,7 @@ class RoomRuntime {
       outStr += `k: ${k} type: ${serializable.objects[k].type}, `;
     })
 
-    console.log(outStr);
+    // console.log(outStr);
     return serializable;
   }
 

@@ -193,7 +193,7 @@ class Solider extends ModelObject {
     
     setTimeout( (() => {
       this.game.removeObject(this.ssp.id)
-    }).bind(this), 120 * 1000);
+    }).bind(this), 2 * 1000);
     
     console.log(`${this.ssp.id} - Exploded!!!`)
   }

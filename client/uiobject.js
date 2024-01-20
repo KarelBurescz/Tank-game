@@ -24,7 +24,7 @@ class UiObject {
   }
 
   update() {
-    if (this.ssp.hp <= 0) {
+    if (this.model.ssp.hp <= 0) {
       this.explode();
     }
   }
