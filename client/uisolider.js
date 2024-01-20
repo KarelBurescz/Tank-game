@@ -4,6 +4,7 @@ import { UiObjects } from "./arrayuiobjects.js";
 import { LandMine } from "./landMine.js";
 import { Radar } from "./radar.js";
 import { Solider } from "/model/solider.js";
+import { Animation } from "./animation.js";
 
 class UiSolider extends UiObject {
   static {
@@ -18,7 +19,17 @@ class UiSolider extends UiObject {
   constructor(game, x, y, width, height, direction, speed, gunDirection, hp) {
     super(game, x, y, width, height, hp);
 
-    this.model = new Solider(game, x, y, width, height, direction, speed, gunDirection, hp);
+    this.model = new Solider(
+      game,
+      x,
+      y,
+      width,
+      height,
+      direction,
+      speed,
+      gunDirection,
+      hp
+    );
 
     // this.gunDirection = gunDirection;
     this.image = new Image();
@@ -42,15 +53,42 @@ class UiSolider extends UiObject {
     this.audioCoolingDown = new Audio();
     this.audioCoolingDown.src = UiSolider.audioCoolingDownSrc.src;
     this.radar = new Radar(this, 120);
+
+    this.animations = [];
   }
 
-  center() { return this.model.center() }
+  center() {
+    return this.model.center();
+  }
 
   update() {
     super.update();
-    if(this.model.csp.radarOn) {
+    if (this.model.csp.radarOn) {
       this.radar.update();
     }
+
+    if (this.model.ssp.exploding) {
+      //TODO: Create the animation only once!
+      this.animations.push(
+        new Animation(
+          this.model.game,
+          this,
+          "Explode-sequence",
+          "explode-sequence",
+          9,
+          0,
+          0,
+          0,
+          0,
+          this.model.ssp.width,
+          this.model.ssp.height,
+          1,
+          null
+        )
+      );
+    }
+
+    this.animations.forEach((a) => a.update());
   }
 
   draw(camera) {
@@ -110,13 +148,15 @@ class UiSolider extends UiObject {
       camera.ctx.stroke();
     }
 
-    if (this.exploding === true) {
-      this.drawExplosion(camera);
+    // if (this.exploding === true) {
+    //   this.drawExplosion(camera);
+    // }
+
+    if (this.model.csp.movingFoward || this.model.csp.movingBack) {
+      this.drawTracks();
     }
 
-    if(this.model.csp.movingFoward || this.model.csp.movingBack) {
-      this.drawTracks()
-    }
+    this.animations.forEach((a) => a.draw());
   }
 
   drawTracks() {
@@ -170,7 +210,6 @@ class UiSolider extends UiObject {
       }
     }, 80);
   }
-
 }
 
 export { UiSolider };
