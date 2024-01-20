@@ -229,6 +229,11 @@ class RoomRuntime {
     return JSON.stringify(this.getSerializable(), undefined, "  ");
   }
 
+  removeObject(objectId) {
+    this.objects = this.objects.filter((o) =>  o.ssp.id !== objectId )
+    console.log(`Object ${objectId} removed from runtime`)
+  }
+
   /**
    * Retrieves information about the current state of the room.
    *

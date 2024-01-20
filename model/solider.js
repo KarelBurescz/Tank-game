@@ -190,6 +190,12 @@ class Solider extends ModelObject {
     if (this.ssp.exploding) return;
     this.ssp.exploding = true;
     this.ssp.playerDead = true;
+    
+    setTimeout( (() => {
+      this.game.removeObject(this.ssp.id)
+    }).bind(this), 120 * 1000);
+    
+    console.log(`${this.ssp.id} - Exploded!!!`)
   }
 
   collides(uiobject) {
