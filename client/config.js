@@ -11,9 +11,9 @@ const Config = {
         turret_right: 'e',
         fire: 'w',
         nitro: 'd',
-        focus: 's',
         mineDeploy: 'a',
-        radar: 'r'
+        radar: 'r',
+        coumuflage: 'c'
     }
 
 }

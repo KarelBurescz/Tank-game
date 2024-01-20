@@ -4,6 +4,7 @@ import { UiObjects } from "./arrayuiobjects.js";
 import { LandMine } from "./landMine.js";
 import { Radar } from "./radar.js";
 import { Solider } from "/model/solider.js";
+import { Coumuflage } from './coumuflage.js'
 
 class UiSolider extends UiObject {
   static {
@@ -42,16 +43,12 @@ class UiSolider extends UiObject {
     this.audioCoolingDown = new Audio();
     this.audioCoolingDown.src = UiSolider.audioCoolingDownSrc.src;
     this.radar = new Radar(this, 120);
+    this.radarOn = false;
+    this.coumuflage = new Coumuflage(this, 120);
+    this.coumuflageOn = false;
   }
 
   center() { return this.model.center() }
-
-  update() {
-    super.update();
-    if(this.model.csp.radarOn) {
-      this.radar.update();
-    }
-  }
 
   draw(camera) {
     let co = this.localCoords(camera);
@@ -81,8 +78,12 @@ class UiSolider extends UiObject {
     );
     camera.ctx.restore();
 
-    if (this.model.csp.radarOn) {
+    if (this.radarOn) {
       this.radar.draw(camera, co.x, co.y);
+    }
+
+    if (this.coumuflageOn) {
+      this.coumuflage.draw(camera, co.x, co.y);
     }
 
     //Draw a debug geometry: collision box, direction and aim direction.
