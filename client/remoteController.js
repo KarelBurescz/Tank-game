@@ -51,6 +51,7 @@ class RemoteController {
         ret[config.p1.focus] = () => this.playerObject.model.csp.focusMode = false;
         ret[config.p1.mineDeploy] = () => this.playerObject.model.csp.mineDeployed = false;
         ret[config.p1.radar] = () => this.playerObject.model.csp.radarOn = false;
+        ret[config.p1.coumuflage] = () => this.playerObject.model.csp.coumuflageOn = false;
 
         return ret;
     }

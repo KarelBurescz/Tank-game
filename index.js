@@ -96,6 +96,6 @@ function getInfo() {
   return str;
 }
 
-server.listen(3001, () => {
+server.listen(3003, () => {
   console.log("server running at http://localhost:3001");
 });

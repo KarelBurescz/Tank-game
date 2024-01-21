@@ -44,7 +44,7 @@ class UiSolider extends UiObject {
     this.audioCoolingDown.src = UiSolider.audioCoolingDownSrc.src;
     this.radar = new Radar(this, 120);
     this.radarOn = false;
-    this.coumuflage = new Coumuflage(this, 120);
+    this.coumuflage = new Coumuflage(this, 100);
     this.coumuflageOn = false;
   }
 
@@ -78,11 +78,11 @@ class UiSolider extends UiObject {
     );
     camera.ctx.restore();
 
-    if (this.radarOn) {
+    if (this.model.csp.radarOn) {
       this.radar.draw(camera, co.x, co.y);
     }
 
-    if (this.coumuflageOn) {
+    if (this.model.ssp.coumuflageOn) {
       this.coumuflage.draw(camera, co.x, co.y);
     }
 

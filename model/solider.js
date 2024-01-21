@@ -59,6 +59,7 @@ class Solider extends ModelObject {
       bulletsLoaded: 5,
       speedBoostCouter: 200,
       explodingSequence: 0,
+      coumuflageOn : false,
       coolingDown: false,
       exploding: false,
       playerDead: false,
@@ -262,6 +263,11 @@ class Solider extends ModelObject {
       //TODO: remove or fix
       // this.audioMoving.pause();
     }
+
+
+    if(this.csp.coumuflageOn) {
+      this.ssp.coumuflageOn = true;
+    } else this.ssp.coumuflageOn = false;
 
     super.update();
   }
