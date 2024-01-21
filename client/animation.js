@@ -23,41 +23,60 @@ class Animation {
     this.direction = direction;
     this.width = width;
     this.height = height;
+    this.repetitions = repetitions;
     this.then = then;
     this.game = game;
     this.UIobject = UIobject;
     this.numberOfImages = numberOfImages;
     this.imgName = imgName;
+    this.num = 0;
+    this.updatingFunc = null;
+    this.repetitionsCount = 0;
   }
 
-  update() {
-    //TODO: update animation in time (change image, update position, or end it)
+  static loadAssets(folderName, imgName, numberOfImages) {
+    for (let num = 0; num < numberOfImages; num++) {
+      let imgPath = `${folderName}/${imgName}${num}.png`;
+      let image = new Image();
+      image.src = imgPath;
+
+      Animation.images[imgPath] = image;
+    }
   }
 
-  init() {
-    let num = 0;
-    this.image = new Image();
-    let imgPath = `${this.folderName}/${this.imgName}${num}.png`;
-    this.image.src = imgPath;
-    console.log(`animuju!`);
-    let co = this.UIobject.localCoords(camera);
-    let ssp = this.model.ssp;
+  update() {}
 
-    camera.ctx.save();
-    camera.ctx.translate(co.x, co.y);
-    camera.ctx.rotate(ssp.direction);
-    camera.ctx.drawImage(
-      this.image,
-      -ssp.width / 2,
-      -ssp.height / 2,
-      ssp.width,
-      ssp.height
-    );
-    camera.ctx.restore();
+  timedUpdate() {
+    this.num += 1;
+    if (this.num >= this.numberOfImages) {
+      this.num = 0;
+      this.repetitionsCount += 1;
+    }
+    if (this.repetitions !== -1 && this.repetitionsCount >= this.repetitions) {
+      this.num = this.numberOfImages - 1;
+      clearInterval(this.updatingFunc);
+
+      if (this.then) this.then();
+    }
+  }
+
+  start() {
+    this.updatingFunc = setInterval(this.timedUpdate.bind(this), 100);
+    console.log("starting animation");
   }
 
   draw(camera) {
-    //TODO: Draw actual image on the camera's canvas.
+    let imgPath = `${this.folderName}/${this.imgName}${this.num}.png`;
+    let img = Animation.images[imgPath];
+    let co = this.UIobject.localCoords(camera);
+    camera.ctx.drawImage(
+      img,
+      co.x - this.width / 2,
+      co.y - this.height / 2,
+      this.width,
+      this.height
+    );
+    console.log(`drawing: ${imgPath} on x:${co.x}  y:${co.y}`);
   }
 }
 

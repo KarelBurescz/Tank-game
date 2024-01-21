@@ -59,6 +59,7 @@ class UiSolider extends UiObject {
     this.coumuflageOn = false;
 
     this.animations = [];
+    this.explodingAnimationObj = null;
   }
 
   center() {
@@ -70,6 +71,61 @@ class UiSolider extends UiObject {
     if (this.model.csp.radarOn) {
       this.radar.update();
     }
+
+    if (this.model.ssp.exploding) {
+      //TODO: Create the animation only once!
+      if (!this.explodingAnimationObj) {
+        this.explodingAnimationObj = new Animation(
+          this.model.game,
+          this,
+          "Explode-sequence",
+          "explode-sequence",
+          9,
+          0,
+          0,
+          0,
+          0,
+          this.model.ssp.width * 2,
+          this.model.ssp.height * 2,
+          1,
+          null
+        );
+
+        const a2 = new Animation(
+          this.model.game,
+          this,
+          "Explode-sequence",
+          "explode-sequence",
+          9,
+          0,
+          0,
+          0,
+          0,
+          this.model.ssp.width * 5,
+          this.model.ssp.height * 5,
+          1,
+          null
+        );
+
+        this.animations.push(a2);
+        let a2index = this.animations.length - 1;
+        this.animations.push(this.explodingAnimationObj);
+        let aindex = this.animations.length - 1;
+
+        this.explodingAnimationObj.start();
+        a2.start();
+
+        a2.then = () => {
+          this.animations.splice(a2index, 1);
+        };
+
+        this.explodingAnimationObj.then = () => {
+          this.animations.splice(aindex, 1);
+        };
+      }
+    }
+
+    this.animations.forEach((a) => a.update());
   }
 
   draw(camera) {
@@ -141,7 +197,9 @@ class UiSolider extends UiObject {
       this.drawTracks();
     }
 
-    this.animations.forEach((a) => a.draw());
+    this.animations.forEach((a) => {
+      a.draw(camera);
+    });
   }
 
   drawTracks() {
