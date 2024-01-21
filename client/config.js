@@ -1,6 +1,6 @@
 
 const Config = {
-    debug: true,
+    debug: false,
 
     p1: {
         forward: 't',
@@ -11,9 +11,9 @@ const Config = {
         turret_right: 'e',
         fire: 'w',
         nitro: 'd',
-        focus: 's',
         mineDeploy: 'a',
-        radar: 'r'
+        radar: 'r',
+        coumuflage: 'c'
     }
 
 }

@@ -29,11 +29,11 @@ class RemoteController {
         ret[config.p1.left] = () => this.playerObject.model.csp.rotatingLeft = true;
         ret[config.p1.turret_left] = () => this.playerObject.model.csp.turretMovingLeft = true;
         ret[config.p1.turret_right] = () => this.playerObject.model.csp.turretMovingRight = true;
-        ret[config.p1.fire] = () => this.playerObject.model.csp.firing=true;
+        ret[config.p1.fire] = () => this.playerObject.model.csp.firing = true;
         ret[config.p1.nitro] = () => this.playerObject.model.csp.speedBoost = true;
-        ret[config.p1.focus] = () => this.playerObject.model.csp.focusMode = true;
         ret[config.p1.mineDeploy] = () => this.playerObject.model.csp.mineDeployed = true;
         ret[config.p1.radar] = () => this.playerObject.model.csp.radarOn = true;
+        ret[config.p1.coumuflage] = () => this.playerObject.model.csp.coumuflageOn = true;
 
         return ret;
     }
@@ -51,6 +51,7 @@ class RemoteController {
         ret[config.p1.focus] = () => this.playerObject.model.csp.focusMode = false;
         ret[config.p1.mineDeploy] = () => this.playerObject.model.csp.mineDeployed = false;
         ret[config.p1.radar] = () => this.playerObject.model.csp.radarOn = false;
+        ret[config.p1.coumuflage] = () => this.playerObject.model.csp.coumuflageOn = false;
 
         return ret;
     }
