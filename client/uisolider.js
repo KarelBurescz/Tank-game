@@ -6,7 +6,6 @@ import { Radar } from "./radar.js";
 import { Solider } from "/model/solider.js";
 import { Coumuflage } from "./coumuflage.js";
 import { Animation } from "./animation.js";
-import { Animation } from "./animation.js";
 
 class UiSolider extends UiObject {
   static {
