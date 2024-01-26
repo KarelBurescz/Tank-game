@@ -3,11 +3,12 @@ import { Config } from "./config.js";
 import { Obstacle } from "../model/obstacle.js";
 import { Tree } from "../model/tree.js";
 import { Solider } from "../model/solider.js";
+import { Plant } from "../model/plant.js";
 
 /**
  * Keeps the game mechanics and the game objects for a single room.
- * 
- * @property { Map<Number, Solider> } playerSoliders - A key-value store for the game objects representing the players. 
+ *
+ * @property { Map<Number, Solider> } playerSoliders - A key-value store for the game objects representing the players.
  * The key is the {@link Solider#playerId} property.
  * @property { Array<ModelObject> } objects - A list of all objects in the room runtime.
  * @property { Number } currentTps - Computed ticks per second if the runtime is running.
@@ -47,9 +48,9 @@ class RoomRuntime {
     }
 
     if (solider === null) {
-      for (let i=0; i < 1000; i++){
+      for (let i = 0; i < 1000; i++) {
         solider = Solider.CreateOnRandomPosition(this);
-        if (!this.objects.some(e => e.collides(solider))) {
+        if (!this.objects.some((e) => e.collides(solider))) {
           solider.playerSocketId = player.socket.id;
           this.playerSoliders.set(solider.ssp.id, solider);
           this.objects.push(solider);
@@ -68,8 +69,8 @@ class RoomRuntime {
    * Creates a scene at the startup, randomly placed walls and trees.
    * Populates the this.objects property.
    */
-  initScene(){
-
+  initScene() {
+    // Loop for obstacles
     for (let i = 0; i < Config.gameRoom.numOfObstacles; i++) {
       const myX = Math.random() * (Config.gameRoom.sizeX - 80) + 40;
       const myY = Math.random() * (Config.gameRoom.sizeY - 80) + 40;
@@ -82,7 +83,15 @@ class RoomRuntime {
         myHeight = 30;
       }
 
-      const maybeWall = new Obstacle(this, myX, myY, myWidth, myHeight, 100, "");
+      const maybeWall = new Obstacle(
+        this,
+        myX,
+        myY,
+        myWidth,
+        myHeight,
+        100,
+        ""
+      );
 
       const wallCollides = this.objects.some((e) => {
         if (e.collides(maybeWall)) {
@@ -94,7 +103,27 @@ class RoomRuntime {
         this.objects.push(maybeWall);
       }
     }
+    // Loop for plants
+    for (let i = 0; i < Config.gameRoom.numOfPlants; i++) {
+      const myX = Math.random() * (Config.gameRoom.sizeX - 80) + 40;
+      const myY = Math.random() * (Config.gameRoom.sizeY - 80) + 40;
 
+      let myWidth = 30;
+      let myHeight = 30;
+
+      const maybePlant = new Plant(this, myX, myY, myWidth, myHeight, 100, "");
+
+      const wallCollides = this.objects.some((e) => {
+        if (e.collides(maybePlant)) {
+          return true;
+        }
+      });
+
+      if (wallCollides === false) {
+        this.objects.push(maybePlant);
+      }
+    }
+    // Loop for trees
     for (let j = 0; j < Config.gameRoom.numOfTrees; ++j) {
       const myX = Math.random() * (Config.gameRoom.sizeX - 80) + 40;
       const myY = Math.random() * (Config.gameRoom.sizeY - 80) + 40;
@@ -113,7 +142,6 @@ class RoomRuntime {
         this.objects.push(maybeTree);
       }
     }
-
   }
 
   /**
@@ -133,8 +161,8 @@ class RoomRuntime {
    * Updates the game state in time, one tick ahead.
    */
   update() {
-    this.playerSoliders.forEach((p,k,m) => p.update());
-    this.objects.forEach(o => o.update())
+    this.playerSoliders.forEach((p, k, m) => p.update());
+    this.objects.forEach((o) => o.update());
 
     this.ticks++;
   }
@@ -144,8 +172,8 @@ class RoomRuntime {
    */
   start() {
     if (this.running) return;
-    console.log("    Starting the roomRuntime.")
-    this.updatingScheduler = setInterval(this.update.bind(this), 1000/60);
+    console.log("    Starting the roomRuntime.");
+    this.updatingScheduler = setInterval(this.update.bind(this), 1000 / 60);
     this.tpsComputeScheduler = setInterval(() => this.updateTps(), 1000);
     //TODO: Remove later
     // this.debugOutputScheduler = setInterval(()=> {
@@ -159,8 +187,8 @@ class RoomRuntime {
   /**
    * Stops the update and tps computers.
    */
-  stop(){
-    if(!this.running) return;
+  stop() {
+    if (!this.running) return;
     console.log("    Stopping the runtime");
     clearInterval(this.tpsComputeScheduler);
     clearInterval(this.updatingScheduler);
@@ -193,18 +221,17 @@ class RoomRuntime {
   }
 
   getSerializable(soliderId) {
-
     let serializable = {
       player: {},
       gameScene: [],
       oponents: [],
       objects: {},
-    }
-    
+    };
+
     // Ignore for now.
     // this.objects.forEach( o => serializable.objects.push(o.getSerializable()));
-    this.playerSoliders.forEach( p => {
-      if (p.ssp.id == soliderId){
+    this.playerSoliders.forEach((p) => {
+      if (p.ssp.id == soliderId) {
         // serializable.player = p.getSerializable();
         serializable.player.id = p.ssp.id;
       } else {
@@ -212,14 +239,14 @@ class RoomRuntime {
       }
     });
 
-    this.objects.forEach( o => {
+    this.objects.forEach((o) => {
       serializable.objects[o.ssp.id] = o.ssp;
-    })
-    
+    });
+
     let outStr = "";
     Object.keys(serializable.objects).forEach((k) => {
       outStr += `k: ${k} type: ${serializable.objects[k].type}, `;
-    })
+    });
 
     // console.log(outStr);
     return serializable;
@@ -245,8 +272,8 @@ class RoomRuntime {
   }
 
   removeObject(objectId) {
-    this.objects = this.objects.filter((o) =>  o.ssp.id !== objectId )
-    console.log(`Object ${objectId} removed from runtime`)
+    this.objects = this.objects.filter((o) => o.ssp.id !== objectId);
+    console.log(`Object ${objectId} removed from runtime`);
   }
 
   /**

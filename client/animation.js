@@ -11,6 +11,7 @@ class Animation {
     dy,
     speed,
     direction,
+    duration,
     width,
     height,
     repetitions,
@@ -21,6 +22,7 @@ class Animation {
     this.dy = dy;
     this.speed = speed;
     this.direction = direction;
+    this.duration = duration;
     this.width = width;
     this.height = height;
     this.repetitions = repetitions;
@@ -44,7 +46,10 @@ class Animation {
     }
   }
 
-  update() {}
+  update() {
+    this.x += this.speed * Math.cos(this.direction);
+    this.y += this.speed * Math.sin(this.direction);
+  }
 
   timedUpdate() {
     this.num += 1;
@@ -61,7 +66,7 @@ class Animation {
   }
 
   start() {
-    this.updatingFunc = setInterval(this.timedUpdate.bind(this), 100);
+    this.updatingFunc = setInterval(this.timedUpdate.bind(this), this.duration);
     console.log("starting animation");
   }
 
@@ -71,8 +76,8 @@ class Animation {
     let co = this.UIobject.localCoords(camera);
     camera.ctx.drawImage(
       img,
-      co.x - this.width / 2,
-      co.y - this.height / 2,
+      co.x - this.width / 2 + this.dx,
+      co.y - this.height / 2 + this.dy,
       this.width,
       this.height
     );

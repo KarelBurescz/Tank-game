@@ -6,7 +6,8 @@ const Config = {
     sizeY: 500,
     numOfObstacles: 10,
     numOfTrees: 10,
-  }
+    numOfPlants: 10,
+  },
 };
 
 export { Config };

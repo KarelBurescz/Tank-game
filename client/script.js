@@ -6,6 +6,7 @@ import { mouse } from "./mouse.js";
 import { Game } from "./game.js";
 import { Camera } from "./camera.js";
 import { UiTree } from "./uitree.js";
+import { UiPlant } from "./uiplant.js";
 import { Config } from "./config.js";
 import { RemoteController } from "./remoteController.js";
 import { UiBullet } from "./uibullet.js";
@@ -41,6 +42,7 @@ window.addEventListener("resize", function () {
 });
 
 Animation.loadAssets("Explode-sequence", "explode-sequence", 9);
+Animation.loadAssets("Bubbles", "bubbles", 4);
 
 let myCamera = new Camera(0, 0, canvas, fogCanvas, null);
 let myGame = new Game(canvasBackground, backgroundCTX);
@@ -90,6 +92,10 @@ function updateGame(game, gameUpdate) {
           }
           case "player": {
             newObject = new UiSolider(game, 0, 0, 0, 0, 0, 0, 0, 100);
+            break;
+          }
+          case "plant": {
+            newObject = new UiPlant(game, 0, 0, 0, 0, 0, "");
             break;
           }
         }

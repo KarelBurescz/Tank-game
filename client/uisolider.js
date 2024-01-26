@@ -103,6 +103,7 @@ class UiSolider extends UiObject {
           0,
           0,
           0,
+          100,
           this.model.ssp.width * 5,
           this.model.ssp.height * 5,
           1,
