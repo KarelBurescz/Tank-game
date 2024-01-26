@@ -6,7 +6,7 @@ import { Bullet } from "./bullet.js";
 /**
  * Represents a solider in the game, extending ModelObject.
  * @extends ModelObject
- * 
+ *
  * @property {number} ssp.direction: direction
  * @property {number} ssp.speed: speed
  * @property {number} ssp.gunDirection: direction of the gunTurret
@@ -17,7 +17,7 @@ import { Bullet } from "./bullet.js";
  * @property {number} ssp.coolingDown: indicates if object can't move and is cooling down
  * @property {number} ssp.exploding: indicates if object is exploding
  * @property {number} ssp.playerDead: indicates if player is dead
- * 
+ *
  * @property {boolean} csp.movingFoward
  * @property {boolean} csp.movingBack
  * @property {boolean} csp.speedBoost
@@ -38,9 +38,23 @@ class Solider extends ModelObject {
   static CreateOnRandomPosition(game) {
     //TODO: Read the max values for coordinates from a config file.
     let margin = 50;
-    const x = margin + Math.floor(Math.random() * (game.config.gameRoom.sizeX - 2*margin));
-    const y = margin + Math.floor(Math.random() * (game.config.gameRoom.sizeY - 2*margin));
-    return new Solider(game, x, y, 50, 50, 0 * Math.PI/180, 1, 0 * Math.PI/180, 100);
+    const x =
+      margin +
+      Math.floor(Math.random() * (game.config.gameRoom.sizeX - 2 * margin));
+    const y =
+      margin +
+      Math.floor(Math.random() * (game.config.gameRoom.sizeY - 2 * margin));
+    return new Solider(
+      game,
+      x,
+      y,
+      50,
+      50,
+      (0 * Math.PI) / 180,
+      1,
+      (0 * Math.PI) / 180,
+      100
+    );
   }
 
   /**
@@ -64,7 +78,7 @@ class Solider extends ModelObject {
       exploding: false,
       playerDead: false,
       type: "player",
-    }
+    };
 
     /* Properties that will be updated from the client's controller */
     this.csp = {
@@ -76,10 +90,9 @@ class Solider extends ModelObject {
       turretMovingRight: false,
       turretMovingLeft: false,
       focusMode: false,
-      mineDeploying:false,
+      mineDeploying: false,
       firing: false,
-    }
-
+    };
   }
 
   collisionBox() {
@@ -147,7 +160,16 @@ class Solider extends ModelObject {
   }
 
   deployMine() {
-    let myMine = new LandMine(this.game, this.ssp.x, this.ssp.y, 20, 20, 10, 100, this);
+    let myMine = new LandMine(
+      this.game,
+      this.ssp.x,
+      this.ssp.y,
+      20,
+      20,
+      10,
+      100,
+      this
+    );
     this.csp.mineDeploying = false;
     //TODO: Fix this, UiOBjects is not available.
     UiObjects.unshift(myMine);
@@ -184,19 +206,22 @@ class Solider extends ModelObject {
     }
 
     this.game.objects.push(myBullet);
-    console.log(`Firing!`)
+    console.log(`Firing!`);
   }
 
   explode() {
     if (this.ssp.exploding) return;
     this.ssp.exploding = true;
     this.ssp.playerDead = true;
-    
-    setTimeout( (() => {
-      this.game.removeObject(this.ssp.id)
-    }).bind(this), 2 * 1000);
-    
-    console.log(`${this.ssp.id} - Exploded!!!`)
+
+    setTimeout(
+      (() => {
+        this.game.removeObject(this.ssp.id);
+      }).bind(this),
+      3 * 1000
+    );
+
+    console.log(`${this.ssp.id} - Exploded!!!`);
   }
 
   collides(uiobject) {
@@ -250,13 +275,13 @@ class Solider extends ModelObject {
       //TODO: remove or fix
       // this.audioTurretRotating.pause();
     }
-    
+
     if (
       this.csp.movingFoward ||
       this.csp.movingBack ||
       this.csp.rotatingLeft ||
       this.csp.rotatingRight
-      ) {
+    ) {
       //TODO: remove or fix
       // this.audioMoving.play();
     } else {

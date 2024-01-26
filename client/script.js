@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 import { UiSolider } from "./uisolider.js";
 import { UiObstacle } from "./uiobstacle.js";
@@ -9,7 +9,8 @@ import { UiTree } from "./uitree.js";
 import { Config } from "./config.js";
 import { RemoteController } from "./remoteController.js";
 import { UiBullet } from "./uibullet.js";
-import { Coumuflage } from './coumuflage.js'
+import { Animation } from "./animation.js";
+import { Coumuflage } from "./coumuflage.js";
 
 const socket = io();
 socket.emit("join-room", "war-room-1");
@@ -39,6 +40,8 @@ window.addEventListener("resize", function () {
   fogCanvas.height = canvas.height;
 });
 
+Animation.loadAssets("Explode-sequence", "explode-sequence", 9);
+
 let myCamera = new Camera(0, 0, canvas, fogCanvas, null);
 let myGame = new Game(canvasBackground, backgroundCTX);
 
@@ -47,75 +50,68 @@ socket.on("state-upate", (msg) => {
   let gameUpdate = JSON.parse(msg);
   removeGameObjects(myGame, gameUpdate);
   updateGame(myGame, gameUpdate);
-})
+});
 
 function removeGameObjects(game, gameUpdate) {
-  if (gameUpdate.hasOwnProperty('objects')){
-
+  if (gameUpdate.hasOwnProperty("objects")) {
     game.getObjectIds().forEach((id) => {
       if (!gameUpdate.objects.hasOwnProperty(id)) {
         game.removeObject(id);
       }
-    })
-
+    });
   }
 }
 
 /**
  * Updates the local model of the game based on the updates from server.
- * @param { Game } game 
+ * @param { Game } game
  */
 function updateGame(game, gameUpdate) {
+  if (gameUpdate.hasOwnProperty("objects")) {
+    Object.keys(gameUpdate.objects).forEach((id) => {
+      let o = gameUpdate.objects[id];
 
-  if (gameUpdate.hasOwnProperty('objects')){
-    Object.keys(gameUpdate.objects).forEach(
-      (id) => {
-        let o = gameUpdate.objects[id];
-
-        if (game.hasObject(id)){
-          game.getObject(id).model.ssp = gameUpdate.objects[id];
-        } else {
-          let newObject = null;
-          switch(o.type){
-            case "tree": {
-              newObject = new UiTree(game,0,0,0,0,0);
-              break;
-            }
-            case "obstacle": {
-              newObject = new UiObstacle(game,0,0,0,0,0,'brown');
-              break;
-            }
-            case "bullet": {
-              newObject = new UiBullet(game, 0, 0, 0, 0, 0, 0, 100, null);
-              break;
-            }
-            case "player": {
-              newObject = new UiSolider(game, 0, 0, 0, 0, 0, 0, 0, 100);
-              break;
-            }
+      if (game.hasObject(id)) {
+        game.getObject(id).model.ssp = gameUpdate.objects[id];
+      } else {
+        let newObject = null;
+        switch (o.type) {
+          case "tree": {
+            newObject = new UiTree(game, 0, 0, 0, 0, 0);
+            break;
           }
-
-          if (newObject) {
-            newObject.model.ssp = o;
-            game.addObject(newObject);
+          case "obstacle": {
+            newObject = new UiObstacle(game, 0, 0, 0, 0, 0, "brown");
+            break;
+          }
+          case "bullet": {
+            newObject = new UiBullet(game, 0, 0, 0, 0, 0, 0, 100, null);
+            break;
+          }
+          case "player": {
+            newObject = new UiSolider(game, 0, 0, 0, 0, 0, 0, 0, 100);
+            break;
           }
         }
+
+        if (newObject) {
+          newObject.model.ssp = o;
+          game.addObject(newObject);
+        }
+      }
       let outStr = "";
-      Object.keys(game.objects).forEach( (k) => {
+      Object.keys(game.objects).forEach((k) => {
         outStr += ` k: ${k} type: ${game.objects[k].model.ssp.type}, `;
         if (game.objects[k].model.ssp.type === "player") {
-          let locssp = game.objects[k].model.ssp
+          let locssp = game.objects[k].model.ssp;
           outStr += `${JSON.stringify(locssp)}`;
         }
-      })
-
+      });
 
       // console.log(outStr);
+    });
 
-      }
-    )
-
-    if (!game.player && gameUpdate.hasOwnProperty('player')) {
+    if (!game.player && gameUpdate.hasOwnProperty("player")) {
       const player = game.getObject(gameUpdate.player.id);
       game.setPlayer(player);
 
@@ -123,10 +119,9 @@ function updateGame(game, gameUpdate) {
       let rc = new RemoteController(window, game.player, Config, socket);
       rc.registerController(Config);
     }
-
   }
 
-  if (gameUpdate.hasOwnProperty('oponents')) {
+  if (gameUpdate.hasOwnProperty("oponents")) {
     game.oponents = gameUpdate.oponents;
   }
 }

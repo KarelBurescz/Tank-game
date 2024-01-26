@@ -10,19 +10,19 @@
  * Each player connects with a roomName which is a string identifier.
  * A room {@link Room} is created for each new roomName and the player is added.
  * </p>
- * 
+ *
  * <pre>
  *   ServerGame (1) --> (0..*) Room
  *   Room (1) --> (0..*) Player
  *   Room (1) --> (0..1) RoomRuntime
  * </pre>
- * 
+ *
  * @mermaid
  * graph TD;
  *    ServerGame --> Room
  *    Room --> Player
  *    Room --> RoomRuntime
- *   
+ *
  */
 import express from "express";
 import { createServer } from "node:http";
@@ -39,8 +39,8 @@ const io = new Server(server);
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 app.use(express.static(__dirname + "/client"));
-app.use('/model', express.static(__dirname + "/model"));
-app.use('/docs', express.static(__dirname + "/docs"));
+app.use("/model", express.static(__dirname + "/model"));
+app.use("/docs", express.static(__dirname + "/docs"));
 
 // app.get("/docs", (req, res) => {
 //   res.sendFile(join(__dirname, "docs/index.html"));
@@ -77,8 +77,8 @@ io.on("connection", (socket) => {
   });
 
   socket.on("update-controller", (msg) => {
-    serverGame.updateController(socket,msg);
-  })
+    serverGame.updateController(socket, msg);
+  });
 
   console.log(getInfo());
 });
@@ -96,6 +96,6 @@ function getInfo() {
   return str;
 }
 
-server.listen(3003, () => {
+server.listen(3001, () => {
   console.log("server running at http://localhost:3001");
 });
