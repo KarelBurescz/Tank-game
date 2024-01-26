@@ -4,7 +4,10 @@ import { Obstacle } from "../model/obstacle.js";
 import { Tree } from "../model/tree.js";
 import { Solider } from "../model/solider.js";
 import { Plant } from "../model/plant.js";
+<<<<<<< HEAD
 import { Bush } from "../model/bush.js";
+=======
+>>>>>>> 77cb0eb (plants and animations, but with infinit lives)
 
 /**
  * Keeps the game mechanics and the game objects for a single room.
@@ -124,6 +127,7 @@ class RoomRuntime {
         this.objects.push(maybePlant);
       }
     }
+<<<<<<< HEAD
     // Loop for bushes
     // Not for loop, to be exactly 10 bushes in the game
     // for (let j = 0; j < Config.gameRoom.numOfBushes; ++j) {
@@ -164,6 +168,8 @@ class RoomRuntime {
         x += 1;
       }
     }
+=======
+>>>>>>> 77cb0eb (plants and animations, but with infinit lives)
     // Loop for trees
     for (let j = 0; j < Config.gameRoom.numOfTrees; ++j) {
       const myX = Math.random() * (Config.gameRoom.sizeX - 80) + 40;
