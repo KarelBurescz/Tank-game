@@ -8,6 +8,6 @@ if [ "x$PORT" = "x" ]; then
 fi
 
 docker run -it \
- -v /home/pbures/node/Tank-game:/home/node/code \
+ -v $PWD:/home/node/code \
  -p $PORT:3001 node /bin/bash \
  -c "cd /home/node/code && npm install && npm install -g nodemon && nodemon -c nodemon.json"
