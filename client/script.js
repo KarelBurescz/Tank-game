@@ -60,7 +60,7 @@ function removeGameObjects(game, gameUpdate) {
   if (gameUpdate.hasOwnProperty("objects")) {
     game.getObjectIds().forEach((id) => {
       if (!gameUpdate.objects.hasOwnProperty(id)) {
-        //TODO: Fixme;
+        // TODO: Fixme;
         // game.getObject(id).explode();
         game.removeObject(id);
       }
