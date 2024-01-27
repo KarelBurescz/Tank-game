@@ -142,7 +142,11 @@ class Solider extends ModelObject {
     this.game.objects.forEach((obj) => {
       if (obj === this) return;
 
-      if (obj.ssp.type !== "plant" && this.collides(obj)) {
+      if (
+        obj.ssp.type !== "plant" &&
+        obj.ssp.type !== "bush" &&
+        this.collides(obj)
+      ) {
         collide = true;
       } else if (obj.ssp.type === "plant" && this.collides(obj)) {
         obj.explode();

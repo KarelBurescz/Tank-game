@@ -4,6 +4,7 @@ import { Obstacle } from "../model/obstacle.js";
 import { Tree } from "../model/tree.js";
 import { Solider } from "../model/solider.js";
 import { Plant } from "../model/plant.js";
+import { Bush } from "../model/bush.js";
 
 /**
  * Keeps the game mechanics and the game objects for a single room.
@@ -121,6 +122,46 @@ class RoomRuntime {
 
       if (wallCollides === false) {
         this.objects.push(maybePlant);
+      }
+    }
+    // Loop for bushes
+    // Not for loop, to be exactly 10 bushes in the game
+    // for (let j = 0; j < Config.gameRoom.numOfBushes; ++j) {
+    //   const myX = Math.random() * (Config.gameRoom.sizeX - 80) + 40;
+    //   const myY = Math.random() * (Config.gameRoom.sizeY - 80) + 40;
+
+    //   let myWidth = (Math.random() + 2) * 30;
+
+    //   const maybeBush = new Bush(this, myX, myY, myWidth, 0, 100);
+
+    //   const treeCollides = this.objects.some((e) => {
+    //     if (e.collides(maybeBush)) {
+    //       return true;
+    //     }
+    //   });
+
+    //   if (!treeCollides) {
+    //     this.objects.push(maybeBush);
+    //   }
+    // }
+    let x = 0;
+    while (x < Config.gameRoom.numOfBushes) {
+      const myX = Math.random() * (Config.gameRoom.sizeX - 80) + 40;
+      const myY = Math.random() * (Config.gameRoom.sizeY - 80) + 40;
+
+      let myWidth = (Math.random() + 2) * 30;
+
+      const maybeBush = new Bush(this, myX, myY, myWidth, 0, 100);
+
+      const treeCollides = this.objects.some((e) => {
+        if (e.collides(maybeBush)) {
+          return true;
+        }
+      });
+
+      if (!treeCollides) {
+        this.objects.push(maybeBush);
+        x += 1;
       }
     }
     // Loop for trees

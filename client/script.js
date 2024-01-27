@@ -7,6 +7,7 @@ import { Game } from "./game.js";
 import { Camera } from "./camera.js";
 import { UiTree } from "./uitree.js";
 import { UiPlant } from "./uiplant.js";
+import { UiBush } from "./uibush.js";
 import { Config } from "./config.js";
 import { RemoteController } from "./remoteController.js";
 import { UiBullet } from "./uibullet.js";
@@ -99,6 +100,10 @@ function updateGame(game, gameUpdate) {
           }
           case "plant": {
             newObject = new UiPlant(game, 0, 0, 0, 0, 0, "");
+            break;
+          }
+          case "bush": {
+            newObject = new UiBush(game, 0, 0, 0, 0, 0);
             break;
           }
         }
