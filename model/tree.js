@@ -1,24 +1,24 @@
 import { ModelObject } from "./modelobject.js";
 
-class Tree extends ModelObject{
-    constructor (game, x, y, width, height, hp) {
-        super(game, x, y, width, height, hp)
-        this.ssp.type = "tree";
+class Tree extends ModelObject {
+  constructor(game, x, y, width, height, hp) {
+    super(game, x, y, width, height, hp);
+    this.ssp.type = "tree";
 
-        Object.seal(this);
-        Object.seal(this.ssp);
-        Object.seal(this.csp);
-    }
+    Object.seal(this);
+    Object.seal(this.ssp);
+    Object.seal(this.csp);
+  }
 
-    collisionBox() {
-        let ssp = this.ssp;
-        return {
-            x: ssp.x - ssp.width,
-            y: ssp.y - ssp.width,
-            w: ssp.width * 2,
-            h: ssp.width * 2
-        }
-    }
+  collisionBox() {
+    let ssp = this.ssp;
+    return {
+      x: ssp.x + ssp.width / 2 - ssp.width / 16,
+      y: ssp.y + ssp.width / 2 - ssp.width / 16,
+      w: ssp.width / 8,
+      h: ssp.width / 8,
+    };
+  }
 }
 
 export { Tree };
