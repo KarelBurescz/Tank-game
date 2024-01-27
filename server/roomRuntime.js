@@ -128,9 +128,9 @@ class RoomRuntime {
       const myX = Math.random() * (Config.gameRoom.sizeX - 80) + 40;
       const myY = Math.random() * (Config.gameRoom.sizeY - 80) + 40;
 
-      let myHeight = (Math.random() + 1) * 30;
+      let myWidth = (Math.random() + 2) * 30;
 
-      const maybeTree = new Tree(this, myX, myY, myHeight, 0, 100);
+      const maybeTree = new Tree(this, myX, myY, myWidth, 0, 100);
 
       const treeCollides = this.objects.some((e) => {
         if (e.collides(maybeTree)) {

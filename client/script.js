@@ -59,7 +59,7 @@ function removeGameObjects(game, gameUpdate) {
   if (gameUpdate.hasOwnProperty("objects")) {
     game.getObjectIds().forEach((id) => {
       if (!gameUpdate.objects.hasOwnProperty(id)) {
-        // TODO: Fixme;
+        //TODO: Fixme;
         // game.getObject(id).explode();
         game.removeObject(id);
       }
@@ -153,8 +153,12 @@ function handleUiObjects() {
   });
 }
 
-myGame.bgctx.fillStyle = "rgba(200,255,90,1)";
-myGame.bgctx.fillRect(0, 0, canvasBackground.width, canvasBackground.height);
+// myGame.bgctx.fillStyle = "rgba(200,255,90,1)";
+function drawBackground(x, y) {
+  let img = new Image();
+  img.src = "background.png";
+  myGame.bgctx.drawImage(img, x, y, 600, 600);
+}
 
 let counter = 0;
 function animate() {
@@ -163,8 +167,17 @@ function animate() {
   handleUiObjects();
 
   if (counter > 10) {
-    myGame.bgctx.fillStyle = "rgba(200,255,90,0.05)";
-    myGame.bgctx.fillRect(0, 0, myGame.bgcanvas.width, myGame.bgcanvas.height);
+    let img = new Image();
+    img.src = "background.png";
+    // TODO: It's loading too slowly, idk why
+    for (let i = 0; i < canvasBackground.width / 600; i++) {
+      // console.log("starting new line");
+      drawBackground((i - 1) * 600 - 30, 0);
+      for (let j = 0; j < canvasBackground.height / 600; j++) {
+        drawBackground((i - 1) * 600 - 30, (j - 1) * 600);
+      }
+    }
+    // drawBackground(0, 0);
 
     counter = 0;
   }
