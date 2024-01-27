@@ -22,9 +22,10 @@ class Player {
   constructor(socket) {
     this.socket = socket;
     this.modelObjectId = null;
-
     this.modelObject = null;
     this.activeRoom = null;
+
+    Object.seal(this);
   }
 
   updateController(csp) {
