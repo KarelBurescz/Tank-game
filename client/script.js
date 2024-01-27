@@ -60,7 +60,7 @@ function removeGameObjects(game, gameUpdate) {
   if (gameUpdate.hasOwnProperty("objects")) {
     game.getObjectIds().forEach((id) => {
       if (!gameUpdate.objects.hasOwnProperty(id)) {
-        // TODO: Fixme;
+        //TODO: Fixme;
         // game.getObject(id).explode();
         game.removeObject(id);
       }
@@ -192,6 +192,24 @@ function animate() {
   myCamera.draw(myGame.bgcanvas);
 
   handleUiObjects();
+
+  if (counter > 10) {
+    let img = new Image();
+    img.src = "background.png";
+    // TODO: It's loading too slowly, idk why
+    for (let i = 0; i < canvasBackground.width / 600; i++) {
+      // console.log("starting new line");
+      drawBackground((i - 1) * 600 - 30, 0);
+      for (let j = 0; j < canvasBackground.height / 600; j++) {
+        drawBackground((i - 1) * 600 - 30, (j - 1) * 600);
+      }
+    }
+    // drawBackground(0, 0);
+
+    counter = 0;
+  }
+
+  counter++;
 
   requestAnimationFrame(animate);
 }
