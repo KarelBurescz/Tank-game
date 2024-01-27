@@ -43,6 +43,7 @@ window.addEventListener("resize", function () {
 
 Animation.loadAssets("Explode-sequence", "explode-sequence", 9);
 Animation.loadAssets("Bubbles", "bubbles", 4);
+Animation.loadAssets("PlantCrash", "plantCrash", 3);
 
 let myCamera = new Camera(0, 0, canvas, fogCanvas, null);
 let myGame = new Game(canvasBackground, backgroundCTX);
@@ -58,6 +59,8 @@ function removeGameObjects(game, gameUpdate) {
   if (gameUpdate.hasOwnProperty("objects")) {
     game.getObjectIds().forEach((id) => {
       if (!gameUpdate.objects.hasOwnProperty(id)) {
+        // TODO: Fixme;
+        // game.getObject(id).explode();
         game.removeObject(id);
       }
     });
@@ -142,6 +145,11 @@ function handleUiObjects() {
 
   myGame.eachObject(function (o) {
     o.draw(myCamera);
+  });
+
+  myGame.animations.forEach((a) => {
+    a.update();
+    a.draw(myCamera);
   });
 }
 

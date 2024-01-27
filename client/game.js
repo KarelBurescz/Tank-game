@@ -3,6 +3,7 @@ class Game {
     this.bgcanvas = bgcanvas;
     this.bgctx = bgctx;
     this.objects = {};
+    this.animations = [];
     this.oponents = {};
     this.player = null;
   }
@@ -15,7 +16,7 @@ class Game {
     return this.objects.hasOwnProperty(id);
   }
 
-  getObjectIds(){
+  getObjectIds() {
     return Object.keys(this.objects);
   }
 
@@ -24,11 +25,11 @@ class Game {
   }
 
   removeObject(id) {
-    delete(this.objects[id]);
+    delete this.objects[id];
   }
 
   eachObject(func) {
-    Object.keys(this.objects).forEach( o => func(this.objects[o]))
+    Object.keys(this.objects).forEach((o) => func(this.objects[o]));
   }
 
   setPlayer(player) {

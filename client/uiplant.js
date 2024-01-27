@@ -20,20 +20,43 @@ class UiPlant extends UiObject {
     this.img.src = "plant.png";
     this.explodingSequence = 0;
     this.exploding = false;
-    // this.audioExplode = new Audio();
-    // this.audioExplode.src = UiObstacle.audioExplodeSrc.src;
+    this.audioExplode = new Audio();
+    this.audioExplode.src = "./grassCrash.mp3";
 
     this.animations = [];
-    this.explodingAnimationObj = null;
+    this.oxigenAnimation = null;
+    this.explodingAnimation = null;
 
     this.addBubblesAnimation();
   }
   update() {
     this.animations.forEach((a) => a.update());
   }
-
+  addExplodingAnimation() {
+    this.plantCrash = new Animation(
+      this.model.game,
+      this,
+      "PlantCrash",
+      "plantCrash",
+      3,
+      15,
+      15,
+      0,
+      0,
+      300,
+      //TODO: Fix this, should be according to ssp properties!
+      30,
+      30,
+      1,
+      null
+    );
+    // this.animations.push(this.plantCrash);
+    this.game.animations.push(this.plantCrash);
+    let a2index = this.animations.length - 1;
+    this.plantCrash.start();
+  }
   addBubblesAnimation() {
-    this.explodingAnimationObj = new Animation(
+    this.oxigenAnimation = new Animation(
       this.model.game,
       this,
       "Bubbles",
@@ -50,9 +73,9 @@ class UiPlant extends UiObject {
       -1,
       null
     );
-    this.animations.push(this.explodingAnimationObj);
+    this.animations.push(this.oxigenAnimation);
     let aindex = this.animations.length - 1;
-    this.explodingAnimationObj.start();
+    this.oxigenAnimation.start();
     // this.explodingAnimationObj.then = () => {
     //   this.animations.splice(aindex, 1);
     // };
@@ -71,7 +94,6 @@ class UiPlant extends UiObject {
       // this.drawExplosion(camera);
       console.log("Exploding");
     }
-
     this.animations.forEach((a) => {
       a.draw(camera);
     });
@@ -89,21 +111,11 @@ class UiPlant extends UiObject {
   //   );
   // }
 
-  // explode() {
-  //   this.audioExplode.play();
-
-  //   if (this.exploding) return;
-
-  //   this.exploding = true;
-  //   let intId = setInterval(() => {
-  //     this.explodingSequence++;
-  //     if (this.explodingSequence > 8) {
-  //       clearInterval(intId);
-  //       this.exploding = false;
-  //       super.explode();
-  //     }
-  //   }, 80);
-  // }
+  explode() {
+    this.audioExplode.play();
+    // debugger;
+    this.addExplodingAnimation();
+  }
 }
 
 export { UiPlant };

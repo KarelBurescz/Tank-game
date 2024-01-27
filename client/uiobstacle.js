@@ -47,24 +47,15 @@ class UiObstacle extends UiObject {
     }
 
     if (this.exploding === true) {
-      this.drawExplosion(camera);
+      // this.drawExplosion(camera);
     }
 
     super.draw(camera);
   }
 
-  drawExplosion(camera) {
-    let lc = this.localCoords(camera);
-    let explodeImg = new Image();
-    explodeImg.src = `./Explode-sequence/explode-sequence${this.explodingSequence}.png`;
-    camera.ctx.drawImage(
-      explodeImg,
-      lc.x + this.ssp.width / 2 - explodeImg.width / 2,
-      lc.y + this.ssp.height / 2 - explodeImg.height / 2
-    );
-  }
-
   explode() {
+    debugger;
+
     this.audioExplode.play();
 
     if (this.exploding) return;

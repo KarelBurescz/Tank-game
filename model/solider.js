@@ -73,7 +73,7 @@ class Solider extends ModelObject {
       bulletsLoaded: 5,
       speedBoostCouter: 200,
       explodingSequence: 0,
-      coumuflageOn : false,
+      coumuflageOn: false,
       coolingDown: false,
       exploding: false,
       playerDead: false,
@@ -139,13 +139,16 @@ class Solider extends ModelObject {
     this.ssp.y += dir * Math.sin(this.ssp.direction) * speed;
 
     let collide = false;
-
     this.game.objects.forEach((obj) => {
       if (obj === this) return;
-      if (this.collides(obj)) {
+
+      if (obj.ssp.type !== "plant" && this.collides(obj)) {
         collide = true;
+      } else if (obj.ssp.type === "plant" && this.collides(obj)) {
+        obj.explode();
       }
     });
+
     if (collide === true) {
       this.ssp.x = oldX;
       this.ssp.y = oldY;
@@ -289,8 +292,7 @@ class Solider extends ModelObject {
       // this.audioMoving.pause();
     }
 
-
-    if(this.csp.coumuflageOn) {
+    if (this.csp.coumuflageOn) {
       this.ssp.coumuflageOn = true;
     } else this.ssp.coumuflageOn = false;
 
