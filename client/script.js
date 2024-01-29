@@ -158,22 +158,32 @@ function handleUiObjects() {
   });
 }
 
+function loadImage(imgpath) {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.addEventListener("load", () => {
+      resolve(img);
+    });
+    img.src = imgpath;
+  });
+}
+
 // myGame.bgctx.fillStyle = "rgba(200,255,90,1)";
-function drawBackgroundImg(x, y) {
+function drawBackgroundImg(img, x, y) {
   // debugger;
-  let img = new Image();
-  img.src = "background.png";
+
   myGame.bgctx.drawImage(img, x, y, 600, 600);
+
   console.log("Printing background");
 }
 
-function drawBackground(canvasBackground) {
+function drawBackground(img, canvasBackground) {
   for (let i = 0; i < canvasBackground.width / 600; i++) {
     // console.log("starting new line");
-    drawBackgroundImg(i * 600 - 30, 0);
+    drawBackgroundImg(img, i * 600 - 30, 0);
     // debugger;
     for (let j = 0; j < canvasBackground.height / 600; j++) {
-      drawBackgroundImg(i * 600 - 30, j * 600);
+      drawBackgroundImg(img, i * 600 - 30, j * 600);
     }
   }
 }
@@ -186,5 +196,8 @@ function animate() {
   requestAnimationFrame(animate);
 }
 
-drawBackground(canvasBackground);
+loadImage("background.png").then((img) => {
+  drawBackground(img, canvasBackground);
+});
+
 animate();
