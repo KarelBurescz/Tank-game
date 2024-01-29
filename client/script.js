@@ -159,37 +159,32 @@ function handleUiObjects() {
 }
 
 // myGame.bgctx.fillStyle = "rgba(200,255,90,1)";
-function drawBackground(x, y) {
+function drawBackgroundImg(x, y) {
+  // debugger;
   let img = new Image();
   img.src = "background.png";
   myGame.bgctx.drawImage(img, x, y, 600, 600);
+  console.log("Printing background");
 }
 
-let counter = 0;
+function drawBackground(canvasBackground) {
+  for (let i = 0; i < canvasBackground.width / 600; i++) {
+    // console.log("starting new line");
+    drawBackgroundImg(i * 600 - 30, 0);
+    // debugger;
+    for (let j = 0; j < canvasBackground.height / 600; j++) {
+      drawBackgroundImg(i * 600 - 30, j * 600);
+    }
+  }
+}
+
 function animate() {
   myCamera.draw(myGame.bgcanvas);
 
   handleUiObjects();
 
-  if (counter > 10) {
-    let img = new Image();
-    img.src = "background.png";
-    // TODO: It's loading too slowly, idk why
-    for (let i = 0; i < canvasBackground.width / 600; i++) {
-      // console.log("starting new line");
-      drawBackground((i - 1) * 600 - 30, 0);
-      for (let j = 0; j < canvasBackground.height / 600; j++) {
-        drawBackground((i - 1) * 600 - 30, (j - 1) * 600);
-      }
-    }
-    // drawBackground(0, 0);
-
-    counter = 0;
-  }
-
-  counter++;
-
   requestAnimationFrame(animate);
 }
 
+drawBackground(canvasBackground);
 animate();
