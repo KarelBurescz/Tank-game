@@ -2,10 +2,10 @@ const Config = {
   debug: true,
 
   gameRoom: {
-    sizeX: 500,
-    sizeY: 500,
+    sizeX: 2000,
+    sizeY: 2000,
     numOfObstacles: 10,
-    numOfTrees: 200,
+    numOfTrees: 20,
     numOfPlants: 10,
     numOfBushes: 50,
   },
