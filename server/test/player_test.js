@@ -2,7 +2,7 @@ import expect from 'expect.js';
 import { Player } from '../player.js';
 // import { ModelObject } from '../modelobject.js';
 
-describe('Player', function () {
+describe('server/Player', function () {
 
   describe('constructor', function () {
     it('should create valid preinitialized instance', function () {

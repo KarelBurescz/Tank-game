@@ -229,6 +229,21 @@ class RoomRuntime {
     return JSON.stringify(this.getSerializable(), undefined, "  ");
   }
 
+  addObject(object){
+    this.objects.push(object);
+  }
+
+  getObjects() {
+    return this.objects;
+  }
+
+  getObject(objectId) {
+    let o = this.objects.filter((o) =>  o.ssp.id === objectId );
+    if (o.length >= 1) return o[0];
+
+    return undefined;
+  }
+
   removeObject(objectId) {
     this.objects = this.objects.filter((o) =>  o.ssp.id !== objectId )
     console.log(`Object ${objectId} removed from runtime`)

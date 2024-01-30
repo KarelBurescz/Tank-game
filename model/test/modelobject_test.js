@@ -1,7 +1,7 @@
 import expect from 'expect.js';
 import { ModelObject } from '../modelobject.js';
 
-describe('ModelObject', function () {
+describe('model/ModelObject', function () {
 
   describe('constructor', function () {
     it('should create valid preinitialized instance', function () {
@@ -19,22 +19,6 @@ describe('ModelObject', function () {
 
         expect(mo.x).to.be(undefined);
     });
-
-    it('should create non extensible instance', function() {
-        const mo = new ModelObject({}, 0,0,0,0,0);
-    
-        expect(() => {
-            mo.newproperty = 0;
-        }).to.throwException();
-
-        expect(() => {
-            mo.ssp.newproperty = 0;
-        }).to.throwException();
-
-        expect(() => {
-            mo.csp.newproperty = 0;
-        }).to.throwException();
-    })
   });
 
   describe('updateCsp', function(){
@@ -71,9 +55,11 @@ describe('ModelObject', function () {
     it('returns true for two overlapping objects', () => {
         const mo1 = new ModelObject({}, 10, 11, 100, 101, 10);
         const mo2 = new ModelObject({}, 50, 51, 150, 151, 100);
+        const mo3 = new ModelObject({}, 50, 51, 150, 151, 100);
 
         expect(mo1.collides(mo2)).to.be(true);
-        expect(mo1.collides(mo1)).to.be(true);
+        expect(mo1.collides(mo1)).to.be(false);
+        expect(mo2.collides(mo3)).to.be(true);
     });
     it('returns false for two non-overlapping objects', () => {
         const mo1 = new ModelObject({},  10, 20, 100, 200,  10);

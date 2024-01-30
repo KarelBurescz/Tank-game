@@ -6,10 +6,11 @@
   "main": "index.js",
   "scripts": {
     "build": "webpack",
-    "test": "mocha model/test server/test --require esm",
+
+    "test": "mocha",
     "start": "node index.js",
     "generate-docs": "jsdoc -r -c jsdoc.json",
-    "gen-and-start": "npm run generate-docs && npm run start"
+    "gen-test-and-start": "npm run generate-docs &&  npm run test && npm run start"
   },
   "author": "",
   "license": "ISC",
@@ -24,5 +25,10 @@
     "mocha": "^10.2.0",
     "webpack": "^5.90.0",
     "webpack-cli": "^5.1.4"
+  },
+  "mocha": {
+    "recursive": true,
+    "spec": ["model/test", "server/test"],
+    "require": ["esm"]
   }
 }
