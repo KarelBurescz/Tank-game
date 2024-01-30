@@ -34,9 +34,12 @@ class ModelObject {
       hp: hp, // Health points
       type: "none", // Type of the object
     };
-    console.log(`Last id: ${this.ssp.id}`)
 
     this.csp = {};
+
+    Object.seal(this.ssp);
+    Object.seal(this.csp);
+    // Object.seal(this);
   }
 
   /**
@@ -86,6 +89,9 @@ class ModelObject {
    * @return {boolean} True if there is a collision, false otherwise.
    */
   collides(modelObject) {
+
+    if (modelObject === this) return false;
+
     const cbx = this.collisionBox();
     const element = modelObject.collisionBox();
 

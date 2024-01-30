@@ -9,5 +9,5 @@
     "ignore": [
         "node_modules/"
     ],
-    "exec": "npm run gen-and-start"
+    "exec": "npm run gen-test-and-start"
 }

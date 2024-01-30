@@ -13,6 +13,9 @@ class Bullet extends ModelObject {
         }
 
         this.owner = owner;
+        Object.seal(this);
+        Object.seal(this.ssp);
+        Object.seal(this.csp);
     }
 
     collisionBox() {
