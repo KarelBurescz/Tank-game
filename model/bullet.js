@@ -45,7 +45,6 @@ class Bullet extends ModelObject {
         this.owner !== uiobject &&
         uiobject.ssp.type !== "plant"
       ) {
-        debugger;
         collide = true;
         uiobject.ssp.hp -= this.ssp.damage;
       }
