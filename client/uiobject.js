@@ -4,15 +4,29 @@ import { ModelObject } from "/model/modelobject.js";
 
 class UiObject {
   static loadAudio(audioFilename) {
-    const audio = new Audio(audioFilename);
-    audio.preload = "auto";
-    audio.load();
+
+    if (!this.audioCache) {
+      this.audioCache = {};
+    }
+
+    let audio = this.audioCache[audioFilename];
+
+    if (audio === undefined) {
+      audio = new Audio(audioFilename);
+      audio.preload = "auto";
+      audio.load();
+
+      this.audioCache[audioFilename] = audio;
+    } else {
+      console.log('Cache hit!');
+    }
 
     return audio;
   }
 
   static {
-    this.audioHitSrc = UiObject.loadAudio("./sword-hit.mp3");
+    console.log('Loading sword-hit');
+    this.audioHitSrc = UiObject.loadAudio("sword-hit.mp3");
   }
 
   constructor(game, x, y, width, height, hp) {
