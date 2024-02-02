@@ -212,7 +212,6 @@ class Solider extends ModelObject {
     }
 
     this.game.objects.push(myBullet);
-    console.log(`Firing!`);
   }
 
   explode() {

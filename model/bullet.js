@@ -43,7 +43,8 @@ class Bullet extends ModelObject {
                 
                 if (this.collides(uiobject) && (this.owner !== uiobject)) {
                     collide = true;
-                    uiobject.ssp.hp -= this.ssp.damage;
+                    // uiobject.ssp.hp -= this.ssp.damage;
+                    uiobject.receiveHit(this.ssp.damage);
                 }
             }
         )

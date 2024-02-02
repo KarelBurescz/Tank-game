@@ -24,6 +24,7 @@ describe('model/Bullet', function () {
             direction: 6, 
             damage: 100,
             exploding: false,
+            numHits: 0,
           }
 
           expect(b.ssp).to.eql(ssp);
@@ -82,7 +83,7 @@ describe('model/Bullet', function () {
         b1.update();
         expect(w1.ssp.hp).to.below(1000);
         expect(r1.getObjects[b1.ssp.id]).to.be(undefined);
-
+        expect(w1.ssp.numHits).to.be(1);
       });
 
       it('should not collide with itself', () => {

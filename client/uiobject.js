@@ -21,11 +21,20 @@ class UiObject {
     this.audioHit = new Audio();
     this.audioHit.src = UiObject.audioHitSrc.src;
     this.type = "none";
+    this.lastPlayedHit = 0;
   }
 
   update() {
     if (this.model.ssp.hp <= 0) {
       this.explode();
+    }
+    if (this.model.ssp.numHits > this.lastPlayedHit) {
+      for(let i=0; i < this.model.ssp.numHits - this.lastPlayedHit; i++){
+        let audioHit = new Audio();
+        audioHit.src = UiObject.audioHitSrc.src;
+        audioHit.play();
+      }
+      this.lastPlayedHit = this.model.ssp.numHits;
     }
   }
 
