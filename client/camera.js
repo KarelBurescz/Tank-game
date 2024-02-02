@@ -1,6 +1,6 @@
 class Camera {
 
-    constructor(x, y, canvas, fog, followedModel) {
+    constructor(x, y, canvas, fog, game, followedModel) {
         this.x = x;
         this.y = y;
         this.vx = 0;
@@ -23,6 +23,7 @@ class Camera {
         this.fog = fog;
         this.ctx = this.canvas.getContext('2d');
         this.fogCtx = this.fog.getContext('2d');
+        this.game = game;
         this.followedModel = followedModel;
         this.visibilityRadius = 300;
         // this.x = this.followedModel.x - this.w / 2;
@@ -73,6 +74,52 @@ class Camera {
             this.visibilityRadius, 0, Math.PI * 2);
         this.fogCtx.fill();
         this.fogCtx.globalCompositeOperation = 'source-over';
+
+        this.drawRays();
+    }
+
+    drawRays() {
+        if (!this.followedModel) return;
+
+        const playerSsp = this.followedModel.ssp;
+
+        const [lx, ly] = this.localCoords(playerSsp.x, playerSsp.y);
+
+        const R = this.visibilityRadius * 1.3;
+
+        for (let i = 0; i <= 360; i+= 360/32) {
+
+            const x = lx + R * Math.cos(i * Math.PI / 180);
+            const y = ly + R * Math.sin(i * Math.PI / 180);
+
+            this.fogCtx.beginPath();
+            this.fogCtx.strokeStyle = 'rgb(255,0,0)';
+            this.fogCtx.moveTo(lx, ly);
+            this.fogCtx.lineTo(x, y);
+            this.fogCtx.stroke();
+        }
+
+        let edges = this.linesFromScene();
+    }
+
+    linesFromScene(){
+        if (!this.followedModel) return;
+        if (!this.game) return;
+
+        const edges = [];
+        this.game.getObjectsArray().reduce((edges, o)=>{
+            let bb = o.model.collisionBox();
+            console.log(bb);
+        });
+
+        return edges;
+    }
+
+    localCoords(x, y) {
+        return [
+            x - this.x,
+            y - this.y
+        ];
     }
 
     draw(bgCanvas) {

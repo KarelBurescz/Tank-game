@@ -23,6 +23,10 @@ class Game {
     return this.objects[id];
   }
 
+  getObjectsArray() {
+    return Object.values(this.objects);
+  }
+
   removeObject(id) {
     delete(this.objects[id]);
   }
