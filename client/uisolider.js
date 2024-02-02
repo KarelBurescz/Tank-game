@@ -207,7 +207,7 @@ class UiSolider extends UiObject {
     //   this.drawExplosion(camera);
     // }
 
-    if (this.model.csp.movingFoward || this.model.csp.movingBack) {
+    if (this.model.ssp.moving) {
       this.drawTracks();
     }
 
