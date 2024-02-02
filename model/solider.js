@@ -81,7 +81,7 @@ class Solider extends ModelObject {
       /* necessary for client to do sounds */
       moving: false,
       turretMoving: false,
-      shooting: false,
+      bulletsShot: 0,
 
       type: "player",
     };
@@ -203,6 +203,7 @@ class Solider extends ModelObject {
     );
 
     this.ssp.bulletsLoaded--;
+    this.ssp.bulletsShot++;
 
     if (this.ssp.bulletsLoaded < 1) {
       setTimeout(() => {
@@ -281,9 +282,6 @@ class Solider extends ModelObject {
       this.fire();
       this.csp.firing = false;
     }
-
-    this.ssp.firing = (this.csp.firing) ? true : false;
-
     if (this.csp.turretMovingLeft || this.csp.turretMovingRight) {
       //TODO: remove or fix
       // this.audioTurretRotating.play();
