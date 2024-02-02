@@ -1,3 +1,5 @@
+import { Geometry } from "/model/geometry.js";
+
 class Camera {
 
     constructor(x, y, canvas, fog, game, followedModel) {
@@ -33,8 +35,8 @@ class Camera {
 
     setFollowedModel(followedModel) {
         this.followedModel = followedModel;
-        this.x = this.followedModel.ssp.x - this.w / 2;
-        this.y = this.followedModel.ssp.y - this.h / 2;
+        this.x = this.followedModel.ssp.x - this.w / 2 - 500;
+        this.y = this.followedModel.ssp.y - this.h / 2 - 500;
     }
 
     update() {
@@ -74,8 +76,6 @@ class Camera {
             this.visibilityRadius, 0, Math.PI * 2);
         this.fogCtx.fill();
         this.fogCtx.globalCompositeOperation = 'source-over';
-
-        this.drawRays();
     }
 
     drawRays() {
@@ -85,40 +85,126 @@ class Camera {
 
         const [lx, ly] = this.localCoords(playerSsp.x, playerSsp.y);
 
-        const R = this.visibilityRadius * 1.3;
+        const R = this.visibilityRadius * 1.8;
+
+        let edges = this.edgesFromScene();
+        console.log(`Num of edges: ${edges.length}`)
+
+        this.fogCtx.strokeStyle = 'rgb(100,140,100)';
+        this.fogCtx.lineWidth = 1;
+
+        edges.forEach(e => {
+            this.fogCtx.beginPath();
+            this.fogCtx.arc(e[0],e[1],3,0,Math.PI*2);
+            this.fogCtx.arc(e[3],e[4],3,0,Math.PI*2);
+            this.fogCtx.stroke();
+            this.fogCtx.beginPath();
+            this.fogCtx.moveTo(e[0], e[1]);
+            this.fogCtx.lineTo(e[2], e[3]);
+            this.fogCtx.stroke();
+        })
 
         for (let i = 0; i <= 360; i+= 360/32) {
-
-            const x = lx + R * Math.cos(i * Math.PI / 180);
-            const y = ly + R * Math.sin(i * Math.PI / 180);
+            const x = lx + Math.floor(R * Math.cos(i * Math.PI / 180));
+            const y = ly + Math.floor(R * Math.sin(i * Math.PI / 180));
 
             this.fogCtx.beginPath();
             this.fogCtx.strokeStyle = 'rgb(255,0,0)';
             this.fogCtx.moveTo(lx, ly);
             this.fogCtx.lineTo(x, y);
             this.fogCtx.stroke();
-        }
 
-        let edges = this.linesFromScene();
+            let isections = this.intersectionsWithEdges(lx, ly, x, y, edges);
+            isections = isections.sort(
+                (i,j) => {
+                    let di = (i[0]-lx)*(i[0]-lx) + (i[1]-ly)*(i[1]-ly);
+                    let dj = (j[0]-lx)*(j[0]-lx) + (j[1]-ly)*(j[1]-ly);
+                    return di - dj;
+                }
+            )
+
+            console.log(`Num if isections ${isections.length}`)
+
+            let first = true;
+            isections.forEach((i) => {
+                
+                let [x,y] = i;
+                this.fogCtx.beginPath();
+                this.fogCtx.strokeStyle = first?'rgb(0,0,255)':'rgb(255,0,0)';
+                this.fogCtx.fillStyle = 'rgb(255,0,255)';
+                this.fogCtx.moveTo(x,y);
+                this.fogCtx.arc(x,y,6,0,Math.PI*2);
+                
+                first?this.fogCtx.fill():this.fogCtx.stroke();
+                first = false;
+            })
+
+        }
     }
 
-    linesFromScene(){
+    intersectionsWithEdges(x1,y1,x2,y2, edges) {
+        let isections = edges.reduce((res, e) => {
+            let i = Geometry.linesIntersection(
+                x1,y1, x2, y2, 
+                ...e,
+                true, false, true, true        
+            )
+            if (!i) return res;
+
+            res.push(i);
+            // res.push(i.map(i=>Math.floor(i)));
+            // console.log(`Intersection: ${i}`)
+            return res;
+        }, []);
+        return isections;
+    }
+
+    edgesFromScene(){
         if (!this.followedModel) return;
         if (!this.game) return;
 
-        const edges = [];
-        this.game.getObjectsArray().reduce((edges, o)=>{
+        const edges = this.game.getObjectsArray().reduce((edges, o)=>{
+            
+            if (o.model === this.followedModel) return edges;
+            
             let bb = o.model.collisionBox();
-            console.log(bb);
-        });
+            let [x1, y1] = this.localCoords(bb.x       , bb.y       );
+            let [x2, y2] = this.localCoords(bb.x + bb.w, bb.y       );
+            let [x3, y3] = this.localCoords(bb.x + bb.w, bb.y + bb.h);
+            let [x4, y4] = this.localCoords(bb.x       , bb.y + bb.h);
+
+            edges.push([x1,y1,x2,y2]);
+            edges.push([x2,y2,x3,y3]);
+            edges.push([x3,y3,x4,y4]);
+            edges.push([x4,y4,x1,y1]);
+
+            return edges;
+        }, []);
+
+        edges.push([
+            10, 10, 
+            this.w - 10, 10
+        ]);
+        edges.push([
+            this.w - 10, 10, 
+            this.w - 10, this.h - 10
+        ]);
+        edges.push([
+            this.w - 10, this.h - 10,
+            10, this.h - 10
+        ]);
+        edges.push([
+            10, this.h - 10,
+            10, 10
+        ]);
 
         return edges;
     }
 
     localCoords(x, y) {
         return [
-            x - this.x,
-            y - this.y
+            Math.round(x - this.x),
+            Math.round(y - this.y)
         ];
     }
 
@@ -225,6 +311,8 @@ class Camera {
             myXBu += myWidthBu + 3;
 
         }
+
+        this.drawRays();
     }
 }
 

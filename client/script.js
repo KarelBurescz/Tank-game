@@ -68,7 +68,6 @@ function removeGameObjects(game, gameUpdate) {
  */
 function updateGame(game, gameUpdate) {
   if (gameUpdate.hasOwnProperty("objects")) {
-    console.log(`Num objs: ${Object.keys(gameUpdate.objects).length}`);
     Object.keys(gameUpdate.objects).forEach((id) => {
       let o = gameUpdate.objects[id];
 
