@@ -74,6 +74,18 @@ class UiSolider extends UiObject {
       this.radar.update();
     }
 
+    if (this.model.ssp.moving) {
+      this.audioMoving.play();
+    } else {
+      this.audioMoving.pause();
+    }
+
+    if (this.model.ssp.turretMoving) {
+      this.audioTurretRotating.play();
+    } else {
+      this.audioTurretRotating.pause();
+    }
+
     if (this.model.ssp.exploding) {
       //TODO: Create the animation only once!
       if (!this.explodingAnimationObj) {

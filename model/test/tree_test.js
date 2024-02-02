@@ -19,6 +19,7 @@ describe('model/Tree', function () {
               width: 3, 
               height: 4, 
               hp: 5,
+              exploding: false,
             }
   
             expect(b.ssp).to.eql(ssp);
