@@ -32,6 +32,7 @@ class ModelObject {
       width: width, // Object width
       height: height, // Object height
       hp: hp, // Health points
+      exploding: false,
       type: "none", // Type of the object
     };
 
