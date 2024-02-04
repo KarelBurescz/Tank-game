@@ -28,7 +28,7 @@
   },
   "mocha": {
     "recursive": true,
-    "spec": ["model/test", "server/test"],
+    "spec": ["model/test", "server/test", "client/test"],
     "require": ["esm"]
   }
 }

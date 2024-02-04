@@ -41,6 +41,55 @@ class Geometry {
     return [x, y];
   }
 
+  static getEdgesFromBoundingBoxes(bboxes) {
+    let res = [];
+    let sides = bboxes.reduce((r, bb) => {
+      r.push([bb.x, bb.y, bb.x + bb.w, bb.y]);
+      r.push([bb.x + bb.w, bb.y, bb.x + bb.w, bb.y + bb.h]);
+      r.push([bb.x + bb.w, bb.y + bb.h, bb.x, bb.y + bb.h]);
+      r.push([bb.x, bb.y + bb.h, bb.x, bb.y]);
+      return r;
+    },res);
+
+    return res;
+  }
+
+  static getCornersFromBoundingBoxes(bboxes) {
+    let res = [];
+    let sides = bboxes.reduce((r, bb) => {
+      let corner1 = [bb.x, bb.y];
+      let corner2 = [bb.x + bb.w, bb.y];
+      let corner3 = [bb.x + bb.w, bb.y + bb.h];
+      let corner4 = [bb.x, bb.y + bb.h];
+      return r.push(corner1, corner2, corner3, corner4);
+    },res);
+
+    return res;
+  }
+
+  static getSemilineIntersectionsWithBoundingBoxes(semiline, bboxes) {
+    let edges = Geometry.getEdgesFromBoundingBoxes(bboxes);
+
+    let isecs = edges.reduce((ac, e) => {
+      let i = Geometry.linesIntersection(semiline[0], semiline[1], semiline[2], semiline[3], e[0], e[1], e[2], e[3], true, false, true, true);
+      if(i !== undefined) {
+        ac.push(i);
+      }
+      return ac;
+    }, []);
+
+    return isecs.sort((a, b) => {
+      let dax = a[0] - semiline[0];
+      let day = a[1] - semiline[1];
+      let dbx = b[0] - semiline[0];
+      let dby = b[1] - semiline[1];
+
+      let la = (dax * dax) + (day * day);
+      let lb = (dbx * dbx) + (dby * dby);
+      return la-lb;
+    })
+  }
+
   /**
    * Tests if an intersection (xi, yi) lays on a half line, 
    * stat starts in (x1, y1) and goes through (x2, y2) to

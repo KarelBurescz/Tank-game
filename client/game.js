@@ -44,6 +44,19 @@ class Game {
   addOponent(oponents) {
     this.oponents.push(oponents);
   }
+  /*
+   * @returns array of colision boxes
+   * [ {
+   *  x: ,
+   *  y: ,
+   *  w: ,
+   *  h: }]
+   */
+  getColisionBoxes() {
+    const colisionBoxes = this.objects.map( (obj) => {
+      obj.colisionBox();
+    })
+  }
 }
 
 export { Game };

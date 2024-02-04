@@ -125,4 +125,61 @@ describe('model/geometry', () => {
       expect(result).to.eql([3,2]);
     });
   });
+
+  describe('getEdgesFromBoundingBoxes', () => {
+
+    it('should return exactly 4 edges for each bbox', () => {
+
+      let bboxes = [
+        {x: 5, y: 1, w: 3, h: 15}
+      ];
+
+      expect(Geometry.getEdgesFromBoundingBoxes(bboxes)).to.eql([[5,1,8,1], [8,1,8,16], [8,16,5,16], [5,16,5,1]])
+
+    });
+  });
+
+  describe('getCornersFromBoundingBoxes', () => {
+
+    it('should return exactly 4 edges for each bbox', () => {
+
+      let bboxes = [
+        {x: 5, y: 1, w: 3, h: 15}
+      ];
+
+      expect(Geometry.getCornersFromBoundingBoxes(bboxes)).to.eql([[5,1], [8,1], [8,16], [5,16]])
+
+    });
+  });
+
+  describe('getSemilineIntersectionsWithBoundingBoxes', () => {
+    it('should return 4 intersections of semi-line and with two bboxes', ()=>{
+
+      let bboxes = [
+        {x: 5, y: 1, w: 3, h: 15},
+        {x: 16, y: -7, w: 3, h: 30}
+      ];
+
+      let semiline = [2,2, 3,2]; //2,2 is a starting poing, goes through 3,2.
+
+      expect(Geometry.getSemilineIntersectionsWithBoundingBoxes(semiline, bboxes)).to.eql([[5,2],[8,2],[16,2],[19,2]])
+    });
+
+    it('should return intersections of semi-line with corners', ()=>{
+
+      let bboxes = [
+        {x: 2, y: 0, w: 3, h: 1},
+        {x: -1, y: -2, w: 1, h: 2},
+        {x: -3, y: -2, w: 2, h: 8},
+      ];
+
+      let semiline = [0,0,2,1]; //0,0 is a starting poing, goes through 2,1.
+
+      expect(Geometry.getSemilineIntersectionsWithBoundingBoxes(semiline, bboxes)).to.eql([[0,0],[2,1]]);
+    });
+
+
+  });
+
+
 });
