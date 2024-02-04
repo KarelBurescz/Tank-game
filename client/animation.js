@@ -81,7 +81,7 @@ class Animation {
       this.width,
       this.height
     );
-    console.log(`drawing: ${imgPath} on x:${co.x}  y:${co.y}`);
+    // console.log(`drawing: ${imgPath} on x:${co.x}  y:${co.y}`);
   }
 }
 
