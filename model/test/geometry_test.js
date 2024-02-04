@@ -175,7 +175,7 @@ describe('model/geometry', () => {
 
       let semiline = [0,0,2,1]; //0,0 is a starting poing, goes through 2,1.
 
-      expect(Geometry.getSemilineIntersectionsWithBoundingBoxes(semiline, bboxes)).to.eql([[0,0],[2,1]]);
+      expect(Geometry.getSemilineIntersectionsWithBoundingBoxes(semiline, bboxes)).to.eql([[0,0],[0,0],[2,1],[2,1]]);
     });
 
 

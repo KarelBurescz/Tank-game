@@ -71,7 +71,7 @@ class Geometry {
     let edges = Geometry.getEdgesFromBoundingBoxes(bboxes);
 
     let isecs = edges.reduce((ac, e) => {
-      let i = Geometry.linesIntersection(semiline[0], semiline[1], semiline[2], semiline[3], e[0], e[1], e[2], e[3], true, false, true, true);
+      let i = Geometry.linesIntersection(...semiline, ...e, true, false, true, true);
       if(i !== undefined) {
         ac.push(i);
       }
