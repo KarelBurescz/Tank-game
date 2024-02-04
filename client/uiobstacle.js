@@ -17,11 +17,17 @@ class UiObstacle extends UiObject {
     this.color = color;
     this.wallImg = new Image();
     this.wallImg.src = "walls1.png";
+
+    this.animations = [];
+
     this.explodingSequence = 0;
+
     this.exploding = false;
     this.audioExplode = new Audio();
     this.audioExplode.src = UiObstacle.audioExplodeSrc.src;
+    this.explodingAnimationObj = undefined;
   }
+
   draw(camera) {
     let co = this.localCoords(camera);
     let ssp = this.model.ssp;
@@ -46,29 +52,71 @@ class UiObstacle extends UiObject {
       camera.ctx.fillRect(co.x, co.y, ssp.width, ssp.height);
     }
 
-    if (this.exploding === true) {
-      // this.drawExplosion(camera);
-    }
+    this.animations.forEach((a) => {
+      a.draw(camera);
+    });
 
     super.draw(camera);
   }
+  
+  update() {
+    super.update();
 
-  explode() {
-    debugger;
+    if (this.model.ssp.exploding) {
+      //TODO: Create the animation only once!
+      if (!this.explodingAnimationObj) {
+        this.audioExplode.play();
+        this.explodingAnimationObj = new Animation(
+          this.model.game,
+          this,
+          "Explode-sequence",
+          "explode-sequence",
+          9,
+          0,
+          0,
+          0,
+          0,
+          200,
+          200,
+          1,
+          null
+        );
 
-    this.audioExplode.play();
+        const a2 = new Animation(
+          this.model.game,
+          this,
+          "Explode-sequence",
+          "explode-sequence",
+          9,
+          0,
+          0,
+          0,
+          0,
+          400,
+          400,
+          1,
+          null
+        );
 
-    if (this.exploding) return;
+        this.animations.push(a2);
+        let a2index = this.animations.length - 1;
+        this.animations.push(this.explodingAnimationObj);
+        let aindex = this.animations.length - 1;
 
-    this.exploding = true;
-    let intId = setInterval(() => {
-      this.explodingSequence++;
-      if (this.explodingSequence > 8) {
-        clearInterval(intId);
-        this.exploding = false;
-        super.explode();
+        a2.then = () => {
+          this.animations.splice(a2index, 1);
+        };
+        
+        this.explodingAnimationObj.then = () => {
+          this.animations.splice(aindex, 1);
+        };
+
+        this.explodingAnimationObj.start();
+        a2.start();
       }
-    }, 80);
+    }
+
+    this.animations.forEach((a) => a.update());
   }
 }
 

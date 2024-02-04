@@ -77,6 +77,12 @@ class Solider extends ModelObject {
       coolingDown: false,
       exploding: false,
       playerDead: false,
+
+      /* necessary for client to do sounds */
+      moving: false,
+      turretMoving: false,
+      bulletsShot: 0,
+
       type: "player",
     };
 
@@ -204,6 +210,7 @@ class Solider extends ModelObject {
     );
 
     this.ssp.bulletsLoaded--;
+    this.ssp.bulletsShot++;
 
     if (this.ssp.bulletsLoaded < 1) {
       setTimeout(() => {
@@ -213,7 +220,6 @@ class Solider extends ModelObject {
     }
 
     this.game.objects.push(myBullet);
-    console.log(`Firing!`);
   }
 
   explode() {
@@ -225,7 +231,7 @@ class Solider extends ModelObject {
       (() => {
         this.game.removeObject(this.ssp.id);
       }).bind(this),
-      3 * 1000
+      2 * 1000
     );
 
     console.log(`${this.ssp.id} - Exploded!!!`);
@@ -260,6 +266,11 @@ class Solider extends ModelObject {
     }
     let ts = this.ssp.turretSpeed;
 
+    this.ssp.moving = 
+      (this.csp.movingFoward || this.csp.movingBack || 
+       this.csp.rotatingLeft || this.csp.rotatingRight 
+      ) ? true: false;
+
     if (this.csp.focusMode === true) {
       ts = ts * 0.3;
     }
@@ -270,11 +281,14 @@ class Solider extends ModelObject {
       this.ssp.gunDirection += ts;
     }
 
+    this.ssp.turretMoving = 
+      (this.csp.turretMovingLeft || this.csp.turretMovingRight) 
+      ? true : false; 
+
     if (this.csp.firing) {
       this.fire();
       this.csp.firing = false;
     }
-
     if (this.csp.turretMovingLeft || this.csp.turretMovingRight) {
       //TODO: remove or fix
       // this.audioTurretRotating.play();

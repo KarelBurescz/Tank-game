@@ -28,8 +28,8 @@ canvas.height = window.innerHeight;
 fogCanvas.width = canvas.width;
 fogCanvas.height = canvas.height;
 
-canvasBackground.width = 5000;
-canvasBackground.height = 5000;
+canvasBackground.width = 1500;
+canvasBackground.height = 1500;
 
 window.addEventListener("resize", function () {
   canvas.width = window.innerWidth;
@@ -74,6 +74,7 @@ function removeGameObjects(game, gameUpdate) {
  */
 function updateGame(game, gameUpdate) {
   if (gameUpdate.hasOwnProperty("objects")) {
+    console.log(`Num objs: ${Object.keys(gameUpdate.objects).length}`);
     Object.keys(gameUpdate.objects).forEach((id) => {
       let o = gameUpdate.objects[id];
 

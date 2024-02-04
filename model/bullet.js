@@ -46,7 +46,7 @@ class Bullet extends ModelObject {
         uiobject.ssp.type !== "plant"
       ) {
         collide = true;
-        uiobject.ssp.hp -= this.ssp.damage;
+        uiobject.receiveHit(this.ssp.damage);
       }
     });
 

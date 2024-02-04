@@ -4,15 +4,29 @@ import { ModelObject } from "/model/modelobject.js";
 
 class UiObject {
   static loadAudio(audioFilename) {
-    const audio = new Audio(audioFilename);
-    audio.preload = "auto";
-    audio.load();
+
+    if (!this.audioCache) {
+      this.audioCache = {};
+    }
+
+    let audio = this.audioCache[audioFilename];
+
+    if (audio === undefined) {
+      audio = new Audio(audioFilename);
+      audio.preload = "auto";
+      audio.load();
+
+      this.audioCache[audioFilename] = audio;
+    } else {
+      console.log('Cache hit!');
+    }
 
     return audio;
   }
 
   static {
-    this.audioHitSrc = UiObject.loadAudio("./sword-hit.mp3");
+    console.log('Loading sword-hit');
+    this.audioHitSrc = UiObject.loadAudio("sword-hit.mp3");
   }
 
   constructor(game, x, y, width, height, hp) {
@@ -21,11 +35,20 @@ class UiObject {
     this.audioHit = new Audio();
     this.audioHit.src = UiObject.audioHitSrc.src;
     this.type = "none";
+    this.lastPlayedHit = 0;
   }
 
   update() {
     if (this.model.ssp.hp <= 0) {
       this.explode();
+    }
+    if (this.model.ssp.numHits > this.lastPlayedHit) {
+      for(let i=0; i < this.model.ssp.numHits - this.lastPlayedHit; i++){
+        let audioHit = new Audio();
+        audioHit.src = UiObject.audioHitSrc.src;
+        audioHit.play();
+      }
+      this.lastPlayedHit = this.model.ssp.numHits;
     }
   }
 

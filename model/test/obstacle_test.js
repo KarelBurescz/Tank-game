@@ -20,6 +20,8 @@ describe('model/Obstacle', function () {
               width: 3, 
               height: 4, 
               hp: 5,
+              exploding: false,
+              numHits: 0,
             }
   
             expect(b.ssp).to.eql(ssp);

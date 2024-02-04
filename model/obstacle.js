@@ -10,6 +10,21 @@ class Obstacle extends ModelObject {
         Object.seal(this.ssp);
         Object.seal(this.csp);
     }
+
+    explode() {
+        if (this.ssp.exploding) return;
+        this.ssp.exploding = true;
+    
+        setTimeout(
+          (() => {
+            this.game.removeObject(this.ssp.id);
+          }).bind(this),
+          1 * 1000
+        );
+    
+        console.log(`${this.ssp.id} - Obstacle exploded!!!`);
+      }
+
 }
 
 export { Obstacle }

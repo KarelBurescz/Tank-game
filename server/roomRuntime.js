@@ -267,23 +267,36 @@ class RoomRuntime {
       gameScene: [],
       oponents: [],
       objects: {},
-    };
+    }
 
+    let player;
+    
     // Ignore for now.
     // this.objects.forEach( o => serializable.objects.push(o.getSerializable()));
     this.playerSoliders.forEach((p) => {
       if (p.ssp.id == soliderId) {
         // serializable.player = p.getSerializable();
         serializable.player.id = p.ssp.id;
+        player = p;
       } else {
         serializable.oponents.push(p.ssp.id);
       }
     });
 
-    this.objects.forEach((o) => {
-      serializable.objects[o.ssp.id] = o.ssp;
-    });
+    let playerSsp = player.ssp;
 
+    this.objects.forEach( o => {
+      let dx = playerSsp.x - o.ssp.x;
+      let dy = playerSsp.y - o.ssp.y;
+      //TODO: Set the limit according to the camera size!, use geometry toolbox for distance!
+      if (
+        o.ssp.type === "player" || 
+        (dx * dx + dy * dy < 160000)
+      ) {
+        serializable.objects[o.ssp.id] = o.ssp;
+      }
+    })
+    
     let outStr = "";
     Object.keys(serializable.objects).forEach((k) => {
       outStr += `k: ${k} type: ${serializable.objects[k].type}, `;

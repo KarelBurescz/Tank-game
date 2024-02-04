@@ -31,6 +31,8 @@ class ModelObject {
       width: width, // Object width
       height: height, // Object height
       hp: hp, // Health points
+      exploding: false,
+      numHits: 0, //How many times the object was hit
       type: "none", // Type of the object
     };
 
@@ -48,6 +50,11 @@ class ModelObject {
     if (this.ssp.hp <= 0) {
       this.explode();
     }
+  }
+
+  receiveHit(damage) {
+    this.ssp.hp -= damage;
+    this.ssp.numHits++;
   }
 
   updateCsp(csp) {

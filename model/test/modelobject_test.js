@@ -14,7 +14,7 @@ describe('model/ModelObject', function () {
         expect(mo.game).to.be(testGame);
 
         expect(ssp).to.eql({
-            id: id, x: 0, y: 0, width: 50, height: 50, hp: 100, type: 'none'
+            id: id, x: 0, y: 0, width: 50, height: 50, hp: 100, type: 'none', exploding: false, numHits: 0,
         })
 
         expect(mo.x).to.be(undefined);

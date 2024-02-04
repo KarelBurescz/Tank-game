@@ -74,6 +74,18 @@ class UiSolider extends UiObject {
       this.radar.update();
     }
 
+    if (this.model.ssp.moving) {
+      this.audioMoving.play();
+    } else {
+      this.audioMoving.pause();
+    }
+
+    if (this.model.ssp.turretMoving) {
+      this.audioTurretRotating.play();
+    } else {
+      this.audioTurretRotating.pause();
+    }
+
     if (this.model.ssp.exploding) {
       //TODO: Create the animation only once!
       if (!this.explodingAnimationObj) {
@@ -196,7 +208,7 @@ class UiSolider extends UiObject {
     //   this.drawExplosion(camera);
     // }
 
-    if (this.model.csp.movingFoward || this.model.csp.movingBack) {
+    if (this.model.ssp.moving) {
       this.drawTracks();
     }
 
