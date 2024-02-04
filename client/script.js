@@ -6,6 +6,8 @@ import { mouse } from "./mouse.js";
 import { Game } from "./game.js";
 import { Camera } from "./camera.js";
 import { UiTree } from "./uitree.js";
+import { UiPlant } from "./uiplant.js";
+import { UiBush } from "./uibush.js";
 import { Config } from "./config.js";
 import { RemoteController } from "./remoteController.js";
 import { UiBullet } from "./uibullet.js";
@@ -41,6 +43,8 @@ window.addEventListener("resize", function () {
 });
 
 Animation.loadAssets("Explode-sequence", "explode-sequence", 9);
+Animation.loadAssets("Bubbles", "bubbles", 4);
+Animation.loadAssets("PlantCrash", "plantCrash", 3);
 
 let myCamera = new Camera(0, 0, canvas, fogCanvas, null);
 let myGame = new Game(canvasBackground, backgroundCTX);
@@ -56,6 +60,8 @@ function removeGameObjects(game, gameUpdate) {
   if (gameUpdate.hasOwnProperty("objects")) {
     game.getObjectIds().forEach((id) => {
       if (!gameUpdate.objects.hasOwnProperty(id)) {
+        //TODO: Fixme;
+        // game.getObject(id).explode();
         game.removeObject(id);
       }
     });
@@ -91,6 +97,14 @@ function updateGame(game, gameUpdate) {
           }
           case "player": {
             newObject = new UiSolider(game, 0, 0, 0, 0, 0, 0, 0, 100);
+            break;
+          }
+          case "plant": {
+            newObject = new UiPlant(game, 0, 0, 0, 0, 0, "");
+            break;
+          }
+          case "bush": {
+            newObject = new UiBush(game, 0, 0, 0, 0, 0);
             break;
           }
         }
@@ -138,27 +152,53 @@ function handleUiObjects() {
   myGame.eachObject(function (o) {
     o.draw(myCamera);
   });
+
+  myGame.animations.forEach((a) => {
+    a.update();
+    a.draw(myCamera);
+  });
 }
 
-myGame.bgctx.fillStyle = "rgba(200,255,90,1)";
-myGame.bgctx.fillRect(0, 0, canvasBackground.width, canvasBackground.height);
+function loadImage(imgpath) {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.addEventListener("load", () => {
+      resolve(img);
+    });
+    img.src = imgpath;
+  });
+}
 
-let counter = 0;
+// myGame.bgctx.fillStyle = "rgba(200,255,90,1)";
+function drawBackgroundImg(img, x, y) {
+  // debugger;
+
+  myGame.bgctx.drawImage(img, x, y, 600, 600);
+
+  console.log("Printing background");
+}
+
+function drawBackground(img, canvasBackground) {
+  for (let i = 0; i < canvasBackground.width / 600; i++) {
+    // console.log("starting new line");
+    drawBackgroundImg(img, i * 600 - 30, 0);
+    // debugger;
+    for (let j = 0; j < canvasBackground.height / 600; j++) {
+      drawBackgroundImg(img, i * 600 - 30, j * 600);
+    }
+  }
+}
+
 function animate() {
   myCamera.draw(myGame.bgcanvas);
 
   handleUiObjects();
 
-  if (counter > 10) {
-    myGame.bgctx.fillStyle = "rgba(200,255,90,0.05)";
-    myGame.bgctx.fillRect(0, 0, myGame.bgcanvas.width, myGame.bgcanvas.height);
-
-    counter = 0;
-  }
-
-  counter++;
-
   requestAnimationFrame(animate);
 }
+
+loadImage("background.png").then((img) => {
+  drawBackground(img, canvasBackground);
+});
 
 animate();

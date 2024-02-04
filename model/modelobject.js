@@ -20,11 +20,10 @@ class ModelObject {
    * @param {number} height - The height of the object.
    * @param {number} hp - The health points of the object.
    */
-  
-  constructor(game, x, y, width, height, hp) {
 
+  constructor(game, x, y, width, height, hp) {
     this.game = game; // Game instance reference
-    
+
     this.ssp = {
       id: ModelObject.lastId++, //for identification for client side.
       x: x, // x-coordinate
@@ -62,9 +61,9 @@ class ModelObject {
     try {
       let update = JSON.parse(csp);
       this.csp = {
-        ...this.csp, 
+        ...this.csp,
         ...update,
-      }
+      };
     } catch (e) {
       console.log(`Error parsing CSP: ${csp}`);
     }
@@ -74,7 +73,7 @@ class ModelObject {
    * Handles the destruction of the object. Placeholder for removal logic.
    */
   explode() {
-    //TODO: remove the object from a global registry.
+    this.game.removeObject(this.ssp.id);
   }
 
   /**
@@ -96,7 +95,6 @@ class ModelObject {
    * @return {boolean} True if there is a collision, false otherwise.
    */
   collides(modelObject) {
-
     if (modelObject === this) return false;
 
     const cbx = this.collisionBox();
@@ -110,7 +108,7 @@ class ModelObject {
     return true;
   }
 
-  getSerializable(){
+  getSerializable() {
     return this.ssp;
   }
 }

@@ -81,9 +81,25 @@ describe('model/Bullet', function () {
         expect(r1.getObject(b1.ssp.id)).to.be.an('object');
 
         b1.update();
+
         expect(w1.ssp.hp).to.below(1000);
-        expect(r1.getObjects[b1.ssp.id]).to.be(undefined);
-        expect(w1.ssp.numHits).to.be(1);
+        expect(r1.getObject(b1.ssp.id)).to.be(undefined);
+      });
+
+      it('should apply tunneling and the bullet won\'t hit a wall', () => {
+        const r1 = new RoomRuntime();
+        const b2 = new Bullet(r1, 0, 20, 5, 5, 38.5, 0, 100, null);
+        const w1 = new Obstacle(r1, 5, 5, 30, 200, 1000, 'yellow');
+
+        r1.addObject(w1);
+        r1.addObject(b2);
+
+        expect(r1.getObject(b2.ssp.id)).to.be.an('object');
+
+        b2.update();
+
+        expect(w1.ssp.hp).to.be(1000);
+        expect(r1.getObject(b2.ssp.id)).to.be.ok();
       });
 
       it('should not collide with itself', () => {
