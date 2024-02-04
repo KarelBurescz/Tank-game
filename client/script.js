@@ -21,9 +21,14 @@ const canvas = document.getElementById("canvas");
 const fogCanvas = document.getElementById("fog");
 const canvasBackground = document.getElementById("canvas-background");
 const backgroundCTX = canvasBackground.getContext("2d");
+const cloudsCanvas = getElementById('clouds-canvas')
+const cloudsCTX = cloudsCanvas.getContext('2d')
 
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
+
+cloudsCanvas.width = innerWidth;
+cloudsCanvas.height = innerHeight;
 
 fogCanvas.width = canvas.width;
 fogCanvas.height = canvas.height;
