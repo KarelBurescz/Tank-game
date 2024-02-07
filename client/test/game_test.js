@@ -1,5 +1,8 @@
+import './mocks.js';
+
 import expect from 'expect.js';
-// import { UiObject } from '../../client/uiobject.js'
+import { UiObject } from '../uiobject.js'
+
 
 describe('client/game', () => {
   describe('getColisionBoxes', () => {
