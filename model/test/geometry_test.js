@@ -161,8 +161,9 @@ describe('model/geometry', () => {
       ];
 
       let semiline = [2,2, 3,2]; //2,2 is a starting poing, goes through 3,2.
+      let edges = Geometry.getEdgesFromBoundingBoxes(bboxes);
 
-      expect(Geometry.getSemilineIntersectionsWithBoundingBoxes(semiline, bboxes)).to.eql([[5,2],[8,2],[16,2],[19,2]])
+      expect(Geometry.getSemilineIntersectionsWithBoundingBoxes(semiline, edges)).to.eql([[5,2],[8,2],[16,2],[19,2]])
     });
 
     it('should return intersections of semi-line with corners', ()=>{
@@ -174,12 +175,53 @@ describe('model/geometry', () => {
       ];
 
       let semiline = [0,0,2,1]; //0,0 is a starting poing, goes through 2,1.
+      let edges = Geometry.getEdgesFromBoundingBoxes(bboxes);
 
-      expect(Geometry.getSemilineIntersectionsWithBoundingBoxes(semiline, bboxes)).to.eql([[0,0],[0,0],[2,1],[2,1]]);
+      expect(Geometry.getSemilineIntersectionsWithBoundingBoxes(semiline, edges)).to.eql([[0,0],[0,0],[2,1],[2,1]]);
     });
 
 
   });
+
+  describe('getPerpendicularVector',() => {
+    it('Should return a perpendicular verctor with the smaller component of size 1', () => {
+
+      expect(Geometry.getPerpendicularVector([3,4])).to.eql([-1, 0.75]);
+      expect(Geometry.getPerpendicularVector([16,0])).to.eql([0 ,1]);
+      
+    })
+  });
+
+  describe('getAllFuzzyCornersFromCorners', ()=>{
+    it('should return a set of corners from input corners, twice the size, slightly moved in perpendicular directions', () => {
+
+      let [x1, y1] = [-5, 5];
+
+      let bboxes = [
+        {x: 2, y: 0, w: 3, h: 1},
+        {x: -1, y: -2, w: 1, h: 2},
+        {x: -3, y: -2, w: 2, h: 8},
+      ];
+
+      let inputCorners = Geometry.getCornersFromBoundingBoxes(x1,y1, bboxes);
+      let outputCorners = Geometry.getFuzzyCornersFromCorners(inputCorners);
+
+      //Number of returned points is twice the amount of input points.
+      expect(outputCorners.size).to.be(inputCorners.size * 2);
+
+      //The returned points are verly close to the input points.
+      for(let i=0; i < inputCorners; i++){
+        let c = inputCorners[i];
+        let fc1 = outputCorners[2*i];
+        let fc2 = outputCorners[2*i +1];
+        expect(distance(...c,...fc1)).to.lessThan(4);
+        expect(distance(...c,...fc2)).to.lessThan(4);
+      }
+
+    })
+
+
+  })
 
 
 });

@@ -61,14 +61,14 @@ class Geometry {
       let corner2 = [bb.x + bb.w, bb.y];
       let corner3 = [bb.x + bb.w, bb.y + bb.h];
       let corner4 = [bb.x, bb.y + bb.h];
-      return r.push(corner1, corner2, corner3, corner4);
+      r.push(corner1, corner2, corner3, corner4);
+      return r;
     },res);
 
     return res;
   }
 
-  static getSemilineIntersectionsWithBoundingBoxes(semiline, bboxes) {
-    let edges = Geometry.getEdgesFromBoundingBoxes(bboxes);
+  static getSemilineIntersectionsWithBoundingBoxes(semiline, edges) {
 
     let isecs = edges.reduce((ac, e) => {
       let i = Geometry.linesIntersection(...semiline, ...e, true, false, true, true);
@@ -90,6 +90,10 @@ class Geometry {
     })
   }
 
+  static distance2(x1,y1, x2,y2) {
+    return ( (x1-x2)*(x1-x2) + (y1-y2)*(y1-y2));
+  }
+
   /**
    * Tests if an intersection (xi, yi) lays on a half line, 
    * stat starts in (x1, y1) and goes through (x2, y2) to
@@ -101,6 +105,21 @@ class Geometry {
     let resx = (x1 <= x2) ? (x1 <= xi) : (x1 >= xi);
     let resy = (y1 <= y2) ? (y1 <= yi) : (y1 >= yi);
     return resx && resy;
+  }
+
+  static getPerpendicularVector(arrWithXAndY) {
+    let x = -arrWithXAndY[1];
+    let y = arrWithXAndY[0];
+    let ax = Math.abs(x);
+    let ay = Math.abs(y);
+
+    if(ax > ay) {
+      return [x / ax, y / ax];
+    } else {
+      return [ x / ay, y / ay];
+    }
+    
+    
   }
 }
 
