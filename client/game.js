@@ -53,9 +53,7 @@ class Game {
    *  h: }]
    */
   getColisionBoxes() {
-    const colisionBoxes = this.objects.map( (obj) => {
-      obj.colisionBox();
-    })
+    return this.getObjectsArray().map( (obj) => obj.model.collisionBox() )
   }
 }
 

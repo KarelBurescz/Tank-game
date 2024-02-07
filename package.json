@@ -6,11 +6,10 @@
   "main": "index.js",
   "scripts": {
     "build": "cp -r model client/model",
-
-    "test": "npm run build && mocha",
+    "test": "mocha",
     "start": "node index.js",
     "generate-docs": "jsdoc -r -c jsdoc.json",
-    "gen-test-and-start": "npm run generate-docs &&  npm run build && npm run test && npm run start"
+    "gen-test-and-start": "npm run generate-docs && npm run test && npm run start"
   },
   "author": "",
   "license": "ISC",
@@ -28,7 +27,13 @@
   },
   "mocha": {
     "recursive": true,
-    "spec": ["model/test", "server/test", "client/test"],
-    "require": ["esm"]
+    "spec": [
+      "model/test",
+      "server/test",
+      "client/test"
+    ],
+    "require": [
+      "esm"
+    ]
   }
 }

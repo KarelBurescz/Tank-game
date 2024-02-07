@@ -13,3 +13,5 @@ globalThis.Audio = class {
         this.loaded = true;
     }
 }
+
+globalThis.Image = class { };
