@@ -31,9 +31,6 @@
       "model/test",
       "server/test",
       "client/test"
-    ],
-    "require": [
-      "esm"
     ]
   }
 }
