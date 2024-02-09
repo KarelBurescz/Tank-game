@@ -1,3 +1,5 @@
+import { Geometry } from "./model/geometry.js";
+
 class Camera {
 
     constructor(x, y, canvas, fog, game, followedModel) {
@@ -8,7 +10,7 @@ class Camera {
 
         // Mass
         this.m = 2;
-        
+
         // Acceleration
         this.ax = 0;
         this.ay = 0;
@@ -40,16 +42,16 @@ class Camera {
     update() {
         if (!this.followedModel) return;
 
-        let Lx = this.x + this.w/2 - this.followedModel.ssp.x;
-        let Ly = this.y + this.h/2 - this.followedModel.ssp.y;
+        let Lx = this.x + this.w / 2 - this.followedModel.ssp.x;
+        let Ly = this.y + this.h / 2 - this.followedModel.ssp.y;
 
-        
-        this.ax = (-1 * this.k * Lx -this.M * this.vx) / this.m
-        this.ay = (-1 * this.k * Ly -this.M * this.vy) / this.m
+
+        this.ax = (-1 * this.k * Lx - this.M * this.vx) / this.m
+        this.ay = (-1 * this.k * Ly - this.M * this.vy) / this.m
 
         this.vx += this.ax;
         this.vy += this.ay;
-        
+
         this.x += this.vx;
         this.y += this.vy;
     }
@@ -75,41 +77,69 @@ class Camera {
         this.fogCtx.fill();
         this.fogCtx.globalCompositeOperation = 'source-over';
 
-        this.drawRays();
+        this.drawVisibilityHints();
     }
 
-    drawRays() {
+    drawVisibilityHints() {
+        let cbx = this.game.getColisionBoxes();
+        let corners = Geometry.getCornersFromBoundingBoxes(cbx);
+
+        corners.forEach(c => {
+            const [lx, ly] = this.localCoords(c[0], c[1]);
+            this.fogCtx.beginPath();
+            this.fogCtx.strokeStyle = 'white'
+            this.fogCtx.arc(lx, ly, 10, 0, Math.PI * 180)
+            this.fogCtx.stroke();
+        });
+        this.drawRays(corners)
+    }
+
+    drawRays(corners) {
         if (!this.followedModel) return;
 
         const playerSsp = this.followedModel.ssp;
 
         const [lx, ly] = this.localCoords(playerSsp.x, playerSsp.y);
 
-        const R = this.visibilityRadius * 1.3;
+        const R = this.visibilityRadius * 1.7;
 
-        for (let i = 0; i <= 360; i+= 360/32) {
+        corners.forEach(c => {
+            const [cx, cy] = this.localCoords(c[0], c[1]);
+            let dx = cx - lx;
+            let dy = cy - ly;
 
-            const x = lx + R * Math.cos(i * Math.PI / 180);
-            const y = ly + R * Math.sin(i * Math.PI / 180);
+            let L = Math.sqrt(dx * dx + dy * dy);
+
+            let bx = lx + R / L * dx;
+            let by = ly + R / L * dy;
 
             this.fogCtx.beginPath();
-            this.fogCtx.strokeStyle = 'rgb(255,0,0)';
+            this.fogCtx.strokeStyle = 'white';
             this.fogCtx.moveTo(lx, ly);
-            this.fogCtx.lineTo(x, y);
+            this.fogCtx.lineTo(bx, by);
             this.fogCtx.stroke();
-        }
+
+            // const x = lx + R * Math.cos(i * Math.PI / 180);
+            // const y = ly + R * Math.sin(i * Math.PI / 180);
+
+            // this.fogCtx.beginPath();
+            // this.fogCtx.strokeStyle = 'rgb(255,0,0)';
+            // this.fogCtx.moveTo(lx, ly);
+            // this.fogCtx.lineTo(x, y);
+            // this.fogCtx.stroke();
+        });
+
 
         let edges = this.linesFromScene();
     }
 
-    linesFromScene(){
+    linesFromScene() {
         if (!this.followedModel) return;
         if (!this.game) return;
 
         const edges = [];
-        this.game.getObjectsArray().reduce((edges, o)=>{
+        this.game.getObjectsArray().reduce((edges, o) => {
             let bb = o.model.collisionBox();
-            console.log(bb);
         });
 
         return edges;
@@ -165,7 +195,7 @@ class Camera {
             this.fogCtx.fillRect(myX, myY, myWidth, myHeight);
 
             this.fogCtx.strokeRect(myX, myY, myWidth, myHeight);
-            this.fogCtx.strokeStyle =  'black';
+            this.fogCtx.strokeStyle = 'black';
 
 
             myX += myWidth + 3;
@@ -178,7 +208,7 @@ class Camera {
         let myXB = 5;
         let myYB = myY + myHeight + 4;
 
-        const speedBoost = this.followedModel.ssp.speedBoostCouter / 40;        
+        const speedBoost = this.followedModel.ssp.speedBoostCouter / 40;
 
         for (let j = 0; j < 5; j++) {
 
@@ -193,7 +223,7 @@ class Camera {
             this.fogCtx.fillRect(myXB, myYB, myWidthB, myHeightB);
 
             this.fogCtx.strokeRect(myXB, myYB, myWidthB, myHeightB);
-            this.fogCtx.strokeStyle =  'black';
+            this.fogCtx.strokeStyle = 'black';
 
             myXB += myWidthB + 3;
 
@@ -220,7 +250,7 @@ class Camera {
             this.fogCtx.fillRect(myXBu, myYBu, myWidthBu, myHeightBu);
 
             this.fogCtx.strokeRect(myXBu, myYBu, myWidthBu, myHeightBu);
-            this.fogCtx.strokeStyle =  'black';
+            this.fogCtx.strokeStyle = 'black';
 
             myXBu += myWidthBu + 3;
 
