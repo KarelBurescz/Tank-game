@@ -81,16 +81,27 @@ class Camera {
     }
 
     drawVisibilityHints() {
-        let cbx = this.game.getColisionBoxes();
-        let corners = Geometry.getCornersFromBoundingBoxes(cbx);
+        if (!this.followedModel) return;
 
-        corners.forEach(c => {
-            const [lx, ly] = this.localCoords(c[0], c[1]);
+        let cbx = this.game.getColisionBoxes();
+
+        let corners = Geometry.getCornersFromBoundingBoxes(cbx)
+            .map(c => this.localCoords(c[0], c[1]));
+
+        const playerSsp = this.followedModel.ssp;
+        const [lx, ly] = this.localCoords(playerSsp.x, playerSsp.y);
+
+        let sortedCorners = Geometry.sortPoints(lx, ly, corners);
+
+        sortedCorners.forEach((c, i) => {
             this.fogCtx.beginPath();
-            this.fogCtx.strokeStyle = 'white'
-            this.fogCtx.arc(lx, ly, 10, 0, Math.PI * 180)
+            this.fogCtx.fillStyle = 'pink'
+            this.fogCtx.font = "20px Arial";
+            this.fogCtx.fillText(`${i}`, c[0], c[1])
+            this.fogCtx.strokeStyle = 'gray'
+            this.fogCtx.arc(c[0], c[1], 4, 0, Math.PI * 180)
             this.fogCtx.stroke();
-        });
+        })
         this.drawRays(corners)
     }
 
@@ -104,7 +115,7 @@ class Camera {
         const R = this.visibilityRadius * 1.7;
 
         corners.forEach(c => {
-            const [cx, cy] = this.localCoords(c[0], c[1]);
+            const [cx, cy] = [c[0], c[1]];
             let dx = cx - lx;
             let dy = cy - ly;
 

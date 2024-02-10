@@ -123,7 +123,7 @@ class Geometry {
   }
 
   static sortPoints(px, py, points) {
-    console.log(points);
+    // console.log(points)
     let sorted = points.sort((c1, c2) => {
       let [dx1, dy1] = [c1[0] - px, c1[1] - py];
       let res1 = Math.atan2(dx1, dy1)
@@ -133,7 +133,6 @@ class Geometry {
 
       return res2 - res1;
     });
-    console.log(sorted);
     return sorted;
   }
 }
