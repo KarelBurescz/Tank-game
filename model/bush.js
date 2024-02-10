@@ -9,8 +9,8 @@ class Bush extends ModelObject {
   collisionBox() {
     let ssp = this.ssp;
     return {
-      x: ssp.x - ssp.width,
-      y: ssp.y - ssp.width,
+      x: ssp.x,
+      y: ssp.y,
       w: ssp.width,
       h: ssp.width,
     };
