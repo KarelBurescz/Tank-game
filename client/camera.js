@@ -62,21 +62,21 @@ class Camera {
         this.fogCtx.fillRect(0, 0, fog.width, fog.height);
 
         // Create a radial gradient
-        let gradient = this.ctx.createRadialGradient(this.w / 2, this.h / 2, 50, this.w / 2, this.h / 2, this.visibilityRadius);
-        gradient.addColorStop(0, 'rgba(0, 0, 0, 1)');  // Fully transparent in the center
-        gradient.addColorStop(0.9, 'rgba(0, 0, 0, 1)');  // Fully transparent in the center
-        gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');  // Fully opaque at the edges
+        // let gradient = this.ctx.createRadialGradient(this.w / 2, this.h / 2, 50, this.w / 2, this.h / 2, this.visibilityRadius);
+        // gradient.addColorStop(0, 'rgba(0, 0, 0, 1)');  // Fully transparent in the center
+        // gradient.addColorStop(0.9, 'rgba(0, 0, 0, 1)');  // Fully transparent in the center
+        // gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');  // Fully opaque at the edges
 
         // Apply the gradient
-        this.fogCtx.globalCompositeOperation = 'destination-out';
-        this.fogCtx.fillStyle = gradient;
-        this.fogCtx.beginPath();
-        this.fogCtx.arc(
-            this.w / 2,
-            this.h / 2,
-            this.visibilityRadius, 0, Math.PI * 2);
-        this.fogCtx.fill();
-        this.fogCtx.globalCompositeOperation = 'source-over';
+        // this.fogCtx.globalCompositeOperation = 'destination-out';
+        // this.fogCtx.fillStyle = gradient;
+        // this.fogCtx.beginPath();
+        // this.fogCtx.arc(
+        //     this.w / 2,
+        //     this.h / 2,
+        //     this.visibilityRadius, 0, Math.PI * 2);
+        // this.fogCtx.fill();
+        // this.fogCtx.globalCompositeOperation = 'source-over';
 
         this.drawVisibilityHints();
     }
@@ -123,8 +123,17 @@ class Camera {
                 this.fogCtx.stroke();
             });
         }
+
+        let gradient = this.ctx.createRadialGradient(this.w / 2, this.h / 2, 50, this.w / 2, this.h / 2, this.visibilityRadius);
+        gradient.addColorStop(0, 'rgba(0, 0, 0, 1)');  // Fully transparent in the center
+        gradient.addColorStop(0.9, 'rgba(0, 0, 0, 1)');  // Fully transparent in the center
+        gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');  // Fully opaque at the edges
+
+        this.fogCtx.globalCompositeOperation = 'destination-out';
+        this.fogCtx.fillStyle = gradient;
         
-        this.fogCtx.fillStyle = 'rgba(100,0,0,0.3)';
+        // this.fogCtx.fillStyle = 'rgba(100,0,0,0.3)';
+        // this.fogCtx.fillStyle = 'black';
         this.fogCtx.beginPath();
         this.fogCtx.moveTo(isects[0][0], isects[0][1]);
         for(let i = 1; i < isects.length; i++ ) {
@@ -132,6 +141,20 @@ class Camera {
         }
         this.fogCtx.closePath();
         this.fogCtx.fill();
+
+        cbx.forEach(b => {
+            let p = this.localCoords(b.x, b.y);
+
+            this.fogCtx.rect(
+                p[0]-2, 
+                p[1]-2, 
+                b.w+4, 
+                b.h+4
+            );
+            this.fogCtx.fill();
+        });
+        
+        this.fogCtx.globalCompositeOperation = 'source-over';
     }
 
     cameraBoundingBoxEdges(){

@@ -7,7 +7,7 @@ const Config = {
     numOfObstacles: 10,
     numOfTrees: 10,
     numOfPlants: 10,
-    numOfBushes: 10,
+    numOfBushes: 60,
   },
 };
 
