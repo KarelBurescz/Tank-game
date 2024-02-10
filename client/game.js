@@ -53,7 +53,13 @@ class Game {
    *  h: }]
    */
   getColisionBoxes() {
-    return this.getObjectsArray().filter((o) => o.model.ssp.type !== 'player').map((obj) => obj.model.collisionBox())
+    return this.getObjectsArray().filter(
+      (o) => (o.model.ssp.type !== 'player' 
+          && o.model.ssp.type !== 'plant'
+          && o.model.ssp.type !== 'tree'
+        )
+      )
+      .map((obj) => obj.model.collisionBox())
   }
 }
 
