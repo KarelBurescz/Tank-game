@@ -95,7 +95,6 @@ class Geometry {
   */
   static getClosestSemilineIntersetionWithEdges(semiline, edges) {
     let is = Geometry.getSemilineIntersectionsWithEdges(semiline, edges);
-    console.log(is);
     let closest = undefined;
     let closestDistance = undefined;
     is.forEach(i => {
