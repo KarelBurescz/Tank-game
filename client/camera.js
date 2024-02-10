@@ -1,4 +1,5 @@
 import { Geometry } from "./model/geometry.js";
+import { Config } from "./config.js";
 
 class Camera {
 
@@ -84,12 +85,13 @@ class Camera {
         if (!this.followedModel) return;
         
         const playerSsp = this.followedModel.ssp;
-        const [lx, ly] = this.localCoords(playerSsp.x, playerSsp.y, true);
+        const [lx, ly] = this.localCoords(playerSsp.x, playerSsp.y)
+            .map( i => Math.floor(i));
 
         let cbx = this.game.getColisionBoxes();
         
         let corners = Geometry.getCornersFromBoundingBoxes(cbx)
-        .map(c => this.localCoords(c[0], c[1], true));
+        .map(c => this.localCoords(c[0], c[1]));
         
         corners = [
             ...corners, 
@@ -103,8 +105,8 @@ class Camera {
         let edges = this.linesFromScene();
 
         edges = edges.map( e => {
-            const p1 = this.localCoords(e[0], e[1], true);
-            const p2 = this.localCoords(e[2], e[3], true);
+            const p1 = this.localCoords(e[0], e[1]);
+            const p2 = this.localCoords(e[2], e[3]);
             return [p1[0],p1[1], p2[0],p2[1]];
         });
 
@@ -112,16 +114,28 @@ class Camera {
 
 
         let isects = this.getIntersectionPoints(corners, edges);
-        isects.forEach(i => {
-            this.fogCtx.beginPath();
-            this.fogCtx.strokeStyle = 'white';
-            this.fogCtx.arc(i[0], i[1], 4, 0, Math.PI*2);
-            this.fogCtx.stroke();
-        });
+        isects = Geometry.sortPoints(lx, ly, isects)
+        if (Config.debug){
+            isects.forEach(i => {
+                this.fogCtx.beginPath();
+                this.fogCtx.strokeStyle = 'rgb(200,100,100)';
+                this.fogCtx.arc(i[0], i[1], 4, 0, Math.PI*2);
+                this.fogCtx.stroke();
+            });
+        }
+        
+        this.fogCtx.fillStyle = 'rgba(100,0,0,0.3)';
+        this.fogCtx.beginPath();
+        this.fogCtx.moveTo(isects[0][0], isects[0][1]);
+        for(let i = 1; i < isects.length; i++ ) {
+            this.fogCtx.lineTo(isects[i][0],isects[i][1]);
+        }
+        this.fogCtx.closePath();
+        this.fogCtx.fill();
     }
 
     cameraBoundingBoxEdges(){
-        let m = 10;
+        let m = 0;
         return [
             [m, m, this.w - 2*m, m],
             [this.w - 2*m, m, this.w - 2*m, this.h - 2*m],
@@ -129,10 +143,11 @@ class Camera {
             [m, this.h - 2*m, m, m]
         ];
     }
-
+    
     getCameraBboxes(){
+        let m = 0;
         return {
-            x: 10, y: 10, w: this.w - 20, h: this.h - 20
+            x: m, y: m, w: this.w - 2*m, h: this.h - 2*m
         }
     }
 
@@ -140,22 +155,26 @@ class Camera {
         if (!this.followedModel) return;
 
         const playerSsp = this.followedModel.ssp;
-        const [lx, ly] = this.localCoords(playerSsp.x, playerSsp.y, true);
+        let p = this.localCoords(playerSsp.x, playerSsp.y);
         const R = this.visibilityRadius * 1.7;
+
+        let cornersL = corners.map(c=>c.map(ci => Math.floor(ci)));
+        let edgesL = edges.map(e => e.map(ei => Math.floor(ei)));
+        p = p.map(pi => Math.floor(pi));
 
         let ipoints = [];
 
-        corners.forEach(c => {
+        cornersL.forEach(c => {
             const [cx, cy] = [c[0], c[1]];
-            let semiline = [lx, ly, cx, cy];
+            let semiline = [p[0], p[1], cx, cy];
 
-            this.fogCtx.beginPath();
-            this.fogCtx.strokeStyle = 'white';
-            this.fogCtx.moveTo(lx, ly);
-            this.fogCtx.lineTo(cx, cy);
-            this.fogCtx.stroke();
+            // this.fogCtx.beginPath();
+            // this.fogCtx.strokeStyle = 'white';
+            // this.fogCtx.moveTo(p[0], p[1]);
+            // this.fogCtx.lineTo(cx, cy);
+            // this.fogCtx.stroke();
 
-            let isect = Geometry.getClosestSemilineIntersetionWithEdges(semiline, edges);
+            let isect = Geometry.getClosestSemilineIntersetionWithEdges(semiline, edgesL);
             if (!isect) {
                 isect = [cx, cy];
             }
@@ -186,16 +205,11 @@ class Camera {
         });
     }
 
-    localCoords(x, y, round=false) {
-        let res = [
+    localCoords(x, y) {
+        return [
             x - this.x,
             y - this.y
-        ];
-        if (!round){
-            return res;
-        } else {
-            return res.map( x => Math.floor(x));
-        }
+        ].map(x => Math.floor(x));
     }
 
     draw(bgCanvas) {

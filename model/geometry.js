@@ -128,8 +128,8 @@ class Geometry {
   static getPerpendicularVector(arrWithXAndY) {
     let x = -arrWithXAndY[1];
     let y = arrWithXAndY[0];
-    let ax = Math.abs(x);
-    let ay = Math.abs(y);
+    let ax = 0.8 * Math.abs(x);
+    let ay = 0.8 * Math.abs(y);
 
     if (ax > ay) {
       return [x / ax, y / ax];
@@ -169,12 +169,6 @@ class Geometry {
       fuzzyCorners.push(fuzzyCorner2);
     }
 
-    // let myVector = [px, py, corners[0], corners[1]];
-    // let myVectorOnStart = [0, 0, parseInt(corners[0][0]) - px, parseInt(corners[0][1]) - py];
-    // let forPerpV = [myVectorOnStart[2], myVectorOnStart[3]];
-    // let perpendicularV = Geometry.getPerpendicularVector(forPerpV);
-
-    // let fuzzyCorner = [myVectorOnStart[2] + perpendicularV[0], myVectorOnStart[3] + perpendicularV[1]];
     return fuzzyCorners;
   }
 }
