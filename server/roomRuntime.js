@@ -112,7 +112,7 @@ class RoomRuntime {
 
       let myWidth = (Math.random() + 2) * 30;
 
-      const maybeStone = new Stone(this, myX, myY, myWidth, 0, 100);
+      const maybeStone = new Stone(this, myX, myY, myWidth, myWidth, 100);
 
       const stoneCollides = this.objects.some((e) => {
         if (e.collides(maybeStone)) {

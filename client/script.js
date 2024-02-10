@@ -13,6 +13,7 @@ import { RemoteController } from "./remoteController.js";
 import { UiBullet } from "./uibullet.js";
 import { Animation } from "./animation.js";
 import { Coumuflage } from "./coumuflage.js";
+import { UiStone } from "./uistone.js";
 
 const socket = io();
 socket.emit("join-room", "war-room-1");
@@ -105,6 +106,10 @@ function updateGame(game, gameUpdate) {
           }
           case "bush": {
             newObject = new UiBush(game, 0, 0, 0, 0, 0);
+            break;
+          }
+          case "stone": {
+            newObject = new UiStone(game, 0, 0, 0, 0, 100);
             break;
           }
         }
