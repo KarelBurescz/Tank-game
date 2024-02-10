@@ -203,11 +203,11 @@ describe('model/geometry', () => {
         {x: -3, y: -2, w: 2, h: 8},
       ];
 
-      let inputCorners = Geometry.getCornersFromBoundingBoxes(x1,y1, bboxes);
-      let outputCorners = Geometry.getFuzzyCornersFromCorners(inputCorners);
+      let inputCorners = Geometry.getCornersFromBoundingBoxes(bboxes);
+      let outputCorners = Geometry.getAllFuzzyCornersFromCorners(x1, y1, inputCorners);
 
       //Number of returned points is twice the amount of input points.
-      expect(outputCorners.size).to.be(inputCorners.size * 2);
+      expect(outputCorners.length).to.be(inputCorners.length * 2);
 
       //The returned points are verly close to the input points.
       for(let i=0; i < inputCorners; i++){

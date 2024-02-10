@@ -121,6 +121,30 @@ class Geometry {
     
     
   }
+
+  static getAllFuzzyCornersFromCorners(px, py, corners) {
+    let fuzzyCorners = [];
+    for(let i = 0; i < corners.length; i++) {
+      // 0, 0, in myVectorOnStart is the vector starting point
+      let myVectorOnStart = [0, 0, corners[i][0] - px, corners[i][1] - py];
+      let forPerpV = [myVectorOnStart[2], myVectorOnStart[3]];
+      let perpendicularV = Geometry.getPerpendicularVector(forPerpV);
+  
+      let fuzzyCorner1 = [corners[i][0] + perpendicularV[0], corners[i][1] + perpendicularV[1]];
+      let fuzzyCorner2 = [corners[i][0] - perpendicularV[0], corners[i][1] - perpendicularV[1]];
+      
+      fuzzyCorners.push(fuzzyCorner1);
+      fuzzyCorners.push(fuzzyCorner2);
+    }
+
+    // let myVector = [px, py, corners[0], corners[1]];
+    // let myVectorOnStart = [0, 0, parseInt(corners[0][0]) - px, parseInt(corners[0][1]) - py];
+    // let forPerpV = [myVectorOnStart[2], myVectorOnStart[3]];
+    // let perpendicularV = Geometry.getPerpendicularVector(forPerpV);
+
+    // let fuzzyCorner = [myVectorOnStart[2] + perpendicularV[0], myVectorOnStart[3] + perpendicularV[1]];
+    return fuzzyCorners;
+}
 }
 
 export { Geometry };
