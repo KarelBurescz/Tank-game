@@ -5,6 +5,7 @@ import { Tree } from "../model/tree.js";
 import { Solider } from "../model/solider.js";
 import { Plant } from "../model/plant.js";
 import { Bush } from "../model/bush.js";
+import { Stone } from "../model/stone.js";
 
 /**
  * Keeps the game mechanics and the game objects for a single room.
@@ -104,6 +105,26 @@ class RoomRuntime {
         this.objects.push(maybeWall);
       }
     }
+    // Loop for stones
+    for (let j = 0; j < Config.gameRoom.numOfStones; ++j) {
+      const myX = Math.random() * (Config.gameRoom.sizeX - 80) + 40;
+      const myY = Math.random() * (Config.gameRoom.sizeY - 80) + 40;
+
+      let myWidth = (Math.random() + 2) * 30;
+
+      const maybeStone = new Stone(this, myX, myY, myWidth, 0, 100);
+
+      const stoneCollides = this.objects.some((e) => {
+        if (e.collides(maybeStone)) {
+          return true;
+        }
+      });
+
+      if (!stoneCollides) {
+        this.objects.push(maybeStone);
+      }
+    }
+
     // Loop for plants
     for (let i = 0; i < Config.gameRoom.numOfPlants; i++) {
       const myX = Math.random() * (Config.gameRoom.sizeX - 80) + 40;

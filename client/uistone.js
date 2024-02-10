@@ -13,6 +13,7 @@ class UiStone extends UiObject {
 
   draw(camera) {
     let co = this.localCoords(camera);
+    debugger;
     camera.ctx.drawImage(
       this.img,
       co.x,
