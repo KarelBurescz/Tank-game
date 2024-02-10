@@ -5,7 +5,7 @@ class Geometry {
   static linesIntersection(
     x1, y1, x2, y2, x3, y3, x4, y4,
     p1end = false, p2end = false, p3end = false, p4end = false
-    ) {
+  ) {
     const A1 = y1 - y2;
     const A3 = y3 - y4;
     const B1 = x2 - x1;
@@ -15,13 +15,13 @@ class Geometry {
     const det = A1 * B3 - A3 * B1;
     const epsilon = 0.000001;
 
-    if(Math.abs(det) < epsilon) {
+    if (Math.abs(det) < epsilon) {
       return undefined;
     }
 
     const x = (C1 * B3 - C3 * B1) / det;
     const y = (C3 * A1 - C1 * A3) / det;
-    
+
     const tests = [
       [p1end, x1, y1, x, y, x2, y2],
       [p2end, x2, y2, x, y, x1, y1],
@@ -29,15 +29,15 @@ class Geometry {
       [p4end, x4, y4, x, y, x3, y3],
     ];
 
-    const mt = tests.map( (t) => {
+    const mt = tests.map((t) => {
       let [b, ...pts] = t;
-      return b?this._testBoundaryPoint(...pts):true;
+      return b ? this._testBoundaryPoint(...pts) : true;
     })
 
-    if (mt.some(e => e === false)){
+    if (mt.some(e => e === false)) {
       return undefined;
     }
-      
+
     return [x, y];
   }
 
@@ -49,7 +49,7 @@ class Geometry {
       r.push([bb.x + bb.w, bb.y + bb.h, bb.x, bb.y + bb.h]);
       r.push([bb.x, bb.y + bb.h, bb.x, bb.y]);
       return r;
-    },res);
+    }, res);
 
     return res;
   }
@@ -63,7 +63,7 @@ class Geometry {
       let corner4 = [bb.x, bb.y + bb.h];
       r.push(corner1, corner2, corner3, corner4);
       return r;
-    },res);
+    }, res);
 
     return res;
   }
@@ -72,7 +72,7 @@ class Geometry {
 
     let isecs = edges.reduce((ac, e) => {
       let i = Geometry.linesIntersection(...semiline, ...e, true, false, true, true);
-      if(i !== undefined) {
+      if (i !== undefined) {
         ac.push(i);
       }
       return ac;
@@ -86,12 +86,12 @@ class Geometry {
 
       let la = (dax * dax) + (day * day);
       let lb = (dbx * dbx) + (dby * dby);
-      return la-lb;
+      return la - lb;
     })
   }
 
-  static distance2(x1,y1, x2,y2) {
-    return ( (x1-x2)*(x1-x2) + (y1-y2)*(y1-y2));
+  static distance2(x1, y1, x2, y2) {
+    return ((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
   }
 
   /**
@@ -101,7 +101,7 @@ class Geometry {
    * The function assumes that (xi,yi) lays on the line going
    * through (x1,y1) and (x2,y2).
    */
-  static _testBoundaryPoint(x1,y1, xi, yi, x2, y2){
+  static _testBoundaryPoint(x1, y1, xi, yi, x2, y2) {
     let resx = (x1 <= x2) ? (x1 <= xi) : (x1 >= xi);
     let resy = (y1 <= y2) ? (y1 <= yi) : (y1 >= yi);
     return resx && resy;
@@ -113,13 +113,27 @@ class Geometry {
     let ax = Math.abs(x);
     let ay = Math.abs(y);
 
-    if(ax > ay) {
+    if (ax > ay) {
       return [x / ax, y / ax];
     } else {
-      return [ x / ay, y / ay];
+      return [x / ay, y / ay];
     }
-    
-    
+
+
+  }
+
+  static sortPoints(px, py, points) {
+    // console.log(points)
+    let sorted = points.sort((c1, c2) => {
+      let [dx1, dy1] = [c1[0] - px, c1[1] - py];
+      let res1 = Math.atan2(dx1, dy1)
+
+      let [dx2, dy2] = [c2[0] - px, c2[1] - py];
+      let res2 = Math.atan2(dx2, dy2)
+
+      return res2 - res1;
+    });
+    return sorted;
   }
 
   static getAllFuzzyCornersFromCorners(px, py, corners) {
