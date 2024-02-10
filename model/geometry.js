@@ -42,16 +42,16 @@ class Geometry {
   }
 
   static getEdgesFromBoundingBoxes(bboxes) {
-    let res = [];
+ 
     let sides = bboxes.reduce((r, bb) => {
       r.push([bb.x, bb.y, bb.x + bb.w, bb.y]);
       r.push([bb.x + bb.w, bb.y, bb.x + bb.w, bb.y + bb.h]);
       r.push([bb.x + bb.w, bb.y + bb.h, bb.x, bb.y + bb.h]);
       r.push([bb.x, bb.y + bb.h, bb.x, bb.y]);
       return r;
-    }, res);
+    }, []);
 
-    return res;
+    return sides;
   }
 
   static getCornersFromBoundingBoxes(bboxes) {
@@ -68,7 +68,7 @@ class Geometry {
     return res;
   }
 
-  static getSemilineIntersectionsWithBoundingBoxes(semiline, edges) {
+  static getSemilineIntersectionsWithEdges(semiline, edges) {
 
     let isecs = edges.reduce((ac, e) => {
       let i = Geometry.linesIntersection(...semiline, ...e, true, false, true, true);
@@ -88,6 +88,25 @@ class Geometry {
       let lb = (dbx * dbx) + (dby * dby);
       return la - lb;
     })
+  }
+
+  /* Finds a single point, the closest intersection of the semiline and
+  * the edges.
+  */
+  static getClosestSemilineIntersetionWithEdges(semiline, edges) {
+    let is = Geometry.getSemilineIntersectionsWithEdges(semiline, edges);
+    console.log(is);
+    let closest = undefined;
+    let closestDistance = undefined;
+    is.forEach(i => {
+      let d = Geometry.distance2(semiline[0], semiline[1],i[0],i[1]);
+      if (!closestDistance || closestDistance > d){
+        closest = i;
+        closestDistance = d;
+      }
+    });
+
+    return closest;
   }
 
   static distance2(x1, y1, x2, y2) {
@@ -158,7 +177,7 @@ class Geometry {
 
     // let fuzzyCorner = [myVectorOnStart[2] + perpendicularV[0], myVectorOnStart[3] + perpendicularV[1]];
     return fuzzyCorners;
-}
+  }
 }
 
 export { Geometry };

@@ -152,7 +152,7 @@ describe('model/geometry', () => {
     });
   });
 
-  describe('getSemilineIntersectionsWithBoundingBoxes', () => {
+  describe('getSemilineIntersectionsWithEdges', () => {
     it('should return 4 intersections of semi-line and with two bboxes', () => {
 
       let bboxes = [
@@ -163,7 +163,7 @@ describe('model/geometry', () => {
       let semiline = [2, 2, 3, 2]; //2,2 is a starting poing, goes through 3,2.
       let edges = Geometry.getEdgesFromBoundingBoxes(bboxes);
 
-      expect(Geometry.getSemilineIntersectionsWithBoundingBoxes(semiline, edges)).to.eql([[5, 2], [8, 2], [16, 2], [19, 2]])
+      expect(Geometry.getSemilineIntersectionsWithEdges(semiline, edges)).to.eql([[5, 2], [8, 2], [16, 2], [19, 2]])
     });
 
     it('should return intersections of semi-line with corners', () => {
@@ -177,11 +177,24 @@ describe('model/geometry', () => {
       let semiline = [0, 0, 2, 1]; //0,0 is a starting poing, goes through 2,1.
       let edges = Geometry.getEdgesFromBoundingBoxes(bboxes);
 
-      expect(Geometry.getSemilineIntersectionsWithBoundingBoxes(semiline, edges)).to.eql([[0, 0], [0, 0], [2, 1], [2, 1]]);
+      expect(Geometry.getSemilineIntersectionsWithEdges(semiline, edges)).to.eql([[0, 0], [0, 0], [2, 1], [2, 1]]);
     });
-
-
   });
+
+  describe('getClosestSemilineIntersetionWithEdges', () => {
+    it('should return closest intersection of semi-line and with two bboxes', () => {
+
+      let bboxes = [
+        { x: 5, y: 1, w: 3, h: 15 },
+        { x: 16, y: -7, w: 3, h: 30 }
+      ];
+
+      let semiline = [2, 2, 3, 2]; //2,2 is a starting poing, goes through 3,2.
+      let edges = Geometry.getEdgesFromBoundingBoxes(bboxes);
+
+      expect(Geometry.getClosestSemilineIntersetionWithEdges(semiline, edges)).to.eql([5, 2])
+    });
+  });  
 
   describe('getPerpendicularVector', () => {
     it('Should return a perpendicular verctor with the smaller component of size 1', () => {

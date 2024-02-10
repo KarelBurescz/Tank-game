@@ -109,9 +109,7 @@ class Camera {
         if (!this.followedModel) return;
 
         const playerSsp = this.followedModel.ssp;
-
         const [lx, ly] = this.localCoords(playerSsp.x, playerSsp.y);
-
         const R = this.visibilityRadius * 1.7;
 
         corners.forEach(c => {
@@ -129,29 +127,39 @@ class Camera {
             this.fogCtx.moveTo(lx, ly);
             this.fogCtx.lineTo(bx, by);
             this.fogCtx.stroke();
-
-            // const x = lx + R * Math.cos(i * Math.PI / 180);
-            // const y = ly + R * Math.sin(i * Math.PI / 180);
-
-            // this.fogCtx.beginPath();
-            // this.fogCtx.strokeStyle = 'rgb(255,0,0)';
-            // this.fogCtx.moveTo(lx, ly);
-            // this.fogCtx.lineTo(x, y);
-            // this.fogCtx.stroke();
         });
 
+        this.drawEdgesOnScene();
+    }
 
+    drawEdgesOnScene(camera) {
         let edges = this.linesFromScene();
+
+        edges = edges.map( e => {
+            const p1 = this.localCoords(e[0], e[1]);
+            const p2 = this.localCoords(e[2], e[3]);
+            return [p1[0],p1[1], p2[0],p2[1]];
+        });
+
+        edges.forEach(e => {
+            this.fogCtx.beginPath();
+            this.fogCtx.strokeStyle = 'gray';
+            this.fogCtx.moveTo(e[0], e[1]);
+            this.fogCtx.lineTo(e[2], e[3]);
+            this.fogCtx.stroke();
+        })
+    }
+
+    drawIntersectionPoints(camera, semiline) {
+
     }
 
     linesFromScene() {
         if (!this.followedModel) return;
         if (!this.game) return;
 
-        const edges = [];
-        this.game.getObjectsArray().reduce((edges, o) => {
-            let bb = o.model.collisionBox();
-        });
+        let bbx = this.game.getColisionBoxes();
+        const edges = Geometry.getEdgesFromBoundingBoxes(bbx);
 
         return edges;
     }
