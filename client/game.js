@@ -24,6 +24,10 @@ class Game {
     return this.objects[id];
   }
 
+  getObjectsArray() {
+    return Object.values(this.objects);
+  }
+
   removeObject(id) {
     delete this.objects[id];
   }
@@ -39,6 +43,23 @@ class Game {
 
   addOponent(oponents) {
     this.oponents.push(oponents);
+  }
+  /*
+   * @returns array of colision boxes
+   * [ {
+   *  x: ,
+   *  y: ,
+   *  w: ,
+   *  h: }]
+   */
+  getColisionBoxes() {
+    return this.getObjectsArray().filter(
+      (o) => (o.model.ssp.type !== 'player' 
+          && o.model.ssp.type !== 'plant'
+          && o.model.ssp.type !== 'tree'
+        )
+      )
+      .map((obj) => obj.model.collisionBox())
   }
 }
 

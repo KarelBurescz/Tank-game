@@ -46,8 +46,8 @@ Animation.loadAssets("Explode-sequence", "explode-sequence", 9);
 Animation.loadAssets("Bubbles", "bubbles", 4);
 Animation.loadAssets("PlantCrash", "plantCrash", 3);
 
-let myCamera = new Camera(0, 0, canvas, fogCanvas, null);
 let myGame = new Game(canvasBackground, backgroundCTX);
+let myCamera = new Camera(0, 0, canvas, fogCanvas, myGame, null);
 
 //TODO: this is temporary, update whole game, not just the player.
 socket.on("state-upate", (msg) => {

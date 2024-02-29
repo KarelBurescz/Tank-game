@@ -1,6 +1,7 @@
 import { UiObject } from "./uiobject.js";
-import { Obstacle } from "/model/obstacle.js";
+import { Obstacle } from "./model/obstacle.js";
 import { Animation } from "./animation.js";
+
 class UiObstacle extends UiObject {
   static {
     if (!this.audioExplodeSrc) {

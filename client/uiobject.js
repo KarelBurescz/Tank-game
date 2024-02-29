@@ -1,6 +1,6 @@
 import { Config } from "./config.js";
 import { UiObjects } from "./arrayuiobjects.js";
-import { ModelObject } from "/model/modelobject.js";
+import { ModelObject } from "./model/modelobject.js";
 
 class UiObject {
   static loadAudio(audioFilename) {
