@@ -5,7 +5,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "cp -r model client/model",
+    "build": "ln -s --force -t ./client ../model",
     "test": "mocha",
     "start": "node index.js",
     "generate-docs": "jsdoc -r -c jsdoc.json",
