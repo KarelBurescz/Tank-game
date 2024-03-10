@@ -117,14 +117,6 @@ class Camera {
 
         let isects = this.getIntersectionPoints(corners, edges);
         isects = Geometry.sortPoints(lx, ly, isects)
-        if (Config.debug){
-            isects.forEach(i => {
-                this.fogCtx.beginPath();
-                this.fogCtx.strokeStyle = 'rgb(200,100,100)';
-                this.fogCtx.arc(i[0], i[1], 4, 0, Math.PI*2);
-                this.fogCtx.stroke();
-            });
-        }
 
         let gradient = this.ctx.createRadialGradient(this.w / 2, this.h / 2, 50, this.w / 2, this.h / 2, this.visibilityRadius);
         gradient.addColorStop(0, 'rgba(0, 0, 0, 1)');  // Fully transparent in the center
@@ -134,8 +126,6 @@ class Camera {
         this.fogCtx.globalCompositeOperation = 'destination-out';
         this.fogCtx.fillStyle = gradient;
         
-        // this.fogCtx.fillStyle = 'rgba(100,0,0,0.3)';
-        // this.fogCtx.fillStyle = 'black';
         this.fogCtx.beginPath();
         this.fogCtx.moveTo(isects[0][0], isects[0][1]);
         for(let i = 1; i < isects.length; i++ ) {
@@ -157,6 +147,29 @@ class Camera {
         });
         
         this.fogCtx.globalCompositeOperation = 'source-over';
+
+        this.fogCtx.shadowBlur = 0;
+        this.fogCtx.shadowColor = 'black';
+        this.fogCtx.lineWidth = 1;
+
+        if (Config.debug){
+
+            corners.forEach( c => {
+                this.fogCtx.beginPath();
+                this.fogCtx.strokeStyle = 'rgb(255, 100, 255)';
+                this.fogCtx.moveTo(lx, ly);
+                this.fogCtx.lineTo(c[0], c[1]);
+                this.fogCtx.closePath();
+                this.fogCtx.stroke();
+            });
+
+            isects.forEach(i => {
+                this.fogCtx.beginPath();
+                this.fogCtx.strokeStyle = 'rgb(200,100,100)';
+                this.fogCtx.arc(i[0], i[1], 4, 0, Math.PI*2);
+                this.fogCtx.stroke();
+            });
+        }
     }
 
     cameraBoundingBoxEdges(){
