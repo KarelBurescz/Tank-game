@@ -112,6 +112,8 @@ class Camera {
 
         edges = [...(this.cameraBoundingBoxEdges()),...edges];
 
+        corners = corners.map (c => [Math.floor(c[0]), Math.floor(c[1])]);
+        edges = edges.map( e => e.map (n => Math.floor(n)) );
 
         let isects = this.getIntersectionPoints(corners, edges);
         isects = Geometry.sortPoints(lx, ly, isects)
