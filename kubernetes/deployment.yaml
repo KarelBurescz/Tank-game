@@ -16,7 +16,7 @@ spec:
   selector:
     matchLabels:
       app: tank-game-app
-  replicas: 6
+  replicas: 2
 
   template:
     metadata:
@@ -84,10 +84,7 @@ spec:
   ingressClassName: "nginx"
   tls:
   - hosts:
-    # - buresovi.net
-    # - dashboard.buresovi.net
     - tanks.buresovi.net
-    # - ha.buresovi.net
     secretName: tls-secret
   rules:
   - host: tanks.buresovi.net
