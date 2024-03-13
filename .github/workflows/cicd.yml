@@ -117,3 +117,8 @@ jobs:
         # This step uses the identity token to provision an ephemeral certificate
         # against the sigstore community Fulcio instance.
         run: echo "${TAGS}" | xargs -I {} cosign sign --yes {}@${DIGEST}
+
+      - name: Call deployment webhook
+        uses: muinmomin/webhook-action@v1.0.0
+        with:
+          url: ${{ secrets.DEPLOYMENT_WEBHOOK }}
