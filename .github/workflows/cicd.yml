@@ -8,7 +8,7 @@ name: CICD Workflow
 on:
   push:
     branches:
-      - 'master'
+      - 'main'
 
 env:
   # Use docker.io for Docker Hub if empty
