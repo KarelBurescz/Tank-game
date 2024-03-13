@@ -7,7 +7,7 @@ name: CICD Workflow
 
 on:
   push:
-    branches: [main]
+    branches: [main, cicd]
     # tags: 
     #   - 'v*.*.*'
 
@@ -36,10 +36,10 @@ jobs:
         run: npm install
 
       - name: Build the app
-        run: npm build
+        run: npm run build
       
       - name: Execute tests
-        run: npm test
+        run: npm run test
 
   build:
 
