@@ -35,8 +35,11 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Build the app
+        run: npm build
+      
       - name: Execute tests
-        run: npm test  
+        run: npm test
 
   build:
 
