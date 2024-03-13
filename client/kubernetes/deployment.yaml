@@ -1,0 +1,102 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: tank-game
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name:  tank-game-deployment
+  namespace: tank-game
+  labels:
+    app:  tank-game-deployment
+spec:
+  selector:
+    matchLabels:
+      app: tank-game-app
+  replicas: 3
+
+  template:
+    metadata:
+      labels:
+        app:  tank-game-app
+
+    spec:
+      containers:
+      - name:  tank-game-container
+        image:  ghcr.io/karelburescz/tank-game:latest
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
+          limits:
+            cpu: 100m
+            memory: 400Mi
+        ports:
+        - containerPort:  3001
+          name: tank-game-port
+      
+      imagePullSecrets:
+      - name: ghcr-credentials
+
+      restartPolicy: Always
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: tank-game
+  name: tank-game-service
+spec:
+  selector:
+    app:  tank-game-app
+  ports:
+    - protocol: TCP
+      port: 3002
+      targetPort: tank-game-port
+
+---
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: tank-game-ingress
+  namespace: tank-game
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-production"
+
+    #The following two are needed to make the sessions sticky for
+    #the socket.io working properly.
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      set $forwarded_client_ip "";
+      if ($http_x_forwarded_for ~ "^([^,]+)") {
+        set $forwarded_client_ip $1;
+      }
+      set $client_ip $remote_addr;
+      if ($forwarded_client_ip != "") {
+        set $client_ip $forwarded_client_ip;
+      }
+    nginx.ingress.kubernetes.io/upstream-hash-by: "$client_ip"
+spec:
+  ingressClassName: "nginx"
+  tls:
+  - hosts:
+    # - buresovi.net
+    # - dashboard.buresovi.net
+    - tanks.buresovi.net
+    # - ha.buresovi.net
+    secretName: tls-secret
+  rules:
+  - host: tanks.buresovi.net
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: tank-game-service
+            port:
+              number: 3002
