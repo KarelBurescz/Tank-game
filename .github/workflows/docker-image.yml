@@ -7,8 +7,9 @@ name: CICD Workflow
 
 on:
   push:
-    tags: 
-      - 'v*.*.*'
+    branches: [main]
+    # tags: 
+    #   - 'v*.*.*'
 
 env:
   # Use docker.io for Docker Hub if empty
