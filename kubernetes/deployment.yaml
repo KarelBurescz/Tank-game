@@ -16,7 +16,7 @@ spec:
   selector:
     matchLabels:
       app: tank-game-app
-  replicas: 2
+  replicas: 6
 
   template:
     metadata:
