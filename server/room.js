@@ -42,12 +42,14 @@ class Room {
   }
 
   start() {
-    this.stateUpdater = setInterval(this.updatePlayers.bind(this), 60);
+    if (this.running) return;
+    this.stateUpdater = setInterval(this.updatePlayers.bind(this), 1000/60);
     this.running = true;
     this.roomRuntime.start();
   }
 
   stop() {
+    if (!this.running) return;
     clearInterval(this.stateUpdater);
     this.roomRuntime.stop();
     this.running = false;

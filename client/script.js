@@ -49,6 +49,8 @@ Animation.loadAssets("PlantCrash", "plantCrash", 3);
 let myGame = new Game(canvasBackground, backgroundCTX);
 let myCamera = new Camera(0, 0, canvas, fogCanvas, myGame, null);
 
+myGame.start();
+
 //TODO: this is temporary, update whole game, not just the player.
 socket.on("state-upate", (msg) => {
   let gameUpdate = JSON.parse(msg);
@@ -73,8 +75,12 @@ function removeGameObjects(game, gameUpdate) {
  * @param { Game } game
  */
 function updateGame(game, gameUpdate) {
+  
+  game.numOfDataUpdates++;
+  game.checkLargestDelta();
+  game.previousUpdateTime = game.now();
+
   if (gameUpdate.hasOwnProperty("objects")) {
-    console.log(`Num objs: ${Object.keys(gameUpdate.objects).length}`);
     Object.keys(gameUpdate.objects).forEach((id) => {
       let o = gameUpdate.objects[id];
 
@@ -139,6 +145,15 @@ function updateGame(game, gameUpdate) {
   if (gameUpdate.hasOwnProperty("oponents")) {
     game.oponents = gameUpdate.oponents;
   }
+
+  if (gameUpdate.hasOwnProperty("gameStats")) {
+    game.gameStats = {
+      ...game.gameStats,
+      ...gameUpdate.gameStats
+    }
+  }
+
+  requestAnimationFrame(animate);
 }
 
 function handleUiObjects() {
@@ -193,12 +208,13 @@ function animate() {
   myCamera.draw(myGame.bgcanvas);
 
   handleUiObjects();
-
-  requestAnimationFrame(animate);
+  myGame.numOfSceneDraws++;
+  // Let's redraw the scene only once an update from server arrives.
+  // requestAnimationFrame(animate);
 }
 
 loadImage("background.png").then((img) => {
   drawBackground(img, canvasBackground);
 });
 
-animate();
+// animate();

@@ -1,5 +1,6 @@
 const Config = {
   debug: false,
+  stats: true,
 
   p1: {
     forward: "t",
