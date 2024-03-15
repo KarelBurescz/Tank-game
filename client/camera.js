@@ -263,7 +263,7 @@ class Camera {
             `Client-TPS: ${this.game.gameStats.clientTps}`,
             `Client-UPS: ${this.game.gameStats.clientUps}`,
             `Client-BDU: ${this.game.gameStats.largestClientUpsDelta}`,
-            `Game Obj  : ${Object.keys(this.game.objects).length}`,
+            `Game Obj  : ${this.game.getObjectIds().length}`,
         ];
 
         this.fogCtx.strokeStyle = 'gray';

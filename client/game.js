@@ -1,12 +1,16 @@
+import { GameModel } from './gameModel.js';
+
 class Game {
-  constructor(bgcanvas, bgctx) {
+  constructor(bgcanvas, bgctx){
     this.bgcanvas = bgcanvas;
     this.bgctx = bgctx;
-    this.objects = {};
+    this.newPlayerCallback = null;;
+    
     this.animations = [];
-    this.oponents = {};
-    this.player = null;
-    this.readyToDraw = false;
+    this.models = [new GameModel(this), new GameModel(this)];
+
+    this.previousModel = this.models[0];
+    this.actualModel = this.models[1];
 
     this.gameStats = {
       clientUps: 0,
@@ -25,6 +29,10 @@ class Game {
     this.numOfSceneDraws = 0;
     
     this.statsComputeScheduler = null;
+  }
+
+  setNewPlayerCallback(fn) {
+    this.newPlayerCallback = fn;
   }
 
   checkLargestDelta(){
@@ -75,37 +83,63 @@ class Game {
     this.statsComputeScheduler = setInterval( this.updateStats.bind(this) ,1000)
   }
 
+  update(gameUpdate) {
+    
+    this.numOfDataUpdates++;
+    this.checkLargestDelta();
+    this.previousUpdateTime = this.now();
+
+    this.actualModel.update(gameUpdate);
+
+    if (!this.player && this.getObject(gameUpdate?.player?.id)) {
+      const player = this.getObject(gameUpdate.player.id);
+      this.setPlayer(player);
+      this.newPlayerCallback(this.player);
+    }
+  
+    if (gameUpdate.hasOwnProperty("gameStats")) {
+      this.gameStats = {
+        ...this.gameStats,
+        ...gameUpdate.gameStats
+      }
+    }
+  }
+
   addObject(object) {
-    this.objects[object.model.ssp.id] = object;
+    this.actualModel.addObject(object);
   }
 
   hasObject(id) {
-    return this.objects.hasOwnProperty(id);
+    return this.actualModel.hasObject(id);
   }
 
   getObjectIds() {
-    return Object.keys(this.objects);
+    return this.actualModel.getObjectIds();
   }
 
   getObject(id) {
-    return this.objects[id];
+    return this.actualModel.getObject(id);
   }
 
   getObjectsArray() {
-    return Object.values(this.objects);
+    return this.actualModel.getObjectsArray();
   }
 
   removeObject(id) {
-    delete this.objects[id];
+    this.actualModel.removeObject(id);
   }
 
   eachObject(func) {
-    Object.keys(this.objects).forEach((o) => func(this.objects[o]));
+    this.actualModel.eachObject(func);
   }
 
   setPlayer(player) {
+    this.models.forEach( (m) => {
+      m.setPlayer(player);
+      m.addObject(player);
+    });
+    
     this.player = player;
-    this.addObject(player);
   }
 
   addOponent(oponents) {

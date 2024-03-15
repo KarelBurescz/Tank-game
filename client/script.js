@@ -1,16 +1,15 @@
 "use strict";
 
-import { UiSolider } from "./uisolider.js";
-import { UiObstacle } from "./uiobstacle.js";
-import { mouse } from "./mouse.js";
 import { Game } from "./game.js";
 import { Camera } from "./camera.js";
+import { UiSolider } from "./uisolider.js";
+import { UiObstacle } from "./uiobstacle.js";
 import { UiTree } from "./uitree.js";
 import { UiPlant } from "./uiplant.js";
 import { UiBush } from "./uibush.js";
+import { UiBullet } from "./uibullet.js";
 import { Config } from "./config.js";
 import { RemoteController } from "./remoteController.js";
-import { UiBullet } from "./uibullet.js";
 import { Animation } from "./animation.js";
 import { Coumuflage } from "./coumuflage.js";
 
@@ -46,8 +45,15 @@ Animation.loadAssets("Explode-sequence", "explode-sequence", 9);
 Animation.loadAssets("Bubbles", "bubbles", 4);
 Animation.loadAssets("PlantCrash", "plantCrash", 3);
 
-let myGame = new Game(canvasBackground, backgroundCTX);
+
+let myGame = new Game(canvasBackground, backgroundCTX)
 let myCamera = new Camera(0, 0, canvas, fogCanvas, myGame, null);
+
+myGame.setNewPlayerCallback( (player) => {
+  myCamera.setFollowedModel(player.model);
+  let rc = new RemoteController(window, player, Config, socket);
+  rc.registerController(Config);
+});
 
 myGame.start();
 
@@ -76,84 +82,11 @@ function removeGameObjects(game, gameUpdate) {
  */
 function updateGame(game, gameUpdate) {
   
-  game.numOfDataUpdates++;
-  game.checkLargestDelta();
-  game.previousUpdateTime = game.now();
+  // game.numOfDataUpdates++;
+  // game.checkLargestDelta();
+  // game.previousUpdateTime = game.now();
 
-  if (gameUpdate.hasOwnProperty("objects")) {
-    Object.keys(gameUpdate.objects).forEach((id) => {
-      let o = gameUpdate.objects[id];
-
-      if (game.hasObject(id)) {
-        game.getObject(id).model.ssp = gameUpdate.objects[id];
-      } else {
-        let newObject = null;
-        switch (o.type) {
-          case "tree": {
-            newObject = new UiTree(game, 0, 0, 0, 0, 0);
-            break;
-          }
-          case "obstacle": {
-            newObject = new UiObstacle(game, 0, 0, 0, 0, 0, "brown");
-            break;
-          }
-          case "bullet": {
-            newObject = new UiBullet(game, 0, 0, 0, 0, 0, 0, 100, null);
-            break;
-          }
-          case "player": {
-            newObject = new UiSolider(game, 0, 0, 0, 0, 0, 0, 0, 100);
-            break;
-          }
-          case "plant": {
-            newObject = new UiPlant(game, 0, 0, 0, 0, 0, "");
-            break;
-          }
-          case "bush": {
-            newObject = new UiBush(game, 0, 0, 0, 0, 0);
-            break;
-          }
-        }
-
-        if (newObject) {
-          newObject.model.ssp = o;
-          game.addObject(newObject);
-        }
-      }
-      let outStr = "";
-      Object.keys(game.objects).forEach((k) => {
-        outStr += ` k: ${k} type: ${game.objects[k].model.ssp.type}, `;
-        if (game.objects[k].model.ssp.type === "player") {
-          let locssp = game.objects[k].model.ssp;
-          outStr += `${JSON.stringify(locssp)}`;
-        }
-      });
-
-      // console.log(outStr);
-    });
-
-    if (!game.player && gameUpdate.hasOwnProperty("player")) {
-      const player = game.getObject(gameUpdate.player.id);
-      game.setPlayer(player);
-
-      myCamera.setFollowedModel(game.player.model);
-      let rc = new RemoteController(window, game.player, Config, socket);
-      rc.registerController(Config);
-    }
-  }
-
-  if (gameUpdate.hasOwnProperty("oponents")) {
-    game.oponents = gameUpdate.oponents;
-  }
-
-  if (gameUpdate.hasOwnProperty("gameStats")) {
-    game.gameStats = {
-      ...game.gameStats,
-      ...gameUpdate.gameStats
-    }
-  }
-
-  requestAnimationFrame(animate);
+  game.update(gameUpdate);
 }
 
 function handleUiObjects() {
@@ -212,6 +145,8 @@ function animate() {
   // Let's redraw the scene only once an update from server arrives.
   // requestAnimationFrame(animate);
 }
+
+setInterval( () => requestAnimationFrame(animate), 1000/60);
 
 loadImage("background.png").then((img) => {
   drawBackground(img, canvasBackground);
