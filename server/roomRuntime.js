@@ -264,7 +264,9 @@ class RoomRuntime {
   getSerializable(soliderId) {
     let serializable = {
       player: {},
-      gameScene: [],
+      gameStats: {
+        serverTps: Math.floor(100 * this.currentTps)/100
+      },
       oponents: [],
       objects: {},
     }

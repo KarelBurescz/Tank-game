@@ -29,9 +29,6 @@ class Camera {
         this.game = game;
         this.followedModel = followedModel;
         this.visibilityRadius = 300;
-        // this.x = this.followedModel.x - this.w / 2;
-        // this.y = this.followedModel.y - this.h / 2;
-
     }
 
     setFollowedModel(followedModel) {
@@ -60,24 +57,6 @@ class Camera {
     drawFogOfWar() {
         this.fogCtx.fillStyle = 'black';
         this.fogCtx.fillRect(0, 0, fog.width, fog.height);
-
-        // Create a radial gradient
-        // let gradient = this.ctx.createRadialGradient(this.w / 2, this.h / 2, 50, this.w / 2, this.h / 2, this.visibilityRadius);
-        // gradient.addColorStop(0, 'rgba(0, 0, 0, 1)');  // Fully transparent in the center
-        // gradient.addColorStop(0.9, 'rgba(0, 0, 0, 1)');  // Fully transparent in the center
-        // gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');  // Fully opaque at the edges
-
-        // Apply the gradient
-        // this.fogCtx.globalCompositeOperation = 'destination-out';
-        // this.fogCtx.fillStyle = gradient;
-        // this.fogCtx.beginPath();
-        // this.fogCtx.arc(
-        //     this.w / 2,
-        //     this.h / 2,
-        //     this.visibilityRadius, 0, Math.PI * 2);
-        // this.fogCtx.fill();
-        // this.fogCtx.globalCompositeOperation = 'source-over';
-
         this.drawVisibilityHints();
     }
 
@@ -268,6 +247,29 @@ class Camera {
         );
         this.drawFogOfWar();
         this.drawHud();
+        this.drawDebugStats();
+    }
+
+    drawDebugStats(){
+        if (!Config.stats) return;
+        if(!this?.game?.gameStats?.serverTps) return;
+        
+        const txtWidth = this.fogCtx.measureText('Server-TPS: 99.99');
+        const fontSize = 16;
+        const lineSize = fontSize*1.2;
+
+        const msgs = [
+            `Server-TPS: ${this.game.gameStats.serverTps}`,
+            `Client-TPS: ${this.game.gameStats.clientTps}`,
+            `Client-UPS: ${this.game.gameStats.clientUps}`,
+            `Client-BDU: ${this.game.gameStats.largestClientUpsDelta}`,
+            `Game Obj  : ${Object.keys(this.game.objects).length}`,
+        ];
+
+        this.fogCtx.strokeStyle = 'gray';
+        this.fogCtx.font =`${fontSize}px  monospace`
+
+        msgs.forEach((v,i) => this.fogCtx.strokeText(v, this.w - txtWidth.width - 30, (i+2)*lineSize));
     }
 
     drawHud() {

@@ -6,6 +6,73 @@ class Game {
     this.animations = [];
     this.oponents = {};
     this.player = null;
+    this.readyToDraw = false;
+
+    this.gameStats = {
+      clientUps: 0,
+      clientTps: 0,
+      largestClientUpsDelta: 0,
+    };
+
+    //TODO: In future refactor that into separate class
+    this.lastUpsUpdate = this.now();
+    this.numOfDataUpdates = 0;
+
+    this.previousUpdateTime = this.now();
+    this.largestUpdateDelta = 0;
+    
+    this.lastTpsUpdate = this.now();
+    this.numOfSceneDraws = 0;
+    
+    this.statsComputeScheduler = null;
+  }
+
+  checkLargestDelta(){
+    const dt = this.now() - this.previousUpdateTime;
+    if (dt > this.largestUpdateDelta) {
+      this.largestUpdateDelta = dt;
+    }
+  }
+
+  now() {
+    const now = new Date();
+    return now.getTime();
+  }
+
+  updateStats() {
+    this.checkLargestDelta();
+    this.gameStats.largestClientUpsDelta = this.largestUpdateDelta;
+    this.largestUpdateDelta = 0;
+
+    this.updateUps();
+    this.updateTps();
+  }
+
+  // Number of frames drawn per second.
+  updateTps() {
+    const dt = this.now() - this.lastTpsUpdate;
+
+    // Avoid division by zero.
+    if (Math.abs(dt) < 1e-3) return;
+
+    this.gameStats.clientTps = Math.floor(100 * this.numOfSceneDraws * 1000 / dt) / 100;
+    this.numOfSceneDraws = 0;
+    this.lastTpsUpdate = this.now();
+  }
+
+  // Number of data updates from the server per second.
+  updateUps() {
+    const dt = this.now() - this.lastUpsUpdate;
+    // Let's avoid division by zero.
+    if (Math.abs(dt) < 1e-3) return;
+
+    this.gameStats.clientUps = Math.floor(100 * this.numOfDataUpdates * 1000 / dt) / 100;
+    this.numOfDataUpdates = 0;
+    this.lastUpsUpdate = this.now();
+  }
+
+  start() {
+    this.statsComputeScheduler = setInterval( this.updateStats.bind(this) ,1000)
   }
 
   addObject(object) {
