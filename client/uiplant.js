@@ -1,5 +1,5 @@
 import { UiObject } from "./uiobject.js";
-import { Plant } from "/model/plant.js";
+import { Plant } from "./model/plant.js";
 import { Animation } from "./animation.js";
 
 class UiPlant extends UiObject {

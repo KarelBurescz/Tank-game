@@ -1,5 +1,5 @@
 import { UiObject } from "./uiobject.js";
-import { Bullet } from "/model/bullet.js";
+import { Bullet } from "./model/bullet.js";
 
 class UiBullet extends UiObject {
 

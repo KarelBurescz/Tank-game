@@ -1,7 +1,7 @@
 "use strict";
 
 import { UiObject } from "./uiobject.js";
-import { Bush } from "/model/bush.js";
+import { Bush } from "./model/bush.js";
 
 class UiBush extends UiObject {
   constructor(game, x, y, width, height, hp) {

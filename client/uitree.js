@@ -1,7 +1,7 @@
 "use strict";
 
 import { UiObject } from "./uiobject.js";
-import { Tree } from "/model/tree.js";
+import { Tree } from "./model/tree.js";
 
 class UiTree extends UiObject {
   constructor(game, x, y, width, height, hp) {

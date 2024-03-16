@@ -3,7 +3,7 @@ import { Config } from "./config.js";
 import { UiObjects } from "./arrayuiobjects.js";
 import { LandMine } from "./landMine.js";
 import { Radar } from "./radar.js";
-import { Solider } from "/model/solider.js";
+import { Solider } from "./model/solider.js";
 import { Coumuflage } from "./coumuflage.js";
 import { Animation } from "./animation.js";
 
