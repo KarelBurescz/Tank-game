@@ -53,7 +53,7 @@ io.on("connection", (socket) => {
 
   serverGame.acceptOrUpdateConnection(socket);
 
-  socket.on("join-room", (msg) => {
+  socket.on("join-room", (msg, ack) => {
     console.log(`Joining room: ${msg}`);
     socket.join(msg);
 
@@ -62,6 +62,7 @@ io.on("connection", (socket) => {
 
     r.playerJoinRoom(p);
     console.log(getInfo());
+    ack(Date.now());
   });
 
   socket.on("leave-room", (msg) => {

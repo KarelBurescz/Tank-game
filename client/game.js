@@ -1,18 +1,34 @@
+/**
+ * The Game represents the data model on the client side. 
+ * <pre>
+ * [ Game ] 1:1 -- 1:1 [ GameModel ]
+ * </pre>
+ * The GameModel holds the UI Objects that are capable of drawing the objects it represents.
+ * 
+ * @module Game
+ */
+'use strict';
+
+import { GameModel } from './gameModel.js';
+
 class Game {
-  constructor(bgcanvas, bgctx) {
+  constructor(bgcanvas, bgctx){
     this.bgcanvas = bgcanvas;
     this.bgctx = bgctx;
-    this.objects = {};
+    this.newPlayerCallback = null;;
+    
     this.animations = [];
-    this.oponents = {};
-    this.player = null;
-    this.readyToDraw = false;
+
+    this.stateUpdates = {};
+    this.actualModel = new GameModel(this);
 
     this.gameStats = {
       clientUps: 0,
       clientTps: 0,
       largestClientUpsDelta: 0,
     };
+
+    this.timeCorrection = 0;
 
     //TODO: In future refactor that into separate class
     this.lastUpsUpdate = this.now();
@@ -27,6 +43,10 @@ class Game {
     this.statsComputeScheduler = null;
   }
 
+  setNewPlayerCallback(fn) {
+    this.newPlayerCallback = fn;
+  }
+
   checkLargestDelta(){
     const dt = this.now() - this.previousUpdateTime;
     if (dt > this.largestUpdateDelta) {
@@ -35,11 +55,10 @@ class Game {
   }
 
   now() {
-    const now = new Date();
-    return now.getTime();
+    return Date.now();
   }
 
-  updateStats() {
+  recomputeStats() {
     this.checkLargestDelta();
     this.gameStats.largestClientUpsDelta = this.largestUpdateDelta;
     this.largestUpdateDelta = 0;
@@ -70,42 +89,106 @@ class Game {
     this.numOfDataUpdates = 0;
     this.lastUpsUpdate = this.now();
   }
+  /**
+   * 
+   * @param {Number} timeCorrection is a number of milisecond we need to add to the client time to get the correct timestamp on the server.
+   */
+  start(timeCorrection) {
+    this.timeCorrection = timeCorrection;
+    this.statsComputeScheduler = setInterval( this.recomputeStats.bind(this) ,1000)
+  }
 
-  start() {
-    this.statsComputeScheduler = setInterval( this.updateStats.bind(this) ,1000)
+  getCorrectedDrawTimeMs(){
+    return Date.now() + this.timeCorrection - 100;
+  }
+
+  //Make sure this is called.
+  getActualModel() {
+    // Here we need to interpolate all the object ssp properties that change in time, 
+    // between two time points.
+    // So far we are choosing the closest snapshot in future.
+
+    const correctedTimestamp = Date.now() + this.timeCorrection - 100;
+    const closestModelKey = Object.keys(this.stateUpdates)[1];
+    if (closestModelKey) {
+      this.actualModel.update(closestModelKey);
+      return this.actualModel;
+    } else {
+      return null;
+    }
+  }
+
+  storeUpdate(gameUpdate) {
+    
+    this.numOfDataUpdates++;
+    this.checkLargestDelta();
+    this.previousUpdateTime = this.now();
+
+    this.actualModel.update(gameUpdate);
+    
+    const serverTs = gameUpdate.gameStats.tickTime;
+    const correctedDrawTime = this.getCorrectedDrawTimeMs();
+
+    this.cleanupModels(correctedDrawTime);
+    this.stateUpdates[serverTs] = gameUpdate;
+
+    if (!this.player && this.getObject(gameUpdate?.player?.id)) {
+      const player = this.getObject(gameUpdate.player.id);
+      this.setPlayer(player);
+      this.newPlayerCallback(this.player);
+    }
+  
+    if (gameUpdate.hasOwnProperty("gameStats")) {
+      this.gameStats = {
+        ...this.gameStats,
+        ...gameUpdate.gameStats
+      }
+    }
+  }
+
+  cleanupModels(timestamp) {
+    const keys = Object.keys(this.stateUpdates);
+
+    for (let i = 0; i < keys.length - 1; i++) {
+      if (keys[i] < timestamp && keys[i+1] < timestamp) {
+        delete this.stateUpdates[keys[i]];
+      }
+    }
   }
 
   addObject(object) {
-    this.objects[object.model.ssp.id] = object;
+    this.actualModel.addObject(object);
   }
 
   hasObject(id) {
-    return this.objects.hasOwnProperty(id);
+    return this.actualModel.hasObject(id);
   }
 
   getObjectIds() {
-    return Object.keys(this.objects);
+    return this.actualModel.getObjectIds();
   }
 
   getObject(id) {
-    return this.objects[id];
+    return this.actualModel.getObject(id);
   }
 
   getObjectsArray() {
-    return Object.values(this.objects);
+    return this.actualModel.getObjectsArray();
   }
 
   removeObject(id) {
-    delete this.objects[id];
+    this.actualModel.removeObject(id);
   }
 
   eachObject(func) {
-    Object.keys(this.objects).forEach((o) => func(this.objects[o]));
+    this.getActualModel()?.eachObject(func);
   }
 
   setPlayer(player) {
+    this.actualModel.setPlayer(player);
+    this.actualModel.addObject(player);
+    
     this.player = player;
-    this.addObject(player);
   }
 
   addOponent(oponents) {

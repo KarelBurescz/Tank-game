@@ -67,7 +67,6 @@ class Animation {
 
   start() {
     this.updatingFunc = setInterval(this.timedUpdate.bind(this), this.duration);
-    console.log("starting animation");
   }
 
   draw(camera) {
