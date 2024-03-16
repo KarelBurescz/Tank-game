@@ -26,7 +26,7 @@ spec:
     spec:
       containers:
       - name:  tank-game-container
-        image:  ghcr.io/karelburescz/tank-game:v0.0.16
+        image:  ghcr.io/karelburescz/tank-game:0.0.16
         resources:
           requests:
             cpu: 100m
