@@ -1,3 +1,14 @@
+/**
+ * The Game represents the data model on the client side. 
+ * <pre>
+ * [ Game ] 1:1 -- 1:1 [ GameModel ]
+ * </pre>
+ * The GameModel holds the UI Objects that are capable of drawing the objects it represents.
+ * 
+ * @module Game
+ */
+'use strict';
+
 import { GameModel } from './gameModel.js';
 
 class Game {
@@ -7,8 +18,8 @@ class Game {
     this.newPlayerCallback = null;;
     
     this.animations = [];
-    this.models = {};
 
+    this.stateUpdates = {};
     this.actualModel = new GameModel(this);
 
     this.gameStats = {
@@ -44,11 +55,10 @@ class Game {
   }
 
   now() {
-    const now = new Date();
-    return now.getTime();
+    return Date.now();
   }
 
-  updateStats() {
+  recomputeStats() {
     this.checkLargestDelta();
     this.gameStats.largestClientUpsDelta = this.largestUpdateDelta;
     this.largestUpdateDelta = 0;
@@ -85,7 +95,7 @@ class Game {
    */
   start(timeCorrection) {
     this.timeCorrection = timeCorrection;
-    this.statsComputeScheduler = setInterval( this.updateStats.bind(this) ,1000)
+    this.statsComputeScheduler = setInterval( this.recomputeStats.bind(this) ,1000)
   }
 
   getCorrectedDrawTimeMs(){
@@ -99,7 +109,7 @@ class Game {
     // So far we are choosing the closest snapshot in future.
 
     const correctedTimestamp = Date.now() + this.timeCorrection - 100;
-    const closestModelKey = Object.keys(this.models)[1];
+    const closestModelKey = Object.keys(this.stateUpdates)[1];
     if (closestModelKey) {
       this.actualModel.update(closestModelKey);
       return this.actualModel;
@@ -108,7 +118,7 @@ class Game {
     }
   }
 
-  update(gameUpdate) {
+  storeUpdate(gameUpdate) {
     
     this.numOfDataUpdates++;
     this.checkLargestDelta();
@@ -120,7 +130,7 @@ class Game {
     const correctedDrawTime = this.getCorrectedDrawTimeMs();
 
     this.cleanupModels(correctedDrawTime);
-    this.models[serverTs] = gameUpdate;
+    this.stateUpdates[serverTs] = gameUpdate;
 
     if (!this.player && this.getObject(gameUpdate?.player?.id)) {
       const player = this.getObject(gameUpdate.player.id);
@@ -137,11 +147,11 @@ class Game {
   }
 
   cleanupModels(timestamp) {
-    const keys = Object.keys(this.models);
+    const keys = Object.keys(this.stateUpdates);
 
     for (let i = 0; i < keys.length - 1; i++) {
       if (keys[i] < timestamp && keys[i+1] < timestamp) {
-        delete this.models[keys[i]];
+        delete this.stateUpdates[keys[i]];
       }
     }
   }

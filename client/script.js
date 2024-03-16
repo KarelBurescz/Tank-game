@@ -66,14 +66,6 @@ function removeGameObjects(game, gameUpdate) {
   }
 }
 
-/**
- * Updates the local model of the game based on the updates from server.
- * @param { Game } game
- */
-function updateGame(game, gameUpdate) {
-  game.update(gameUpdate);
-}
-
 function handleUiObjects() {
   myGame.eachObject(function (o) {
     //TODO: Enable it this later on.
@@ -102,13 +94,8 @@ function loadImage(imgpath) {
   });
 }
 
-// myGame.bgctx.fillStyle = "rgba(200,255,90,1)";
 function drawBackgroundImg(img, x, y) {
-  // debugger;
-
   myGame.bgctx.drawImage(img, x, y, 600, 600);
-
-  console.log("Printing background");
 }
 
 function drawBackground(img, canvasBackground) {
@@ -127,8 +114,6 @@ function animate() {
 
   handleUiObjects();
   myGame.numOfSceneDraws++;
-  // Let's redraw the scene only once an update from server arrives.
-  // requestAnimationFrame(animate);
 }
 
 loadImage("background.png").then((img) => {
@@ -139,7 +124,7 @@ loadImage("background.png").then((img) => {
 socket.on("state-upate", (msg) => {
   let gameUpdate = JSON.parse(msg);
   removeGameObjects(myGame, gameUpdate);
-  updateGame(myGame, gameUpdate);
+  myGame.storeUpdate(gameUpdate);
 });
 
 socket.emit("join-room", "war-room-1", (serverTimestamp) => {
