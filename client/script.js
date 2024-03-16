@@ -14,11 +14,7 @@ import { Animation } from "./animation.js";
 import { Coumuflage } from "./coumuflage.js";
 
 const socket = io();
-socket.emit("join-room", "war-room-1", (response) => {
-  console.log(`Response: ${response}`);
-  const timeCorrection = Date.now() - response;
-  console.log(`Time correction: ${timeCorrection}`);
-});
+
 
 const canvas = document.getElementById("canvas");
 const fogCanvas = document.getElementById("fog");
@@ -49,7 +45,6 @@ Animation.loadAssets("Explode-sequence", "explode-sequence", 9);
 Animation.loadAssets("Bubbles", "bubbles", 4);
 Animation.loadAssets("PlantCrash", "plantCrash", 3);
 
-
 let myGame = new Game(canvasBackground, backgroundCTX)
 let myCamera = new Camera(0, 0, canvas, fogCanvas, myGame, null);
 
@@ -57,15 +52,6 @@ myGame.setNewPlayerCallback( (player) => {
   myCamera.setFollowedModel(player.model);
   let rc = new RemoteController(window, player, Config, socket);
   rc.registerController(Config);
-});
-
-myGame.start();
-
-//TODO: this is temporary, update whole game, not just the player.
-socket.on("state-upate", (msg) => {
-  let gameUpdate = JSON.parse(msg);
-  removeGameObjects(myGame, gameUpdate);
-  updateGame(myGame, gameUpdate);
 });
 
 function removeGameObjects(game, gameUpdate) {
@@ -85,11 +71,6 @@ function removeGameObjects(game, gameUpdate) {
  * @param { Game } game
  */
 function updateGame(game, gameUpdate) {
-  
-  // game.numOfDataUpdates++;
-  // game.checkLargestDelta();
-  // game.previousUpdateTime = game.now();
-
   game.update(gameUpdate);
 }
 
@@ -150,10 +131,22 @@ function animate() {
   // requestAnimationFrame(animate);
 }
 
-setInterval( () => requestAnimationFrame(animate), 1000/60);
-
 loadImage("background.png").then((img) => {
   drawBackground(img, canvasBackground);
 });
 
-// animate();
+//TODO: this is temporary, update whole game, not just the player.
+socket.on("state-upate", (msg) => {
+  let gameUpdate = JSON.parse(msg);
+  removeGameObjects(myGame, gameUpdate);
+  updateGame(myGame, gameUpdate);
+});
+
+socket.emit("join-room", "war-room-1", (serverTimestamp) => {
+  
+  const timeCorrection = serverTimestamp - Date.now();
+  console.log(`Time correction: ${timeCorrection}`);
+  
+  setInterval( () => requestAnimationFrame(animate), 1000/60);
+  myGame.start(timeCorrection);
+});

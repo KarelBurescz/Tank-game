@@ -18,6 +18,8 @@ class Game {
       largestClientUpsDelta: 0,
     };
 
+    this.timeCorrection = 0;
+
     //TODO: In future refactor that into separate class
     this.lastUpsUpdate = this.now();
     this.numOfDataUpdates = 0;
@@ -78,8 +80,12 @@ class Game {
     this.numOfDataUpdates = 0;
     this.lastUpsUpdate = this.now();
   }
-
-  start() {
+  /**
+   * 
+   * @param {Number} timeCorrection is a number of milisecond we need to add to the client time to get the correct timestamp on the server.
+   */
+  start(timeCorrection) {
+    this.timeCorrection = timeCorrection;
     this.statsComputeScheduler = setInterval( this.updateStats.bind(this) ,1000)
   }
 
