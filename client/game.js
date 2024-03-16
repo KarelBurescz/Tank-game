@@ -92,6 +92,22 @@ class Game {
     return Date.now() + this.timeCorrection - 100;
   }
 
+  //Make sure this is called.
+  getActualModel() {
+    // Here we need to interpolate all the object ssp properties that change in time, 
+    // between two time points.
+    // So far we are choosing the closest snapshot in future.
+
+    const correctedTimestamp = Date.now() + this.timeCorrection - 100;
+    const closestModelKey = Object.keys(this.models)[1];
+    if (closestModelKey) {
+      this.actualModel.update(closestModelKey);
+      return this.actualModel;
+    } else {
+      return null;
+    }
+  }
+
   update(gameUpdate) {
     
     this.numOfDataUpdates++;
@@ -104,10 +120,7 @@ class Game {
     const correctedDrawTime = this.getCorrectedDrawTimeMs();
 
     this.cleanupModels(correctedDrawTime);
-
-    // const gm = new GameModel(this);
-    // gm.update(gameUpdate);
-    this.models[serverTs] = {dummy: "Value"};
+    this.models[serverTs] = gameUpdate;
 
     if (!this.player && this.getObject(gameUpdate?.player?.id)) {
       const player = this.getObject(gameUpdate.player.id);
@@ -158,7 +171,7 @@ class Game {
   }
 
   eachObject(func) {
-    this.actualModel.eachObject(func);
+    this.getActualModel()?.eachObject(func);
   }
 
   setPlayer(player) {
