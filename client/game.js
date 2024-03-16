@@ -7,10 +7,9 @@ class Game {
     this.newPlayerCallback = null;;
     
     this.animations = [];
-    this.models = [new GameModel(this), new GameModel(this)];
+    this.models = {};
 
-    this.previousModel = this.models[0];
-    this.actualModel = this.models[1];
+    this.actualModel = new GameModel(this);
 
     this.gameStats = {
       clientUps: 0,
@@ -89,6 +88,10 @@ class Game {
     this.statsComputeScheduler = setInterval( this.updateStats.bind(this) ,1000)
   }
 
+  getCorrectedDrawTimeMs(){
+    return Date.now() + this.timeCorrection - 100;
+  }
+
   update(gameUpdate) {
     
     this.numOfDataUpdates++;
@@ -96,6 +99,15 @@ class Game {
     this.previousUpdateTime = this.now();
 
     this.actualModel.update(gameUpdate);
+    
+    const serverTs = gameUpdate.gameStats.tickTime;
+    const correctedDrawTime = this.getCorrectedDrawTimeMs();
+
+    this.cleanupModels(correctedDrawTime);
+
+    // const gm = new GameModel(this);
+    // gm.update(gameUpdate);
+    this.models[serverTs] = {dummy: "Value"};
 
     if (!this.player && this.getObject(gameUpdate?.player?.id)) {
       const player = this.getObject(gameUpdate.player.id);
@@ -107,6 +119,16 @@ class Game {
       this.gameStats = {
         ...this.gameStats,
         ...gameUpdate.gameStats
+      }
+    }
+  }
+
+  cleanupModels(timestamp) {
+    const keys = Object.keys(this.models);
+
+    for (let i = 0; i < keys.length - 1; i++) {
+      if (keys[i] < timestamp && keys[i+1] < timestamp) {
+        delete this.models[keys[i]];
       }
     }
   }
@@ -140,10 +162,8 @@ class Game {
   }
 
   setPlayer(player) {
-    this.models.forEach( (m) => {
-      m.setPlayer(player);
-      m.addObject(player);
-    });
+    this.actualModel.setPlayer(player);
+    this.actualModel.addObject(player);
     
     this.player = player;
   }
