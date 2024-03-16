@@ -265,7 +265,8 @@ class RoomRuntime {
     let serializable = {
       player: {},
       gameStats: {
-        serverTps: Math.floor(100 * this.currentTps)/100
+        serverTps: Math.floor(100 * this.currentTps)/100,
+        tickTime: Date.now(),
       },
       oponents: [],
       objects: {},

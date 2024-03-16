@@ -14,7 +14,11 @@ import { Animation } from "./animation.js";
 import { Coumuflage } from "./coumuflage.js";
 
 const socket = io();
-socket.emit("join-room", "war-room-1");
+socket.emit("join-room", "war-room-1", (response) => {
+  console.log(`Response: ${response}`);
+  const timeCorrection = Date.now() - response;
+  console.log(`Time correction: ${timeCorrection}`);
+});
 
 const canvas = document.getElementById("canvas");
 const fogCanvas = document.getElementById("fog");
