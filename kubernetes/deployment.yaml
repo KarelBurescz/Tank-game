@@ -16,7 +16,7 @@ spec:
   selector:
     matchLabels:
       app: tank-game-app
-  replicas: 2
+  replicas: 3
 
   template:
     metadata:
@@ -26,7 +26,7 @@ spec:
     spec:
       containers:
       - name:  tank-game-container
-        image:  ghcr.io/karelburescz/tank-game:0.0.16
+        image:  ghcr.io/karelburescz/tank-game:0.0.17
         resources:
           requests:
             cpu: 100m
