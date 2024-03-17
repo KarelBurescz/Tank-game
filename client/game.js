@@ -207,6 +207,7 @@ class Game {
       (o) => (o.model.ssp.type !== 'player' 
           && o.model.ssp.type !== 'plant'
           && o.model.ssp.type !== 'tree'
+          && o.model.ssp.type !== 'bullet'
         )
       )
       .map((obj) => obj.model.collisionBox())
