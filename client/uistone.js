@@ -8,7 +8,8 @@ class UiStone extends UiObject {
     super(game, x, y, width, height, hp);
     this.model = new Stone(game, x, y, width, height);
     this.img = new Image();
-    this.img.src = "stone.png";
+    // this.img.src = `stone${this.ssp.version}.png`;
+    this.img.src = `stone.png`;
   }
 
   draw(camera) {
