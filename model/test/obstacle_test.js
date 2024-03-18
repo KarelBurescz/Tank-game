@@ -8,7 +8,7 @@ describe('model/Obstacle', function () {
             const r1 = new RoomRuntime();
             const owner = {};
   
-            const b = new Obstacle(r1, 1, 2, 3, 4, 5, 'red');
+            const b = new Obstacle(r1, 1, 2, 3, 4, 5);
             
   
             const ssp = {
@@ -22,6 +22,7 @@ describe('model/Obstacle', function () {
               hp: 5,
               exploding: false,
               numHits: 0,
+              zIndex: 0,
             }
   
             expect(b.ssp).to.eql(ssp);

@@ -8,7 +8,7 @@ describe('model/Tree', function () {
             const r1 = new RoomRuntime();
             const owner = {};
   
-            const b = new Tree(r1, 1, 2, 3, 4, 5, 'green');
+            const b = new Tree(r1, 1, 2, 3, 4, 5);
             
             const ssp = {
               id: b.ssp.id,
@@ -21,6 +21,7 @@ describe('model/Tree', function () {
               hp: 5,
               exploding: false,
               numHits: 0,
+              zIndex: 3,
             }
   
             expect(b.ssp).to.eql(ssp);
