@@ -60,8 +60,8 @@ class Solider extends ModelObject {
   /**
    * Constructs a new Solider instance.
    */
-  constructor(game, x, y, width, height, direction, speed, gunDirection, hp) {
-    super(game, x, y, width, height, hp);
+  constructor(game, x, y, width, height, direction, speed, gunDirection, hp, zIndex = 0) {
+    super(game, x, y, width, height, hp, zIndex);
     this.playerSocketId = null;
 
     this.ssp = {
@@ -84,6 +84,7 @@ class Solider extends ModelObject {
       bulletsShot: 0,
 
       type: "player",
+      zIndex: zIndex
     };
 
     /* Properties that will be updated from the client's controller */

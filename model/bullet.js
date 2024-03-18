@@ -1,8 +1,8 @@
 import { ModelObject } from "./modelobject.js";
 
 class Bullet extends ModelObject {
-  constructor(game, x, y, width, height, speed, direction, damage, owner) {
-    super(game, x, y, width, height, 1000);
+  constructor(game, x, y, width, height, speed, direction, damage, owner, zIndex = 2) {
+    super(game, x, y, width, height, 1000, zIndex);
 
     this.ssp = {
       ...this.ssp,

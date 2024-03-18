@@ -18,8 +18,8 @@ describe('model/ModelObject', function () {
         expect(mo.game).to.be(testGame);
 
         expect(ssp).to.eql({
-            id: id, x: 0, y: 0, width: 50, height: 50, hp: 100, type: 'none', exploding: false, numHits: 0,
-            movable: false,
+            id: id, x: 0, y: 0, width: 50, height: 50, hp: 100, type: 'none', exploding: false, numHits: 0, 
+            zIndex: 0, movable: false
         })
 
         expect(mo.x).to.be(undefined);
@@ -59,8 +59,8 @@ describe('model/ModelObject', function () {
   describe('timeInterpolation', () => {
     it('returns the same position for non-movable objects', () => {
       const r1 = new RoomRuntime();
-      const t1 = new Tree(r1, 1, 2, 3, 4, 5, 'green');
-      const t2 = new Tree(r1, 1, 2, 3, 4, 5, 'green');
+      const t1 = new Tree(r1, 1, 2, 3, 4, 5);
+      const t2 = new Tree(r1, 1, 2, 3, 4, 5);
 
       t1.interpolateInTime(t2.ssp, 1000000, 200, 1000500);
       expect(t1.ssp).to.eql(
@@ -77,6 +77,7 @@ describe('model/ModelObject', function () {
           exploding: false,
           numHits: 0,
           movable: false,
+          zIndex: 3,
       });
 
     });

@@ -26,6 +26,7 @@ describe('model/Bullet', function () {
             exploding: false,
             numHits: 0,
             movable: false,
+            zIndex: 0,
           }
 
           expect(b.ssp).to.eql(ssp);

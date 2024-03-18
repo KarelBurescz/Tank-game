@@ -1,9 +1,10 @@
 import { ModelObject } from "./modelobject.js";
 
 class Tree extends ModelObject {
-  constructor(game, x, y, width, height, hp) {
-    super(game, x, y, width, height, hp);
+  constructor(game, x, y, width, height, hp, zIndex = 3) {
+    super(game, x, y, width, height, hp, zIndex);
     this.ssp.type = "tree";
+    this.ssp.zIndex = zIndex;
 
     Object.seal(this);
     Object.seal(this.ssp);

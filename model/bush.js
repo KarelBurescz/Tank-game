@@ -1,8 +1,9 @@
 import { ModelObject } from "./modelobject.js";
 
 class Bush extends ModelObject {
-  constructor(game, x, y, width, height, hp) {
-    super(game, x, y, width, height, hp);
+  constructor(game, x, y, width, height, hp, zIndex = 2) {
+    super(game, x, y, width, height, hp, zIndex);
+    this.ssp.zIndex = zIndex;
     this.ssp.type = "bush";
   }
 

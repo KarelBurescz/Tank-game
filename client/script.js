@@ -74,10 +74,15 @@ function handleUiObjects() {
 
   myCamera.update();
 
-  myGame.eachObject(function (o) {
-    o.draw(myCamera);
-  });
-
+  // myGame.eachObject(function (o) {
+  //   o.draw(myCamera);
+  // });
+  const objects = myGame.getObjectsArray();
+  objects.sort((a, b) => a.model.ssp.zIndex - b.model.ssp.zIndex);
+  objects.forEach((obj) => {
+    obj.draw(myCamera);
+  })
+  
   myGame.animations.forEach((a) => {
     a.update();
     a.draw(myCamera);
