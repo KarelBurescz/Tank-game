@@ -54,7 +54,7 @@ class GameModel {
                             break;
                         }
                         case "stone": {
-                            newObject = new UiBush(this.game, 0, 0, 0, 0, 0);
+                            newObject = new UiStone(this.game, 0, 0, 0, 0, 0);
                             break;
                         }
                     }
