@@ -5,6 +5,7 @@ import { Tree } from "../model/tree.js";
 import { Solider } from "../model/solider.js";
 import { Plant } from "../model/plant.js";
 import { Bush } from "../model/bush.js";
+import { Stone } from "../model/stone.js";
 
 /**
  * Keeps the game mechanics and the game objects for a single room.
@@ -183,7 +184,28 @@ class RoomRuntime {
         this.objects.push(maybeTree);
       }
     }
+  
+  //Loop for stones
+  for (let k = 0; k < Config.gameRoom.numOfStones; ++k) {
+    const myX = Math.random() * (Config.gameRoom.sizeX - 80) + 40;
+    const myY = Math.random() * (Config.gameRoom.sizeY - 80) + 40;
+
+    let myWidth = (Math.random() + 2) * 30;
+
+    const maybeStone= new Stone(this, myX, myY, myWidth, 0, 100);
+
+    const treeCollides = this.objects.some((e) => {
+      if (e.collides(maybeStone)) {
+        return true;
+      }
+    });
+
+    if (!treeCollides) {
+      this.objects.push(maybeStone);
+    }
   }
+}
+
 
   /**
    * Removes a player's solider from the room.

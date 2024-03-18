@@ -5,6 +5,7 @@ import { UiObstacle } from "./uiobstacle.js";
 import { UiTree } from "./uitree.js";
 import { UiPlant } from "./uiplant.js";
 import { UiBush } from "./uibush.js";
+import { UiStone } from "./uistone.js";
 import { UiBullet } from "./uibullet.js";
 
 class GameModel {
@@ -49,6 +50,10 @@ class GameModel {
                             break;
                         }
                         case "bush": {
+                            newObject = new UiBush(this.game, 0, 0, 0, 0, 0);
+                            break;
+                        }
+                        case "stone": {
                             newObject = new UiBush(this.game, 0, 0, 0, 0, 0);
                             break;
                         }
