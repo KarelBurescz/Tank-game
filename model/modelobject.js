@@ -21,8 +21,9 @@ class ModelObject {
    * @param {number} hp - The health points of the object.
    */
 
-  constructor(game, x, y, width, height, hp) {
+  constructor(game, x, y, width, height, hp, zIndex = 0) {
     this.game = game; // Game instance reference
+    this.zIndex = 0;
 
     this.ssp = {
       id: ModelObject.lastId++, //for identification for client side.

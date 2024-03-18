@@ -2,8 +2,8 @@ import { ModelObject } from "./modelobject.js";
 
 class Obstacle extends ModelObject {
 
-    constructor(game, x, y, width, height, hp, color) {
-        super(game, x, y, width, height, hp);
+    constructor(game, x, y, width, height, hp, color, zIndex = 0) {
+        super(game, x, y, width, height, hp, zIndex);
         this.ssp.type = "obstacle";
 
         Object.seal(this);
