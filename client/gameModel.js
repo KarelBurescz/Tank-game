@@ -62,7 +62,9 @@ class GameModel {
                     }
 
                     if (newObject) {
-                        newObject.model.ssp = o;
+                        if (o.type !== "stone") {
+                            newObject.model.ssp = o;
+                        };
                         this.addObject(newObject);
                     }
                 }
