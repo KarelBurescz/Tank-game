@@ -122,6 +122,7 @@ describe('model/ModelObject', function () {
       expect(b1.ssp.x).to.be(40);
       expect(b1.ssp.y).to.be(90);
     });
+  });
 
   describe('collides', ()=>{
     it('returns true for two overlapping objects', () => {
@@ -133,6 +134,7 @@ describe('model/ModelObject', function () {
         expect(mo1.collides(mo1)).to.be(false);
         expect(mo2.collides(mo3)).to.be(true);
     });
+
     it('returns false for two non-overlapping objects', () => {
         const mo1 = new ModelObject({},  10, 20, 100, 200,  10);
         const mo2 = new ModelObject({}, 111, 20, 150, 200, 100);
@@ -144,9 +146,6 @@ describe('model/ModelObject', function () {
         expect(mo1.collides(mo4)).to.be(true);
         
     });
-
-
-
   });
   
 });

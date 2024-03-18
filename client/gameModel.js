@@ -69,6 +69,28 @@ class GameModel {
         this.readyToDraw = true;
     }
 
+    interpolateInTime(targetModelSSP, thisModelTime, dt, targetModelTime) {
+        for( let [k,o] of Object.entries(this.objects)){
+            if (o.model.ssp.type === 'player' || o.model.ssp.type === 'bullet') {
+                const id = o.model.ssp.id;
+                const ssp = targetModelSSP.objects[id];
+                if(!ssp) continue;
+                
+                const xprev = o.model.ssp.x;
+                const yprev = o.model.ssp.y;
+
+                o.model.interpolateInTime(ssp, thisModelTime, dt, targetModelTime);
+                if ( Math.abs(xprev - ssp.x) > 1e-4 || Math.abs(yprev - ssp.y) > 1e-4){
+                    // console.log(`Correction by interpolation: x: ${xprev} dx: ${ssp.x - xprev}, y: ${yprev} dy: ${ssp.y - yprev}`)
+                    if ( Math.abs(xprev - ssp.x) > 500 || Math.abs(yprev - ssp.y) > 500){
+                        // debugger;
+                    }
+                    
+                }
+            }
+        }
+    }
+
     hasObject(id) {
         return this.objects.hasOwnProperty(id);
     }

@@ -109,13 +109,34 @@ class Game {
     // So far we are choosing the closest snapshot in future.
 
     const correctedTimestamp = Date.now() + this.timeCorrection - 100;
-    const closestModelKey = Object.keys(this.stateUpdates)[1];
-    if (closestModelKey) {
-      this.actualModel.update(closestModelKey);
+    const possibleTimestamps = Object.keys(this.stateUpdates);
+
+    if(possibleTimestamps && possibleTimestamps.length < 2){
       return this.actualModel;
-    } else {
-      return null;
     }
+
+    const closestPastTimestamp = possibleTimestamps[0];
+    const closestFutureTimestamp = possibleTimestamps[1];
+    
+    const closestPastSSP = this.stateUpdates[closestPastTimestamp];
+    const closestFutureSSP = this.stateUpdates[closestFutureTimestamp];
+
+    if (closestPastSSP) {
+      this.actualModel.update(closestPastSSP);
+    } else {
+      return this.actualModel;
+    }
+
+
+    const dt = correctedTimestamp - closestPastTimestamp;
+    this.actualModel.interpolateInTime(
+      closestFutureSSP, 
+      closestPastTimestamp,
+      dt, 
+      closestFutureTimestamp
+    );
+
+    return this.actualModel;
   }
 
   storeUpdate(gameUpdate) {
