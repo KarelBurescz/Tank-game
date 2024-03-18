@@ -54,7 +54,9 @@ class GameModel {
                             break;
                         }
                         case "stone": {
-                            newObject = new UiStone(this.game, 0, 0, 0, 0, 0);
+                            // newObject = new UiStone(this.game, 0, 0, 0, 0, 0);
+                            newObject = UiStone.fromSSP(this.game, o);
+
                             break;
                         }
                     }

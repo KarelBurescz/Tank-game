@@ -6,6 +6,8 @@ class Stone extends ModelObject {
     this.ssp.zIndex = zIndex;
     this.ssp.version = version % 3;
     this.ssp.type = "stone";
+    // this.img = new Image();
+    // img.src = `../../client/stone${version}.png`;
   }
 
   collisionBox() {
@@ -15,6 +17,8 @@ class Stone extends ModelObject {
       y: ssp.y,
       w: ssp.width,
       h: ssp.width,
+      // w: this.img.width,
+      // h: this.img.height
     };
   }
 }
