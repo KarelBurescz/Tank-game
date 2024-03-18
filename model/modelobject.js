@@ -35,6 +35,7 @@ class ModelObject {
       exploding: false,
       numHits: 0, //How many times the object was hit
       type: "none", // Type of the object
+      zIndex: 0
     };
 
     this.csp = {};

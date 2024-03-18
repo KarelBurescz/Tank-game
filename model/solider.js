@@ -84,6 +84,7 @@ class Solider extends ModelObject {
       bulletsShot: 0,
 
       type: "player",
+      zIndex: zIndex
     };
 
     /* Properties that will be updated from the client's controller */
