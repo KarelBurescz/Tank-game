@@ -15,6 +15,7 @@ class UiStone extends UiObject {
     this.img.onload = (e) => {
       this.model.ssp.width = this.img.width;
       this.model.ssp.height = this.img.height;
+
       this.loaded = true;
     }
     this.img.src = `stone${ssp.version}.png`;

@@ -192,7 +192,7 @@ class RoomRuntime {
 
     let myWidth = (Math.random() + 2) * 30;
 
-    const maybeStone= new Stone(this, myX, myY, myWidth, 0, 100, 0, k);
+    const maybeStone= new Stone(this, myX, myY, 0, myWidth, 100, 0, k);
 
     const treeCollides = this.objects.some((e) => {
       if (e.collides(maybeStone)) {
