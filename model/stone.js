@@ -16,7 +16,7 @@ class Stone extends ModelObject {
       x: ssp.x,
       y: ssp.y,
       w: ssp.width,
-      h: ssp.width,
+      h: ssp.height,
       // w: this.img.width,
       // h: this.img.height
     };
