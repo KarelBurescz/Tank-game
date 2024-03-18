@@ -27,6 +27,10 @@ class UiStone extends UiObject {
   static fromSSP(game, ssp) {
     const stone = new UiStone(game, ssp.x, ssp.y, ssp.width, ssp.height, ssp.hp);
     stone.img = new Image();
+    stone.img.onload = (e) => {
+      stone.model.ssp.width = stone.img.width;
+      stone.model.ssp.height = stone.img.height;
+    }
     stone.img.src = `stone${ssp.version}.png`;
     return stone;
   }
