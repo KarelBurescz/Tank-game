@@ -21,6 +21,7 @@ describe('model/Tree', function () {
               hp: 5,
               exploding: false,
               numHits: 0,
+              movable: false,
             }
   
             expect(b.ssp).to.eql(ssp);

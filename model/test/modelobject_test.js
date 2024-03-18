@@ -1,5 +1,9 @@
 import expect from 'expect.js';
 import { ModelObject } from '../modelobject.js';
+import { RoomRuntime } from '../../server/roomRuntime.js';
+import { Tree } from '../tree.js';
+import { Bullet } from '../bullet.js';
+import { Obstacle } from '../obstacle.js';
 
 describe('model/ModelObject', function () {
 
@@ -15,6 +19,7 @@ describe('model/ModelObject', function () {
 
         expect(ssp).to.eql({
             id: id, x: 0, y: 0, width: 50, height: 50, hp: 100, type: 'none', exploding: false, numHits: 0,
+            movable: false,
         })
 
         expect(mo.x).to.be(undefined);
@@ -50,6 +55,73 @@ describe('model/ModelObject', function () {
         })
     });
   });
+
+  describe('timeInterpolation', () => {
+    it('returns the same position for non-movable objects', () => {
+      const r1 = new RoomRuntime();
+      const t1 = new Tree(r1, 1, 2, 3, 4, 5, 'green');
+      const t2 = new Tree(r1, 1, 2, 3, 4, 5, 'green');
+
+      t1.interpolateInTime(t2.ssp, 1000000, 200, 1000500);
+      expect(t1.ssp).to.eql(
+        {
+          id: t1.ssp.id,
+          hp: t1.ssp.hp,
+          type: "tree",
+
+          x: 1, 
+          y: 2, 
+          width: 3, 
+          height: 4, 
+
+          exploding: false,
+          numHits: 0,
+          movable: false,
+      });
+
+    });
+
+    it('throws an error for two objects of different time', () => {
+      const r1 = new RoomRuntime();
+      const t1 = new Tree(r1, 1, 2, 3, 4, 5, 'green');
+      const t2 = new Obstacle(r1, 1, 2, 3, 4, 5, 'green');
+
+      expect(t1.interpolateInTime).withArgs(t2, 1000000, 200, 1000500).to.throwError();
+    });
+
+    it('returns the same object if dt is zero', () => {
+    
+      const owner = {};
+      const testGame = {};
+
+      const b1 = new Bullet(testGame, 10  , 100 , 3, 4, 5, 6, 100, owner);
+      const b2ssp = Object.assign({}, b1.ssp);
+
+      b2ssp.x = 160;
+      b2ssp.y = 50;
+
+      b1.interpolateInTime(b2ssp, 100000, 0, 100100);
+
+      expect(b1.ssp.x).to.be(b1.ssp.x);
+      expect(b1.ssp.y).to.be(b1.ssp.y);
+    });
+
+    it('returns interpolated position', () => {
+    
+      const owner = {};
+      const testGame = {};
+
+      const b1 = new Bullet(testGame, 10  , 100 , 3, 4, 5, 6, 100, owner);
+      const b2ssp = Object.assign({}, b1.ssp);
+
+      b2ssp.x = 160;
+      b2ssp.y = 50;
+
+      b1.interpolateInTime(b2ssp, 100000, 20, 100100);
+
+      expect(b1.ssp.x).to.be(40);
+      expect(b1.ssp.y).to.be(90);
+    });
 
   describe('collides', ()=>{
     it('returns true for two overlapping objects', () => {

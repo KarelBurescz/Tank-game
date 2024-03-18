@@ -25,6 +25,7 @@ describe('model/Bullet', function () {
             damage: 100,
             exploding: false,
             numHits: 0,
+            movable: false,
           }
 
           expect(b.ssp).to.eql(ssp);

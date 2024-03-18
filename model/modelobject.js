@@ -34,6 +34,7 @@ class ModelObject {
       exploding: false,
       numHits: 0, //How many times the object was hit
       type: "none", // Type of the object
+      movable: false,
     };
 
     this.csp = {};
@@ -41,6 +42,23 @@ class ModelObject {
     Object.seal(this.ssp);
     Object.seal(this.csp);
     // Object.seal(this);
+  }
+
+  interpolateInTime(targetModelSSP, thisModelTime, dt, targetModelTime) {
+
+    if (this.ssp.type !== targetModelSSP.type) {
+      throw Error('Only two objects with the same type can be interpolated');
+    }
+
+    if (Math.abs(thisModelTime - targetModelTime) < 1e-3) {
+      return this;
+    }
+
+    //Interpolate position in time.
+    this.ssp.x = this.ssp.x + (targetModelSSP.x - this.ssp.x) * dt / (targetModelTime - thisModelTime);
+    this.ssp.y = this.ssp.y + (targetModelSSP.y - this.ssp.y) * dt / (targetModelTime - thisModelTime);
+
+    return this;
   }
 
   /**
