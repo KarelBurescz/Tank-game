@@ -23,6 +23,7 @@ describe('model/Obstacle', function () {
               exploding: false,
               numHits: 0,
               zIndex: 0,
+              version: 0
             }
   
             expect(b.ssp).to.eql(ssp);
