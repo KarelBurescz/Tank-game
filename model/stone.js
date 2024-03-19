@@ -4,7 +4,7 @@ class Stone extends ModelObject {
   constructor(game, x, y, width, height, hp, zIndex = 2, version = 0) {
     super(game, x, y, width, height, hp, zIndex);
     this.ssp.zIndex = zIndex;
-    this.ssp.version = version % 3;
+    this.ssp.version = version % 17;
     this.ssp.type = "stone";
     // this.img = new Image();
     // img.src = `../../client/stone${version}.png`;
@@ -21,6 +21,7 @@ class Stone extends ModelObject {
       // h: this.img.height
     };
   }
+
 }
 
 export { Stone };

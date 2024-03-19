@@ -189,7 +189,7 @@ class RoomRuntime {
   for (let r = 0; r < Config.gameRoom.numOfStones; ++r) {
     const myX = Math.random() * (Config.gameRoom.sizeX - 80) + 40;
     const myY = Math.random() * (Config.gameRoom.sizeY - 80) + 40;
-    let k = r % 17;
+    let k = r % 18;
     // let sizes = {
     //   0: [213, 213],
     //   1: [213, 160],
@@ -234,8 +234,8 @@ class RoomRuntime {
     let myWidth = (Math.random() + 2) * 30;
     let myHeight = myWidth * (sizes[k][1] / sizes[k][0]);
 
-    const maybeStone= new Stone(this, myX, myY, myWidth, myHeight, 100, 0, k);
-    
+    const maybeStone= new Stone(this, myX, myY, myWidth, myHeight, 500, 0, k);
+
     const treeCollides = this.objects.some((e) => {
       if (e.collides(maybeStone)) {
         return true;
