@@ -10,6 +10,7 @@ class Bullet extends ModelObject {
       direction: direction,
       speed: speed,
       type: "bullet",
+      movable: true,
     };
 
     this.owner = owner;

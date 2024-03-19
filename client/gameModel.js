@@ -16,9 +16,11 @@ class GameModel {
         this.player = null;
 
         this.readyToDraw = false;
+        this.tickTime = 0;
     }
 
     update(gameUpdate) {
+        this.tickTime = gameUpdate.gameStats.tickTime;
         if (gameUpdate.hasOwnProperty("objects")) {
             Object.keys(gameUpdate.objects).forEach((id) => {
                 let o = gameUpdate.objects[id];
@@ -69,9 +71,9 @@ class GameModel {
         this.readyToDraw = true;
     }
 
-    interpolateInTime(targetModelSSP, thisModelTime, dt, targetModelTime) {
+    interpolateInTime(targetModelSSP, dt) {
         for( let [k,o] of Object.entries(this.objects)){
-            if (o.model.ssp.type === 'player' || o.model.ssp.type === 'bullet') {
+            if (o.model.ssp.movable) {
                 const id = o.model.ssp.id;
                 const ssp = targetModelSSP.objects[id];
                 if(!ssp) continue;
@@ -79,11 +81,11 @@ class GameModel {
                 const xprev = o.model.ssp.x;
                 const yprev = o.model.ssp.y;
 
-                o.model.interpolateInTime(ssp, thisModelTime, dt, targetModelTime);
+                o.model.interpolateInTime(ssp, this.tickTime, dt, targetModelSSP.gameStats.tickTime);
                 if ( Math.abs(xprev - ssp.x) > 1e-4 || Math.abs(yprev - ssp.y) > 1e-4){
-                    // console.log(`Correction by interpolation: x: ${xprev} dx: ${ssp.x - xprev}, y: ${yprev} dy: ${ssp.y - yprev}`)
-                    if ( Math.abs(xprev - ssp.x) > 500 || Math.abs(yprev - ssp.y) > 500){
-                        // debugger;
+                    // console.log(`Correction by dt: ${dt} interpolation: x: ${xprev} dx: ${o.model.ssp.x - xprev}, y: ${yprev} dy: ${o.model.ssp.y - yprev}`)
+                    if ( Math.abs(xprev - o.model.ssp.x) > 50 || Math.abs(yprev - o.model.ssp.y) > 50){
+                        console.warn("The position correction is suspiciously large!")
                     }
                     
                 }

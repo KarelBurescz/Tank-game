@@ -67,7 +67,7 @@ class Game {
     this.updateTps();
   }
 
-  // Number of frames drawn per second.
+  /* Number of frames drawn per second. */
   updateTps() {
     const dt = this.now() - this.lastTpsUpdate;
 
@@ -79,7 +79,7 @@ class Game {
     this.lastTpsUpdate = this.now();
   }
 
-  // Number of data updates from the server per second.
+  /* Number of data updates from the server per second. */
   updateUps() {
     const dt = this.now() - this.lastUpsUpdate;
     // Let's avoid division by zero.
@@ -102,79 +102,85 @@ class Game {
     return Date.now() + this.timeCorrection - 100;
   }
 
-  //Make sure this is called.
+
   getActualModel() {
     // Here we need to interpolate all the object ssp properties that change in time, 
-    // between two time points.
-    // So far we are choosing the closest snapshot in future.
-
-    const correctedTimestamp = Date.now() + this.timeCorrection - 100;
-    const possibleTimestamps = Object.keys(this.stateUpdates);
-
-    if(possibleTimestamps && possibleTimestamps.length < 2){
-      return this.actualModel;
-    }
-
-    const closestPastTimestamp = possibleTimestamps[0];
-    const closestFutureTimestamp = possibleTimestamps[1];
+    // and update the actual model with it.
     
-    const closestPastSSP = this.stateUpdates[closestPastTimestamp];
-    const closestFutureSSP = this.stateUpdates[closestFutureTimestamp];
-
+    const correctedTimestamp = this.getCorrectedDrawTimeMs();
+    const [closestPastSSP, closestFutureSSP] = this.getStateUpdatesForTimestamp(correctedTimestamp);
+    
+    // console.log(`CT: ${correctedTimestamp}, Past: ${closestPastSSP?.gameStats.tickTime} Target: ${closestFutureSSP?.gameStats.tickTime}, tss: ${Object.keys(this.stateUpdates)}`)
+    
     if (closestPastSSP) {
       this.actualModel.update(closestPastSSP);
     } else {
       return this.actualModel;
     }
 
-
-    const dt = correctedTimestamp - closestPastTimestamp;
-    this.actualModel.interpolateInTime(
-      closestFutureSSP, 
-      closestPastTimestamp,
-      dt, 
-      closestFutureTimestamp
-    );
-
+    if (closestFutureSSP) {
+      const dt = correctedTimestamp - closestPastSSP.gameStats.tickTime;
+      this.actualModel.interpolateInTime(closestFutureSSP, dt);
+    }
     return this.actualModel;
   }
 
   storeUpdate(gameUpdate) {
-    
+
+    /* Upate the statistics */
     this.numOfDataUpdates++;
     this.checkLargestDelta();
     this.previousUpdateTime = this.now();
 
-    this.actualModel.update(gameUpdate);
-    
-    const serverTs = gameUpdate.gameStats.tickTime;
-    const correctedDrawTime = this.getCorrectedDrawTimeMs();
-
-    this.cleanupModels(correctedDrawTime);
-    this.stateUpdates[serverTs] = gameUpdate;
-
-    if (!this.player && this.getObject(gameUpdate?.player?.id)) {
-      const player = this.getObject(gameUpdate.player.id);
-      this.setPlayer(player);
-      this.newPlayerCallback(this.player);
-    }
-  
     if (gameUpdate.hasOwnProperty("gameStats")) {
       this.gameStats = {
         ...this.gameStats,
         ...gameUpdate.gameStats
       }
     }
+    
+    const serverTs = gameUpdate.gameStats.tickTime;
+    const correctedDrawTime = this.getCorrectedDrawTimeMs();
+
+    /* Store the server update and do a clean of unnecessary ones */
+    this.cleanupModels(correctedDrawTime);
+    this.stateUpdates[serverTs] = gameUpdate;
+
+    /* Just in case a new Player object arrived, we need to set it up in the game */
+    if (!this.player && this.getObject(gameUpdate?.player?.id)) {
+      const player = this.getObject(gameUpdate.player.id);
+      this.setPlayer(player);
+      this.newPlayerCallback(this.player);
+    }
   }
 
   cleanupModels(timestamp) {
-    const keys = Object.keys(this.stateUpdates);
+    const keys = Object.keys(this.stateUpdates).sort();
 
     for (let i = 0; i < keys.length - 1; i++) {
       if (keys[i] < timestamp && keys[i+1] < timestamp) {
         delete this.stateUpdates[keys[i]];
       }
     }
+  }
+
+  /**
+   * 
+   * @param {Number} timestamp A unix timestamp in miliseconds
+   * @returns {Array<SSP>} An array with two state updates (SSP opbjects) closest to timestamp, one before and one after the timestamp time.
+   */
+  getStateUpdatesForTimestamp(timestamp) {
+    const updateTs = Object.keys(this.stateUpdates).sort();
+    /* Search for one update before the timestamp and one after the timestamp */
+    for (let i = 0; i < updateTs.length - 1; i++) {
+      if (updateTs[i] <= timestamp && updateTs[i+1] >= timestamp) {
+        return [this.stateUpdates[updateTs[i]], this.stateUpdates[updateTs[i+1]]]
+      }
+    }
+
+    /* Failback, search for the closest one in the past, which should be the last one */
+    const ts = updateTs.filter(u => u <= timestamp).pop();
+    return [this.stateUpdates[ts], null];
   }
 
   addObject(object) {
