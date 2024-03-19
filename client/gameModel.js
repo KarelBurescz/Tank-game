@@ -5,6 +5,7 @@ import { UiObstacle } from "./uiobstacle.js";
 import { UiTree } from "./uitree.js";
 import { UiPlant } from "./uiplant.js";
 import { UiBush } from "./uibush.js";
+import { UiStone } from "./uistone.js";
 import { UiBullet } from "./uibullet.js";
 
 class GameModel {
@@ -52,10 +53,16 @@ class GameModel {
                             newObject = new UiBush(this.game, 0, 0, 0, 0, 0);
                             break;
                         }
+                        case "stone": {
+                            newObject = new UiStone(this.game, o);
+                            break;
+                        }
                     }
 
                     if (newObject) {
-                        newObject.model.ssp = o;
+                        if (o.type !== "stone") {
+                            newObject.model.ssp = o;
+                        };
                         this.addObject(newObject);
                     }
                 }
