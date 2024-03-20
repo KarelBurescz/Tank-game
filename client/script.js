@@ -117,11 +117,9 @@ function drawBackground(img, canvasBackground) {
 function animate() {
   myCamera.draw(myGame.bgcanvas);
 
-  console.time('handleUiObjects');
   const st = performance.now()
   handleUiObjects();
   const dt = performance.now() - st;
-  console.timeEnd('handleUiObjects');
 
   if (myGame.largestHandleObjectsCall < dt) {
     myGame.largestHandleObjectsCall = dt;
