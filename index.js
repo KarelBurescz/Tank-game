@@ -38,7 +38,12 @@ const io = new Server(server);
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-app.use(express.static(__dirname + "/client"));
+app.use(express.static(__dirname + "/client", {
+  setHeaders: (res, path, stat) => {
+    res.set('Cache-Control', 'public, max-age=120');
+  }
+}));
+
 app.use("/model", express.static(__dirname + "/model"));
 app.use("/docs", express.static(__dirname + "/docs"));
 

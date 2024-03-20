@@ -263,6 +263,7 @@ class Camera {
             `Client-TPS: ${this.game.gameStats.clientTps}`,
             `Client-UPS: ${this.game.gameStats.clientUps}`,
             `Client-BDU: ${this.game.gameStats.largestClientUpsDelta}`,
+            `Client-UPO: ${this.game.gameStats.largestHandleObjectsCall}`,
             `Game Obj  : ${this.game.getObjectIds().length}`,
         ];
 

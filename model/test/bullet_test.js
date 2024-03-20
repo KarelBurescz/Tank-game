@@ -25,6 +25,7 @@ describe('model/Bullet', function () {
             damage: 100,
             exploding: false,
             numHits: 0,
+            movable: true,
             zIndex: 0,
             version: 0
           }
