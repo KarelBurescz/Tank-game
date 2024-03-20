@@ -23,6 +23,7 @@ describe('model/Tree', function () {
               numHits: 0,
               movable: false,
               zIndex: 3,
+              version: 0
             }
   
             expect(b.ssp).to.eql(ssp);

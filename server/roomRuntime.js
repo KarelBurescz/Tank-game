@@ -5,6 +5,7 @@ import { Tree } from "../model/tree.js";
 import { Solider } from "../model/solider.js";
 import { Plant } from "../model/plant.js";
 import { Bush } from "../model/bush.js";
+import { Stone } from "../model/stone.js";
 
 /**
  * Keeps the game mechanics and the game objects for a single room.
@@ -183,7 +184,70 @@ class RoomRuntime {
         this.objects.push(maybeTree);
       }
     }
+  
+  //Loop for stones
+  for (let r = 0; r < Config.gameRoom.numOfStones; ++r) {
+    const myX = Math.random() * (Config.gameRoom.sizeX - 80) + 40;
+    const myY = Math.random() * (Config.gameRoom.sizeY - 80) + 40;
+    let k = r % 18;
+    // let sizes = {
+    //   0: [213, 213],
+    //   1: [213, 160],
+    //   2: [213, 162],
+    //   3: [213, 162],
+    //   4: [213, 200],
+    //   5: [213, 180],
+    //   6: [213, 130],
+    //   7: [213, 213],
+    //   8: [213, 130],
+    //   9: [213, 162],
+    //   10:[213, 213],
+    //   11:[213, 162],
+    //   12:[213, 213],
+    //   13:[213, 213],
+    //   14:[213, 190],
+    //   15:[213, 130],
+    //   16:[213, 213],
+    //   16:[213, 130],
+    // };
+    let sizes = [
+      [213, 213],
+      [213, 160],
+      [213, 162],
+      [213, 162],
+      [213, 200],
+      [213, 180],
+      [213, 130],
+      [213, 213],
+      [213, 130],
+      [213, 162],
+      [213, 213],
+      [213, 162],
+      [213, 213],
+      [213, 213],
+      [213, 190],
+      [213, 130],
+      [213, 213],
+      [213, 130],
+    ];
+
+    let myWidth = (Math.random() + 2) * 30;
+    let myHeight = myWidth * (sizes[k][1] / sizes[k][0]);
+
+    const maybeStone= new Stone(this, myX, myY, myWidth, myHeight, 500, 0, k);
+
+    const treeCollides = this.objects.some((e) => {
+      if (e.collides(maybeStone)) {
+        return true;
+      }
+    });
+
+    if (!treeCollides) {
+      this.objects.push(maybeStone);
+    }
   }
+}
+
 
   /**
    * Removes a player's solider from the room.

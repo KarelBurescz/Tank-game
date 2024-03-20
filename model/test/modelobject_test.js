@@ -19,7 +19,7 @@ describe('model/ModelObject', function () {
 
         expect(ssp).to.eql({
             id: id, x: 0, y: 0, width: 50, height: 50, hp: 100, type: 'none', exploding: false, numHits: 0, 
-            zIndex: 0, movable: false
+            zIndex: 0, version: 0, movable: false,
         })
 
         expect(mo.x).to.be(undefined);

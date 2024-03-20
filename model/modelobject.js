@@ -36,7 +36,8 @@ class ModelObject {
       numHits: 0, //How many times the object was hit
       type: "none", // Type of the object
       movable: false,
-      zIndex: 0
+      zIndex: 0,
+      version: 0,
     };
 
     this.csp = {};
