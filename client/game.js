@@ -26,6 +26,7 @@ class Game {
       clientUps: 0,
       clientTps: 0,
       largestClientUpsDelta: 0,
+      largestHandleObjectsCall: 0,
     };
 
     this.timeCorrection = 0;
@@ -36,6 +37,7 @@ class Game {
 
     this.previousUpdateTime = this.now();
     this.largestUpdateDelta = 0;
+    this.largestHandleObjectsCall = 0;
     
     this.lastTpsUpdate = this.now();
     this.numOfSceneDraws = 0;
@@ -61,7 +63,10 @@ class Game {
   recomputeStats() {
     this.checkLargestDelta();
     this.gameStats.largestClientUpsDelta = this.largestUpdateDelta;
+    this.gameStats.largestHandleObjectsCall = Math.floor(this.largestHandleObjectsCall * 100) / 100;
+
     this.largestUpdateDelta = 0;
+    this.largestHandleObjectsCall = 0;
 
     this.updateUps();
     this.updateTps();
