@@ -68,6 +68,7 @@ describe('model/ModelObject', function () {
           id: t1.ssp.id,
           hp: t1.ssp.hp,
           type: "tree",
+          version: 0,
 
           x: 1, 
           y: 2, 
